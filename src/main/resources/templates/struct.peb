@@ -1,0 +1,17 @@
+<?php
+
+namespace {{ namespace }};
+
+use wenbinye\tars\support\annotation\TarsStructProperty;
+
+final class {{ class_name }} {
+{% for member in members %}
+    /**
+     * @TarsStructProperty(order = {{ member.tag }}, required = {{ member.required }}, type = "{{ member.type | raw }}")
+     * @var {{ member.type.phpType }}
+
+     */
+     public ${{ member.name }}{% if member.hasDefaultValue() %} = {{ member.defaultValue | raw }}{% endif %};
+
+{% endfor %}
+}

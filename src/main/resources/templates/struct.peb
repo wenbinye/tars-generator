@@ -2,7 +2,7 @@
 
 namespace {{ namespace }};
 
-use wenbinye\tars\support\annotation\TarsStructProperty;
+use wenbinye\tars\protocol\annotation\TarsStructProperty;
 
 final class {{ class_name }} {
 {% for member in members %}

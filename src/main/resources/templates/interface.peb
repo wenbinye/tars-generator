@@ -2,8 +2,8 @@
 
 namespace {{ namespace }};
 
-use wenbinye\tars\support\annotation\TarsParameterType;
-use wenbinye\tars\support\annotation\TarsReturnType;
+use wenbinye\tars\protocol\annotation\TarsParameterType;
+use wenbinye\tars\protocol\annotation\TarsReturnType;
 
 interface {{ class_name }} {
 {% for operation in operations %}

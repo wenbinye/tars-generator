@@ -10,12 +10,14 @@ public class Operation {
     private final String name;
     private final List<Parameter> parameters;
     private final List<Parameter> callParameters;
+    private final Type returnType;
     private final List<ReturnValue> returnValues;
     private final ReturnValue returnValue;
 
     public Operation(String name, List<Parameter> parameters, Type returnType) {
         this.name = name;
         this.parameters = parameters;
+        this.returnType = returnType;
         this.callParameters = parameters.stream().filter(parameter -> !parameter.isOut())
                 .collect(Collectors.toList());
         Set<String> names = new HashSet<>();

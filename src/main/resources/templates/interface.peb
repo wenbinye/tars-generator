@@ -16,8 +16,15 @@ interface {{ class_name }} {
      * @TarsParameter(name = "{{ param.name }}", type = "{{ param.type | raw }}"{% if param.out %}, out=true{% endif %})
 {% endfor %}
      * @TarsReturnValue(type = "{{ operation.returnType | raw }}")
+     *
+{% for param in operation.parameters %}
+     * @param {{ param.type.phpParameterType }} ${{ param.name }}
+
+{% endfor %}
+     * @return {{ operation.returnType.phpType }}
+
      */
-     public function {{ operation.name }}({% for param in operation.parameters %}{{ param.type.phpParameterType }} {% if param.out %}&{% endif %}${{ param.name }}{% if not loop.last %}, {% endif %}{% endfor %});
+    public function {{ operation.name }}({% for param in operation.parameters %}{% if param.out %}&{% endif %}${{ param.name }}{% if not loop.last %}, {% endif %}{% endfor %});
 
 {% endfor %}
 }

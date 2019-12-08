@@ -80,6 +80,7 @@ public class DefaultGenerateStrategy implements GenerateStrategy {
 
             if (context.containsKey(KEY_CLIENT)) {
                 context.put(KEY_CLASS_NAME, capitalize(tarsInterface.interfaceName()) + "Client");
+                context.put("servant_class_name", capitalize(tarsInterface.interfaceName()) + "Servant");
             } else {
                 context.put(KEY_CLASS_NAME, capitalize(tarsInterface.interfaceName()) + "Servant");
             }

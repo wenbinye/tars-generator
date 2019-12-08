@@ -2,6 +2,7 @@ package com.github.wenbinye;
 
 import com.github.wenbinye.exceptions.ParseException;
 import com.mitchellbosecke.pebble.PebbleEngine;
+import com.qq.tars.maven.parse.ast.TarsInterface;
 import com.qq.tars.maven.parse.ast.TarsNamespace;
 import lombok.extern.slf4j.Slf4j;
 import org.antlr.runtime.tree.Tree;
@@ -78,6 +79,9 @@ public class TarsGenerator {
         }
         for (Tree element : elements) {
             output(generateStrategy.createContext(ns, element));
+            if (element instanceof TarsInterface) {
+                output(generateStrategy.createContext(ns, element, Collections.singletonMap(GenerateStrategy.KEY_CLIENT, true)));
+            }
         }
     }
 

@@ -1,6 +1,10 @@
 package com.github.wenbinye;
 
 import com.mitchellbosecke.pebble.PebbleEngine;
+import com.mitchellbosecke.pebble.loader.ClasspathLoader;
+import com.mitchellbosecke.pebble.loader.DelegatingLoader;
+import com.mitchellbosecke.pebble.loader.FileLoader;
+import com.mitchellbosecke.pebble.loader.Loader;
 import picocli.CommandLine;
 import picocli.CommandLine.Command;
 import picocli.CommandLine.Option;
@@ -8,10 +12,7 @@ import picocli.CommandLine.Option;
 import java.io.IOException;
 import java.nio.charset.Charset;
 import java.nio.file.Path;
-import java.util.Collections;
-import java.util.Map;
-import java.util.Objects;
-import java.util.Optional;
+import java.util.*;
 import java.util.concurrent.Callable;
 
 @Command(name = "gen", mixinStandardHelpOptions = true, version = "1.0",
@@ -30,10 +31,13 @@ class TarsGen implements Callable<Integer> {
     @Option(names = {"-s", "--servant"}, description = "interface name to servant name")
     private Map<String, String> servantNames;
 
-    @Option(names = {"-e", "--tars-charset"}, description = "tars file charset")
+    @Option(names = {"-c", "--charset"}, description = "tars file charset")
     private String tarsCharset;
 
-    @Option(names = {"-c", "--charset"}, description = "output file charset")
+    @Option(names = {"-T", "--template"}, description = "The templates path")
+    private String templatePath;
+
+    @Option(names = {"-C", "--output-charset"}, description = "output file charset")
     private String charset;
 
     @Option(names = {"-f", "--flat-namespace"}, description = "if true, add tars module namespace to generate class")
@@ -48,7 +52,11 @@ class TarsGen implements Callable<Integer> {
 
     @Override
     public Integer call() throws Exception {
-        PebbleEngine templateEngine = new PebbleEngine.Builder().build();
+        PebbleEngine.Builder builder = new PebbleEngine.Builder();
+        if (templatePath != null && !templatePath.isEmpty()) {
+            builder.loader(createTemplateLoader());
+        }
+        PebbleEngine templateEngine = builder.build();
         GeneratorConfig config = new GeneratorConfig();
         config.setNamespace(Optional.ofNullable(this.namespace).orElse(""));
         if (!this.outputPath.toFile().exists()
@@ -76,6 +84,16 @@ class TarsGen implements Callable<Integer> {
         GenerateStrategy generateStrategy = new DefaultGenerateStrategy(config);
         new TarsGenerator(templateEngine, config, generateStrategy).generate();
         return 0;
+    }
+
+    private DelegatingLoader createTemplateLoader() {
+        List<Loader<?>> defaultLoadingStrategies = new ArrayList<>();
+        FileLoader fileLoader = new FileLoader();
+        fileLoader.setPrefix(templatePath);
+        defaultLoadingStrategies.add(fileLoader);
+        defaultLoadingStrategies.add(new FileLoader());
+        defaultLoadingStrategies.add(new ClasspathLoader());
+        return new DelegatingLoader(defaultLoadingStrategies);
     }
 
     private void checkCharset(String charset) {

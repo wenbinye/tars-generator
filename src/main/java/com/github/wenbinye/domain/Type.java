@@ -46,6 +46,10 @@ public class Type {
         return tarsType.isPrimitive() ? tarsType.typeName().toLowerCase() : tarsType.typeName();
     }
 
+    public boolean isVoid() {
+        return tarsType.isPrimitive() && tarsType.asPrimitive().isVoid();
+    }
+
     private Type createType(TarsType tarsType) {
         return new Type(tarsType, namespace);
     }

@@ -54,12 +54,35 @@ public class DefaultGenerateStrategy implements GenerateStrategy {
             }
             context.put(KEY_MEMBERS, members);
         }),
-        INTERFACE(TEMPLATE_DIR + "interface.peb", (tree, context) -> {
+        INTERFACE(TEMPLATE_DIR + "interface.peb", ContextType::extractInterfaceContext),
+        CLIENT(TEMPLATE_DIR + "client.peb", ContextType::extractInterfaceContext);
+
+        private static final Map<Class<? extends Tree>, ContextType> classMap = new HashMap<>();
+
+        static {
+            classMap.put(TarsEnum.class, ENUM);
+            classMap.put(TarsStruct.class, STRUCT);
+            classMap.put(TarsInterface.class, INTERFACE);
+        }
+
+        private final String templateFile;
+        private final BiConsumer<Tree, Map<String, Object>> contextExtractor;
+
+        ContextType(String templateFile, BiConsumer<Tree, Map<String, Object>> contextExtractor) {
+            this.templateFile = templateFile;
+            this.contextExtractor = contextExtractor;
+        }
+
+        public static void extractInterfaceContext(Tree tree, Map<String, Object> context) {
             TarsInterface tarsInterface = (TarsInterface) tree;
             String namespace = (String) context.get(KEY_NAMESPACE);
             String module = (String) context.get(KEY_MODULE);
 
-            context.put(KEY_CLASS_NAME, capitalize(tarsInterface.interfaceName()) + "Servant");
+            if (context.containsKey(KEY_CLIENT)) {
+                context.put(KEY_CLASS_NAME, capitalize(tarsInterface.interfaceName()) + "Client");
+            } else {
+                context.put(KEY_CLASS_NAME, capitalize(tarsInterface.interfaceName()) + "Servant");
+            }
             context.put(KEY_NAME, tarsInterface.interfaceName());
             List<Operation> operations = new ArrayList<>(tarsInterface.operationList().size());
             for (TarsOperation tarsOperation : tarsInterface.operationList()) {
@@ -84,22 +107,6 @@ public class DefaultGenerateStrategy implements GenerateStrategy {
                     Optional.ofNullable(servantNames.get(tarsInterface.interfaceName()))
                             .orElse(servantNames.getOrDefault(module + "." + tarsInterface.interfaceName(), "")));
             context.put(KEY_OPERATIONS, operations);
-        });
-
-        private static final Map<Class<? extends Tree>, ContextType> classMap = new HashMap<>();
-
-        static {
-            classMap.put(TarsEnum.class, ENUM);
-            classMap.put(TarsStruct.class, STRUCT);
-            classMap.put(TarsInterface.class, INTERFACE);
-        }
-
-        private final String templateFile;
-        private final BiConsumer<Tree, Map<String, Object>> contextExtractor;
-
-        ContextType(String templateFile, BiConsumer<Tree, Map<String, Object>> contextExtractor) {
-            this.templateFile = templateFile;
-            this.contextExtractor = contextExtractor;
         }
 
         public static ContextType fromElement(Tree element) {
@@ -135,9 +142,20 @@ public class DefaultGenerateStrategy implements GenerateStrategy {
 
     @Override
     public Map<String, Object> createContext(TarsNamespace namespace, Tree element) {
+        return createContext(namespace, element, Collections.emptyMap());
+    }
+
+    @Override
+    public Map<String, Object> createContext(TarsNamespace namespace, Tree element, Map<String, Object> extras) {
         Map<String, Object> context = createContext(namespace);
-        ContextType contextType = ContextType.fromElement(element);
+        ContextType contextType;
+        if (element instanceof TarsInterface && extras.containsKey("client")) {
+            contextType = ContextType.CLIENT;
+        } else {
+            contextType = ContextType.fromElement(element);
+        }
         context.put(KEY_TYPE, contextType);
+        context.putAll(extras);
         contextType.extractContext(element, context);
         return context;
     }

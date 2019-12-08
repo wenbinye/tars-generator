@@ -1,5 +1,15 @@
 module testtafserviceservant
 {
+    enum WeekDays {
+        MONDAY,
+        TUESDAY,
+        WEDNESDAY,
+        THURSDAY,
+        FRIDAY,
+        SATURDAY,
+        SUNDAY
+    };
+
     struct SimpleStruct {
         0 require long id=0;
         1 require int count=0;

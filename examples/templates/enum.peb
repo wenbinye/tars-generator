@@ -1,0 +1,9 @@
+<?php
+
+namespace {{ namespace }};
+
+final class {{ class_name }} {
+{% for member in members %}
+    const {{ member.name }} = {{ member.value }};
+{% endfor %}
+}

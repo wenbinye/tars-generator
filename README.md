@@ -1,111 +1,36 @@
+# TARS 代码生成器
 
-配置项
-tars-dir
-output-dir
-namespace
+## Installation
 
-1. const
-
-```
-module App {
-const i = 1;
-const s = "sss";
-}
+```bash
+mvn package
 ```
 
-```php
-<?php
-namespace ns;
+## Usage
 
-final class AppConst {
-const i = 1;
-const s = "sss";
-}
+```bash
+$ java -jar target/tars-generator-1.0-SNAPSHOT-jar-with-dependencies.jar -h
+Usage: gen [-fhV] [-c=<tarsCharset>] [-C=<charset>] [-n=<namespace>]
+           -o=<outputPath> -t=<tarsPath> [-T=<templatePath>]
+           [-s=<String=String>]...
+Generate PHP Code from Tars file.
+  -c, --charset=<tarsCharset>
+                         tars file charset
+  -C, --output-charset=<charset>
+                         output file charset
+  -f, --flat-namespace   if true, add tars module namespace to generate class
+  -h, --help             Show this help message and exit.
+  -n, --namespace=<namespace>
+                         php class namespace
+  -o, --output-path=<outputPath>
+                         output path
+  -s, --servant=<String=String>
+                         interface name to servant name
+  -t, --tars-path=<tarsPath>
+                         tars file path
+  -T, --template=<templatePath>
+                         tempa
+  -V, --version          Print version information and exit.
 ```
 
-2. enum
-
-```
-module App {
-  enum TE {
-    E1,
-    E3,
-    E2
-  }
-}
-```
-
-生成：
-```
-<?php
-
-namespace ns;
-final class TE extends Enum {
-const E1 = 0;
-const E3 = 1;
-const E2 = 2;
-}
-```
-
-3. struct
-
-```
-module App
-{
-  struct SimpleStruct {
-    0 require long id=0;
-    1 require unsigned int count=0;
-    2 require short page=0;
-  };
-}
-```
-
-```php
-<?php
-namespace ns;
-
-class SimpleStruct {
-/**
- * @TarsStructProperty(order=0, required=true, type="long")
- * @var int
- */
- public $id;
-
-/**
- * @TarsStructProperty(order=1, required=true, type="unsigned int")
- * @var int
- */
- public $count;
-
-/**
- * @TarsStructProperty(order=2, required=true, type="short")
- * @var int
- */
- public $order;
-}
-```
-
-4. interface
-
-```
-module App {
-	interface Hello
-	{
-	    string hello(int no, string name);
-	};
-}
-```
-
-```php
-namespace ns;
-interface HelloServant {
-/**
- * @TarsParam(name="no", type="int")
- * @TarsParam(name="name", type="string")
- * @TarsReturn(type="string")
- */
-public hello(int $no, string $name): string;
-}
-```
-
-5. key
+参考 `example/generate.sh` 。

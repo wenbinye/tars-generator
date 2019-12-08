@@ -2,18 +2,22 @@
 
 namespace {{ namespace }};
 
-use wenbinye\tars\protocol\annotation\TarsParameterType;
-use wenbinye\tars\protocol\annotation\TarsReturnType;
+use wenbinye\tars\protocol\annotation\TarsClient;
+use wenbinye\tars\protocol\annotation\TarsParameter;
+use wenbinye\tars\protocol\annotation\TarsReturnValue;
 
+/**
+ * @TarsClient(servant="{{ servant_name }}")
+ */
 interface {{ class_name }} {
 {% for operation in operations %}
     /**
 {% for param in operation.parameters %}
-     * @TarsParameterType(name = "{{ param.name }}", type = "{{ param.type | raw }}", routeKey = {{ param.routeKey}})
+     * @TarsParameter(name = "{{ param.name }}", type = "{{ param.type | raw }}"{% if param.out %}, out=true{% endif %})
 {% endfor %}
-     * @TarsReturnType(type = "{{ operation.returnType | raw }}")
+     * @TarsReturnValue(type = "{{ operation.returnType | raw }}")
      */
-     public function {{ operation.name }}({% for param in operation.parameters %}{% if param.type.hasPhpParameterType() %}{{ param.type.phpParameterType }} {% endif %}{% if param.out %}&{% endif %}${{ param.name }}{% if not loop.last %}, {% endif %}{% endfor %});
+     public function {{ operation.name }}({% for param in operation.parameters %}{{ param.type.phpParameterType }} {% if param.out %}&{% endif %}${{ param.name }}{% if not loop.last %}, {% endif %}{% endfor %});
 
 {% endfor %}
 }

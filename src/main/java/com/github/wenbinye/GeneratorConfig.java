@@ -6,6 +6,8 @@ import lombok.Setter;
 import java.nio.charset.Charset;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Path;
+import java.util.HashMap;
+import java.util.Map;
 
 @Getter
 @Setter
@@ -21,4 +23,6 @@ public class GeneratorConfig {
     private Charset charset = StandardCharsets.UTF_8;
 
     private boolean flatNamespace;
+
+    private Map<String, String> servantNames = new HashMap<>();
 }

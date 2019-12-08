@@ -69,6 +69,6 @@ public class Type {
     }
 
     public boolean hasPhpParameterType() {
-        return !tarsType.isVector() && !tarsType.isMap();
+        return true;
     }
 }

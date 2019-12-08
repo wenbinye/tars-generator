@@ -11,8 +11,7 @@ import java.nio.charset.Charset;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import java.util.stream.Collectors;
 
 @Slf4j
@@ -30,13 +29,20 @@ public class TarsGenerator {
     }
 
     public void generate() throws IOException, ParseException {
-        List<File> tarsFiles = Files.walk(config.getTarsPath())
+        Stack<File> tarsFiles = new Stack<>();
+        Files.walk(config.getTarsPath())
                 .filter(p -> p.toString().endsWith(".tars"))
                 .map(Path::toFile)
                 .filter(f -> f.isFile() && f.canRead())
-                .collect(Collectors.toList());
+                .forEach(tarsFiles::push);
+        Set<File> seen = new HashSet<>();
 
-        for (File file : tarsFiles) {
+        while (!tarsFiles.isEmpty()) {
+            File file = tarsFiles.pop();
+            if (seen.contains(file)) {
+                continue;
+            }
+            seen.add(file);
             log.info("read tars file {}", file.toString());
             try (Reader reader = Files.newBufferedReader(file.toPath(), config.getCharset())) {
                 TarsParser parser = TarsParser.create(reader);
@@ -47,6 +53,13 @@ public class TarsGenerator {
                     generate(ns, ns.enumList());
                     generate(ns, ns.structList());
                     generate(ns, ns.interfaceList());
+                }
+                for (String includeFile : parser.getIncludeFiles()) {
+                    log.info("add include file {}", includeFile);
+                    File included = new File(file.getParent(), includeFile);
+                    if (!seen.contains(included)) {
+                        tarsFiles.push(included);
+                    }
                 }
             }
         }

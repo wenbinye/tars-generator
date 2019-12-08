@@ -8,6 +8,8 @@ import picocli.CommandLine.Option;
 import java.io.IOException;
 import java.nio.charset.Charset;
 import java.nio.file.Path;
+import java.util.Collections;
+import java.util.Map;
 import java.util.Objects;
 import java.util.Optional;
 import java.util.concurrent.Callable;
@@ -24,6 +26,9 @@ class TarsGen implements Callable<Integer> {
 
     @Option(names = {"-n", "--namespace"}, description = "php class namespace")
     private String namespace;
+
+    @Option(names = {"-s", "--servant"}, description = "interface name to servant name")
+    private Map<String, String> servantNames;
 
     @Option(names = {"-e", "--tars-charset"}, description = "tars file charset")
     private String tarsCharset;
@@ -66,6 +71,7 @@ class TarsGen implements Callable<Integer> {
         }
 
         config.setFlatNamespace(flatNamespace);
+        config.setServantNames(Optional.ofNullable(servantNames).orElse(Collections.emptyMap()));
 
         GenerateStrategy generateStrategy = new DefaultGenerateStrategy(config);
         new TarsGenerator(templateEngine, config, generateStrategy).generate();

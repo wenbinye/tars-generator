@@ -2,12 +2,12 @@
 
 namespace {{ namespace }};
 
-use wenbinye\tars\protocol\annotation\TarsStructProperty;
+use wenbinye\tars\protocol\annotation\TarsProperty;
 
 final class {{ class_name }} {
 {% for member in members %}
     /**
-     * @TarsStructProperty(order = {{ member.tag }}, required = {{ member.required }}, type = "{{ member.type | raw }}")
+     * @TarsProperty(order = {{ member.tag }}, required = {{ member.required }}, type = "{{ member.type | raw }}")
      * @var {{ member.type.phpType }}
 
      */

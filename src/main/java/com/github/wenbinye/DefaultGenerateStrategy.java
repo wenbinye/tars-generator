@@ -6,34 +6,42 @@ import org.antlr.runtime.tree.Tree;
 
 import java.io.File;
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import java.util.function.BiConsumer;
 
 public class DefaultGenerateStrategy implements GenerateStrategy {
     public static final String TEMPLATE_DIR = "templates/";
+    public static final String KEY_TARS_NAMESPACE = "tars_namespace";
+    public static final String KEY_MODULE = "module";
+    public static final String KEY_CONFIG = "config";
+    public static final String KEY_NAMESPACE = "namespace";
+    public static final String KEY_TYPE = "type";
+    public static final String KEY_CLASS_NAME = "class_name";
+    public static final String KEY_NAME = "name";
+    public static final String KEY_MEMBERS = "members";
+    public static final String KEY_SERVANT_NAME = "servant_name";
+    public static final String KEY_OPERATIONS = "operations";
+    public static final String KEY_CONSTANTS = "constants";
 
     enum ContextType {
         CONSTANT(TEMPLATE_DIR + "constant.peb", (tree, context) -> {
         }),
         ENUM(TEMPLATE_DIR + "enum.peb", (tree, context) -> {
             TarsEnum tarsEnum = (TarsEnum) tree;
-            context.put("class_name", capitalize(tarsEnum.enumName()));
-            context.put("name", tarsEnum.enumName());
+            context.put(KEY_CLASS_NAME, capitalize(tarsEnum.enumName()));
+            context.put(KEY_NAME, tarsEnum.enumName());
             List<EnumMember> members = new ArrayList<>(tarsEnum.enumMemberList().size());
             for (int i = 0; i < tarsEnum.enumMemberList().size(); ++i) {
                 String item = tarsEnum.enumMemberList().get(i);
                 String value = i < tarsEnum.enumValueList().size() ? tarsEnum.enumValueList().get(i) : String.valueOf(i);
                 members.add(new EnumMember(item, value));
             }
-            context.put("members", members);
+            context.put(KEY_MEMBERS, members);
         }),
         STRUCT(TEMPLATE_DIR + "struct.peb", (tree, context) -> {
             TarsStruct tarsStruct = (TarsStruct) tree;
-            context.put("class_name", capitalize(tarsStruct.structName()));
-            context.put("name", tarsStruct.structName());
+            context.put(KEY_CLASS_NAME, capitalize(tarsStruct.structName()));
+            context.put(KEY_NAME, tarsStruct.structName());
             List<StructMember> members = new ArrayList<>(tarsStruct.memberList().size());
             for (TarsStructMember tarsStructMember : tarsStruct.memberList()) {
                 members.add(StructMember.builder()
@@ -44,19 +52,22 @@ public class DefaultGenerateStrategy implements GenerateStrategy {
                         .type(new Type(tarsStructMember.memberType(), (String) context.get("namespace")))
                         .build());
             }
-            context.put("members", members);
+            context.put(KEY_MEMBERS, members);
         }),
         INTERFACE(TEMPLATE_DIR + "interface.peb", (tree, context) -> {
             TarsInterface tarsInterface = (TarsInterface) tree;
-            context.put("class_name", capitalize(tarsInterface.interfaceName()) + "Servant");
-            context.put("name", tarsInterface.interfaceName());
+            String namespace = (String) context.get(KEY_NAMESPACE);
+            String module = (String) context.get(KEY_MODULE);
+
+            context.put(KEY_CLASS_NAME, capitalize(tarsInterface.interfaceName()) + "Servant");
+            context.put(KEY_NAME, tarsInterface.interfaceName());
             List<Operation> operations = new ArrayList<>(tarsInterface.operationList().size());
             for (TarsOperation tarsOperation : tarsInterface.operationList()) {
                 List<Parameter> parameters = new ArrayList<>(tarsOperation.paramList().size());
                 for (TarsParam tarsParam : tarsOperation.paramList()) {
                     parameters.add(new Parameter(
                             tarsParam.paramName(),
-                            new Type(tarsParam.paramType(), (String) context.get("namespace")),
+                            new Type(tarsParam.paramType(), namespace),
                             tarsParam.isOut(),
                             tarsParam.isRouteKey()
                     ));
@@ -64,10 +75,15 @@ public class DefaultGenerateStrategy implements GenerateStrategy {
                 operations.add(new Operation(
                         tarsOperation.operationName(),
                         parameters,
-                        new Type(tarsOperation.retType(), (String) context.get("namespace"))
+                        new Type(tarsOperation.retType(), namespace)
                 ));
             }
-            context.put("operations", operations);
+            GeneratorConfig config = (GeneratorConfig) context.get("config");
+            Map<String, String> servantNames = config.getServantNames();
+            context.put(KEY_SERVANT_NAME,
+                    Optional.ofNullable(servantNames.get(tarsInterface.interfaceName()))
+                            .orElse(servantNames.getOrDefault(module + "." + tarsInterface.interfaceName(), "")));
+            context.put(KEY_OPERATIONS, operations);
         });
 
         private static final Map<Class<? extends Tree>, ContextType> classMap = new HashMap<>();
@@ -111,9 +127,9 @@ public class DefaultGenerateStrategy implements GenerateStrategy {
     @Override
     public Map<String, Object> createConstContext(TarsNamespace namespace) {
         Map<String, Object> context = createContext(namespace);
-        context.put("type", ContextType.CONSTANT);
-        context.put("class_name", capitalize(namespace.namespace()) + "Const");
-        context.put("constants", namespace.constList());
+        context.put(KEY_TYPE, ContextType.CONSTANT);
+        context.put(KEY_CLASS_NAME, capitalize(namespace.namespace()) + "Const");
+        context.put(KEY_CONSTANTS, namespace.constList());
         return context;
     }
 
@@ -121,8 +137,7 @@ public class DefaultGenerateStrategy implements GenerateStrategy {
     public Map<String, Object> createContext(TarsNamespace namespace, Tree element) {
         Map<String, Object> context = createContext(namespace);
         ContextType contextType = ContextType.fromElement(element);
-        context.put("type", contextType);
-        context.put("element", element);
+        context.put(KEY_TYPE, contextType);
         contextType.extractContext(element, context);
         return context;
     }
@@ -133,28 +148,29 @@ public class DefaultGenerateStrategy implements GenerateStrategy {
         if (config.isFlatNamespace()) {
             dir = config.getOutputPath().toFile();
         } else {
-            dir = new File(config.getOutputPath().toFile(), (String) context.get("module"));
+            dir = new File(config.getOutputPath().toFile(), (String) context.get(KEY_MODULE));
         }
         if (!dir.exists() && !dir.mkdirs()) {
             throw new IOException("cannot create directory " + dir);
         }
-        return new File(dir, context.get("class_name") + ".php");
+        return new File(dir, context.get(KEY_CLASS_NAME) + ".php");
     }
 
     @Override
     public String getTemplate(Map<String, Object> context) {
-        ContextType contextType = (ContextType) context.get("type");
+        ContextType contextType = (ContextType) context.get(KEY_TYPE);
         return contextType.getTemplateFile();
     }
 
     private Map<String, Object> createContext(TarsNamespace ns) {
         Map<String, Object> context = new HashMap<>();
-        context.put("tars_namespace", ns);
-        context.put("module", ns.namespace());
+        context.put(KEY_TARS_NAMESPACE, ns);
+        context.put(KEY_MODULE, ns.namespace());
+        context.put(KEY_CONFIG, config);
         if (config.isFlatNamespace()) {
-            context.put("namespace", config.getNamespace());
+            context.put(KEY_NAMESPACE, config.getNamespace());
         } else {
-            context.put("namespace", new FullQualifiedName(config.getNamespace(), ns.namespace()).asNamespace());
+            context.put(KEY_NAMESPACE, new FullQualifiedName(config.getNamespace(), ns.namespace()).asNamespace());
         }
         return context;
     }

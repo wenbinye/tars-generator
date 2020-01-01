@@ -2,12 +2,12 @@
 
 namespace {{ namespace }};
 
-use wenbinye\tars\protocol\annotation\TarsClient;
+use wenbinye\tars\protocol\annotation\TarsServant;
 use wenbinye\tars\protocol\annotation\TarsParameter;
-use wenbinye\tars\protocol\annotation\TarsReturnValue;
+use wenbinye\tars\protocol\annotation\TarsReturnType;
 
 /**
- * @TarsClient(servant="{{ servant_name }}")
+ * @TarsServant(servant="{{ servant_name }}")
  */
 interface {{ class_name }} {
 {% for operation in operations %}
@@ -15,7 +15,7 @@ interface {{ class_name }} {
 {% for param in operation.parameters %}
      * @TarsParameter(name = "{{ param.name }}", type = "{{ param.type | raw }}"{% if param.out %}, out=true{% endif %})
 {% endfor %}
-     * @TarsReturnValue(type = "{{ operation.returnType | raw }}")
+     * @TarsReturnType(type = "{{ operation.returnType | raw }}")
      *
 {% for param in operation.parameters %}
      * @param {{ param.type.phpParameterType }} ${{ param.name }}

@@ -11,12 +11,12 @@ class {{ class_name }} extends AbstractClient implements {{ servant_class_name }
      */
     public function {{ operation.name }}({% for param in operation.parameters %}{% if param.out %}&{% endif %}${{ param.name }}{% if not loop.last %}, {% endif %}{% endfor %}) {
 {% if operation.hasReturnValues() %}
-        list({% for value in operation.returnValues %}${{ value.name }}{% if not loop.last %}, {% endif%}{% endfor %}) = $this->_call(__FUNCTION__{% if operation.hasCallParameters() %}, {% for param in operation.callParameters %}${{ param.name }}{% if not loop.last %}, {% endif %}{% endfor %}{% endif %});
+        list({% for value in operation.returnValues %}${{ value.name }}{% if not loop.last %}, {% endif%}{% endfor %}) = $this->_send(__FUNCTION__{% if operation.hasCallParameters() %}, {% for param in operation.callParameters %}${{ param.name }}{% if not loop.last %}, {% endif %}{% endfor %}{% endif %});
 {% if operation.hasReturnValue() %}
         return ${{ operation.returnValue.name }};
 {% endif %}
 {% else %}
-        $this->_call(__FUNCTION__{% if operation.hasCallParameters() %}, {% for param in operation.callParameters %}${{ param.name }}{% if not loop.last %}, {% endif %}{% endfor %}{% endif %});
+        $this->_send(__FUNCTION__{% if operation.hasCallParameters() %}, {% for param in operation.callParameters %}${{ param.name }}{% if not loop.last %}, {% endif %}{% endfor %}{% endif %});
 {% endif %}
     }
 

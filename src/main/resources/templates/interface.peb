@@ -2,12 +2,16 @@
 
 namespace {{ namespace }};
 
+{% if client %}
+use wenbinye\tars\protocol\annotation\TarsClient;
+{% else %}
 use wenbinye\tars\protocol\annotation\TarsServant;
+{% endif %}
 use wenbinye\tars\protocol\annotation\TarsParameter;
 use wenbinye\tars\protocol\annotation\TarsReturnType;
 
 /**
- * @TarsServant(servant="{{ servant_name }}")
+ * @{% if client %}TarsClient{% else %}TarsServant{% endif %}(name="{{ servant_name }}")
  */
 interface {{ class_name }} {
 {% for operation in operations %}

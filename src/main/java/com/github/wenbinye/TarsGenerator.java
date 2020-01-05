@@ -79,9 +79,6 @@ public class TarsGenerator {
         }
         for (Tree element : elements) {
             output(generateStrategy.createContext(ns, element));
-            if (element instanceof TarsInterface) {
-                output(generateStrategy.createContext(ns, element, Collections.singletonMap(GenerateStrategy.KEY_CLIENT, true)));
-            }
         }
     }
 

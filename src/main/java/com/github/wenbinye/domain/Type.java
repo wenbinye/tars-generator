@@ -59,8 +59,15 @@ public class Type {
             TarsPrimitiveType tarsType = (TarsPrimitiveType) this.tarsType;
             return PRIMITIVE_TYPES.get(tarsType.primitiveType());
         }
-        if (tarsType.isVector() || tarsType.isMap()) {
+        if (tarsType.isVector()) {
             return "array";
+        }
+        if (tarsType.isMap()) {
+            if (tarsType.asMap().keyType().isCustom()) {
+                return "\\wenbinye\\tars\\protocol\\type\\StructMap";
+            } else {
+                return "array";
+            }
         }
         if (tarsType.isCustom()) {
             return new FullQualifiedName(namespace, tarsType.typeName()).toString();

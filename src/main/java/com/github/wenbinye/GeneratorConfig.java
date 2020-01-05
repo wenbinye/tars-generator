@@ -24,5 +24,7 @@ public class GeneratorConfig {
 
     private boolean flatNamespace;
 
+    private boolean clientCode;
+
     private Map<String, String> servantNames = new HashMap<>();
 }

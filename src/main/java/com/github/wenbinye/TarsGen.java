@@ -31,6 +31,9 @@ class TarsGen implements Callable<Integer> {
     @Option(names = {"-s", "--servant"}, description = "interface name to servant name")
     private Map<String, String> servantNames;
 
+    @Option(names = {"--client"}, description = "generate client class")
+    private boolean clientCode;
+
     @Option(names = {"-c", "--charset"}, description = "tars file charset")
     private String tarsCharset;
 
@@ -68,6 +71,7 @@ class TarsGen implements Callable<Integer> {
             throw new IOException("Tars path '" + this.tarsPath + "' does not exist");
         }
         config.setTarsPath(this.tarsPath);
+        config.setClientCode(this.clientCode);
 
         if (Objects.nonNull(tarsCharset) && !tarsCharset.isEmpty()) {
             checkCharset(tarsCharset);

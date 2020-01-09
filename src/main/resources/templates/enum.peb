@@ -2,7 +2,7 @@
 
 namespace {{ namespace }};
 
-use wenbinye\tars\support\Enum;
+use kuiper\helper\Enum;
 
 final class {{ class_name }} extends Enum {
 {% for member in members %}

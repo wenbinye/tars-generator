@@ -2,9 +2,15 @@ package com.github.wenbinye.domain;
 
 import lombok.Getter;
 
-import java.util.*;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Objects;
+import java.util.Set;
 import java.util.stream.Collectors;
 
+/**
+ * @author ywb
+ */
 @Getter
 public class Operation {
     private final String name;

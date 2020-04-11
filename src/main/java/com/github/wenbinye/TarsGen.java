@@ -12,12 +12,20 @@ import picocli.CommandLine.Option;
 import java.io.IOException;
 import java.nio.charset.Charset;
 import java.nio.file.Path;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
+import java.util.Map;
+import java.util.Objects;
+import java.util.Optional;
 import java.util.concurrent.Callable;
 
-@Command(name = "gen", mixinStandardHelpOptions = true, version = "1.0",
+import static com.github.wenbinye.TarsGen.VERSION;
+
+@Command(name = "gen", mixinStandardHelpOptions = true, version = VERSION,
         description = "Generate PHP Code from Tars file.")
 class TarsGen implements Callable<Integer> {
+    public static final String VERSION = "1.0-SNAPSHOT";
 
     @Option(names = {"-o", "--output-path"}, description = "output path", required = true)
     private Path outputPath;

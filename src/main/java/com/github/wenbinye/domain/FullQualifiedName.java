@@ -4,6 +4,9 @@ import lombok.Getter;
 
 import java.util.Objects;
 
+/**
+ * @author ywb
+ */
 @Getter
 public class FullQualifiedName {
     public static final String NAMESPACE_DELIMITER = "\\";

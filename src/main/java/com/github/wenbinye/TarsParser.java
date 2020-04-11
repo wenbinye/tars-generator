@@ -12,8 +12,15 @@ import org.antlr.runtime.RecognitionException;
 
 import java.io.IOException;
 import java.io.Reader;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
+/**
+ * @author ywb
+ */
 public class TarsParser {
     public static final String INCLUDE_FILE_SUFFIX = "\".tars";
     private final Map<String, TarsNamespace> namespaces = new HashMap<>();

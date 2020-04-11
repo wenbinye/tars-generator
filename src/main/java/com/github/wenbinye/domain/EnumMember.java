@@ -2,6 +2,9 @@ package com.github.wenbinye.domain;
 
 import lombok.Getter;
 
+/**
+ * @author ywb
+ */
 @Getter
 public class EnumMember {
     private final String name;

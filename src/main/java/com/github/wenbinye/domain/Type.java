@@ -9,6 +9,9 @@ import com.qq.tars.maven.parse.ast.TarsVectorType;
 import java.util.HashMap;
 import java.util.Map;
 
+/**
+ * @author ywb
+ */
 public class Type {
     private static final Map<PrimitiveType, String> PRIMITIVE_TYPES = new HashMap<>();
 

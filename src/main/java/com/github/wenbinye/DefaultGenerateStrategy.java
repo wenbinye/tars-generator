@@ -1,16 +1,38 @@
 package com.github.wenbinye;
 
-import com.github.wenbinye.domain.*;
-import com.qq.tars.maven.parse.ast.*;
+import com.github.wenbinye.domain.EnumMember;
+import com.github.wenbinye.domain.FullQualifiedName;
+import com.github.wenbinye.domain.Operation;
+import com.github.wenbinye.domain.Parameter;
+import com.github.wenbinye.domain.StructMember;
+import com.github.wenbinye.domain.Type;
+import com.qq.tars.maven.parse.ast.TarsEnum;
+import com.qq.tars.maven.parse.ast.TarsInterface;
+import com.qq.tars.maven.parse.ast.TarsNamespace;
+import com.qq.tars.maven.parse.ast.TarsOperation;
+import com.qq.tars.maven.parse.ast.TarsParam;
+import com.qq.tars.maven.parse.ast.TarsStruct;
+import com.qq.tars.maven.parse.ast.TarsStructMember;
 import org.antlr.runtime.tree.Tree;
 
 import java.io.File;
 import java.io.IOException;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Optional;
 import java.util.function.BiConsumer;
 
+import static com.github.wenbinye.TarsGen.VERSION;
+
+/**
+ * @author ywb
+ */
 public class DefaultGenerateStrategy implements GenerateStrategy {
     public static final String TEMPLATE_DIR = "templates/";
+    public static final String KEY_GENERATOR_VERSION = "generator_version";
     public static final String KEY_TARS_NAMESPACE = "tars_namespace";
     public static final String KEY_MODULE = "module";
     public static final String KEY_CONFIG = "config";
@@ -141,8 +163,7 @@ public class DefaultGenerateStrategy implements GenerateStrategy {
         return createContext(namespace, element, Collections.emptyMap());
     }
 
-    @Override
-    public Map<String, Object> createContext(TarsNamespace namespace, Tree element, Map<String, Object> extras) {
+    private Map<String, Object> createContext(TarsNamespace namespace, Tree element, Map<String, Object> extras) {
         Map<String, Object> context = createContext(namespace);
         ContextType contextType = ContextType.fromElement(element);
         context.put(KEY_TYPE, contextType);
@@ -173,7 +194,8 @@ public class DefaultGenerateStrategy implements GenerateStrategy {
     }
 
     private Map<String, Object> createContext(TarsNamespace ns) {
-        Map<String, Object> context = new HashMap<>();
+        Map<String, Object> context = new HashMap<>(30);
+        context.put(KEY_GENERATOR_VERSION, VERSION);
         context.put(KEY_TARS_NAMESPACE, ns);
         context.put(KEY_MODULE, ns.namespace());
         context.put(KEY_CONFIG, config);

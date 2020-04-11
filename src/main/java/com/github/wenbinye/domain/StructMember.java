@@ -5,6 +5,9 @@ import lombok.Getter;
 
 import java.util.Objects;
 
+/**
+ * @author ywb
+ */
 @Getter
 @Builder
 public class StructMember {

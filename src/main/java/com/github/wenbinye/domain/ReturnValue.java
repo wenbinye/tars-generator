@@ -2,6 +2,9 @@ package com.github.wenbinye.domain;
 
 import lombok.Getter;
 
+/**
+ * @author ywb
+ */
 @Getter
 public class ReturnValue {
     private final String name;

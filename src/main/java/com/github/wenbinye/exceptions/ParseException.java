@@ -1,7 +1,8 @@
 package com.github.wenbinye.exceptions;
 
-import org.antlr.runtime.RecognitionException;
-
+/**
+ * @author ywb
+ */
 public class ParseException extends Exception {
     public ParseException(String message, Throwable cause) {
         super(message, cause);

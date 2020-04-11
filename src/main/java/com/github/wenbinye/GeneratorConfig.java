@@ -9,6 +9,9 @@ import java.nio.file.Path;
 import java.util.HashMap;
 import java.util.Map;
 
+/**
+ * @author ywb
+ */
 @Getter
 @Setter
 public class GeneratorConfig {

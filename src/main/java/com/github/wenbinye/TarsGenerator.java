@@ -2,19 +2,25 @@ package com.github.wenbinye;
 
 import com.github.wenbinye.exceptions.ParseException;
 import com.mitchellbosecke.pebble.PebbleEngine;
-import com.qq.tars.maven.parse.ast.TarsInterface;
 import com.qq.tars.maven.parse.ast.TarsNamespace;
 import lombok.extern.slf4j.Slf4j;
 import org.antlr.runtime.tree.Tree;
 
-import java.io.*;
-import java.nio.charset.Charset;
+import java.io.File;
+import java.io.IOException;
+import java.io.Reader;
+import java.io.Writer;
 import java.nio.file.Files;
 import java.nio.file.Path;
-import java.nio.file.Paths;
-import java.util.*;
-import java.util.stream.Collectors;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
+import java.util.Stack;
 
+/**
+ * @author ywb
+ */
 @Slf4j
 public class TarsGenerator {
     private final PebbleEngine templateEngine;

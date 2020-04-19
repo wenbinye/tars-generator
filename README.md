@@ -33,4 +33,5 @@ Generate PHP Code from Tars file.
   -V, --version          Print version information and exit.
 ```
 
-参考 `example/generate.sh` 。
+参考 `examples/generate.sh` 。
+

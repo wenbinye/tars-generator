@@ -12,7 +12,8 @@ namespace {{ namespace }};
 
 use kuiper\helper\Enum;
 
-final class {{ class_name }} extends Enum {
+final class {{ class_name }} extends Enum
+{
 {% for member in members %}
     const {{ member.name }} = {{ member.value }};
 {% endfor %}

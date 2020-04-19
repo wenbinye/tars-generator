@@ -12,14 +12,16 @@ namespace {{ namespace }};
 
 use wenbinye\tars\protocol\annotation\TarsProperty;
 
-final class {{ class_name }} {
+final class {{ class_name }}
+
+{
 {% for member in members %}
     /**
      * @TarsProperty(order = {{ member.tag }}, required = {{ member.required }}, type = "{{ member.type | raw }}")
      * @var {{ member.type.phpType }}
 
      */
-     public ${{ member.name }}{% if member.hasDefaultValue() %} = {{ member.defaultValue | raw }}{% endif %};
+    public ${{ member.name }}{% if member.hasDefaultValue() %} = {{ member.defaultValue | raw }}{% endif %};
 
 {% endfor %}
 }

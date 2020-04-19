@@ -21,7 +21,9 @@ use wenbinye\tars\protocol\annotation\TarsReturnType;
 /**
  * @{% if client %}TarsClient{% else %}TarsServant{% endif %}(name="{{ servant_name }}")
  */
-interface {{ class_name }} {
+interface {{ class_name }}
+
+{
 {% for operation in operations %}
     /**
 {% for param in operation.parameters %}

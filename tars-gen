@@ -1,0 +1,102 @@
+#!/usr/bin/env php
+<?php
+
+$jar = __DIR__ . '/dist/tars-generator-1.0.jar';
+$java = exec("command -v java") ?: "java";
+
+if (count($argv) > 1) {
+    $args = $argv;
+    array_shift($args);
+    passthru(sprintf("%s -jar %s %s", $java, escapeshellarg($jar),
+        implode(" ", array_map('escapeshellarg', $args))));
+} else {
+    /**
+     * 读取 composer.json 中 extra.tars.generator 配置项：
+     * {
+     *     "client": {
+     *         "flat": true,
+     *         "namespace": "{psr-4 namespace}\\client",
+     *         "tars_path": "tars/client",
+     *         "output": "src",
+     *         "servants": {
+     *             "Hello": "TestApp.HelloServer.HelloObj"
+     *         }
+     *     },
+     *     "servant": {
+     *         "flat": true,
+     *         "namespace": "{psr-4 namespace}\\servant",
+     *         "tars_path": "tars/servant",
+     *         "output": "src",
+     *         "servants": {
+     *             "Hello": "HelloObj"
+     *         }
+     *     }
+     * }
+     */
+    $projectPath = getcwd();
+    if (!file_exists($projectPath . '/composer.json')) {
+        die('No composer.json find in current directory');
+    }
+    $content = json_decode(file_get_contents('composer.json'), true);
+    $psr4Namespace = '';
+    $sourceDir = 'src';
+    if (!empty($content['autoload']['psr-4'])) {
+        $autoload = $content['autoload']['psr-4'];
+        $psr4Namespace = array_keys($autoload)[0];
+        $sourceDir = $autoload[$psr4Namespace];
+    }
+    $options = [];
+    if (isset($content['extra']['tars']['generator'])) {
+        $options = $content['extra']['tars']['generator'];
+    }
+    foreach (['client', 'servant'] as $type) {
+        $config = $options[$type] ?? [];
+        if (!isset($config[0])) {
+            $config = [$config];
+        }
+        foreach ($config as $item) {
+            $argOptions = array_merge([
+                'flat' => true,
+                'namespace' => $psr4Namespace . $type,
+                'tars_path' => "tars/" . $type,
+                "output" => $sourceDir . DIRECTORY_SEPARATOR . $type,
+            ], $item);
+            if (!isset($argOptions['tars_path'])) {
+                continue;
+            }
+            if (!file_exists($argOptions['tars_path'])) {
+                if (isset($item['tars_path'])) {
+                    error_log("tars file '{$item['tars_path']}' not found");
+                }
+                continue;
+            }
+            $args = [];
+            if ($type === 'client') {
+                $args[] = '--client';
+            }
+            $args[] = '-t';
+            $args[] = escapeshellarg($argOptions['tars_path']);
+            if (isset($argOptions['flat'])) {
+                $args[] = '-f';
+            }
+            if (isset($argOptions['namespace'])) {
+                $args[] = '-n';
+                $args[] = escapeshellarg($argOptions['namespace']);
+            }
+            if (isset($argOptions['output'])) {
+                $args[] = '-o';
+                $args[] = escapeshellarg($argOptions['output']);
+            }
+            if (!empty($argOptions['servants'])) {
+                foreach ($argOptions['servants'] as $name => $servant) {
+                    $args[] = '-s';
+                    $args[] = escapeshellarg($name . '=' . $servant);
+                }
+            }
+
+            $cmd = sprintf("%s -jar %s %s", $java, escapeshellarg($jar), implode(" ", $args));
+            error_log("exec $cmd");
+            system($cmd);
+        }
+    }
+}

@@ -35,3 +35,38 @@ Generate PHP Code from Tars file.
 
 参考 `examples/generate.sh` 。
 
+## Integration to composer
+
+Add Configuration in composer.json:
+
+```json
+{
+  "scripts": {
+     "gen": "./vendor/bin/tars-gen"
+  },
+  "extra": {
+    "tars": {
+      "generator": {
+        "client": [{
+          "flat": true,
+          "namespace": "{psr-4 namespace}\\client",
+          "tars_path": "tars/client",
+          "output": "src",
+          "servants": {
+            "Hello": "TestApp.HelloServer.HelloObj"
+          }
+        }],
+        "servant": [{
+          "flat": true,
+          "namespace": "{psr-4 namespace}\\servant",
+          "tars_path": "tars/servant",
+          "output": "src",
+          "servants": {
+            "Hello": "HelloObj"
+          }
+        }]
+      }
+    }
+  }
+}
+```

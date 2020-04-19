@@ -100,7 +100,8 @@ public class DefaultGenerateStrategy implements GenerateStrategy {
             Map<String, String> servantNames = config.getServantNames();
             context.put(KEY_SERVANT_NAME,
                     Optional.ofNullable(servantNames.get(tarsInterface.interfaceName()))
-                            .orElse(servantNames.getOrDefault(module + "." + tarsInterface.interfaceName(), "")));
+                            .orElse(servantNames.getOrDefault(module + "." + tarsInterface.interfaceName(),
+                                    tarsInterface.interfaceName() + "Obj")));
             context.put(KEY_OPERATIONS, operations);
         }
 

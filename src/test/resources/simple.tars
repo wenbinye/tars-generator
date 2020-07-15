@@ -13,10 +13,11 @@ module test
         0 require long id=0;
         1 require unsigned int count=0;
         2 require short page=0;
+        3 optional TE te;
     };
 
 	interface Hello
 	{
-	    long hello(int no, vector<string> name, map<string, string> tags, out map<int, SimpleStruct> result);
+	    long hello(int no, vector<string> name, map<string, string> tags, TE te, out map<int, SimpleStruct> result);
 	};
 }

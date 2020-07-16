@@ -26,6 +26,11 @@ class TarsGenerator
     private $sourcePath;
 
     /**
+     * @var array
+     */
+    private $psr4;
+
+    /**
      * @var string
      */
     private $namespace;
@@ -69,6 +74,7 @@ class TarsGenerator
             $autoload = $composerJson['autoload']['psr-4'];
             $this->namespace = array_keys($autoload)[0];
             $this->sourcePath = $autoload[$this->namespace];
+            $this->psr4 = $autoload;
         }
         $options = $composerJson['extra']['tars']['generator'] ?? [];
         $configJson = sprintf('%s/%s/config.json', $this->projectPath, self::TARS_DIR);
@@ -76,7 +82,10 @@ class TarsGenerator
             if (!empty($options)) {
                 throw new \RuntimeException("tars/config.json does exist, please remove extra.tars.generator from composer.json");
             }
-            return json_decode(file_get_contents($configJson), true);
+            $options = json_decode(file_get_contents($configJson), true);
+            if (!isset($options)) {
+                throw new \RuntimeException($configJson . " read failed, please check json syntax");
+            }
         }
         return $options;
     }
@@ -106,9 +115,11 @@ class TarsGenerator
             foreach ($config as $i => $item) {
                 $argOptions = array_merge([
                     'flat' => true,
-                    'namespace' => $this->namespace . $type,
-                    "output" => $this->sourcePath . DIRECTORY_SEPARATOR . $type,
+                    'namespace' => $this->namespace . ($type === 'client' ? 'integration' : 'servant'),
                 ], $item);
+                if (!isset($argOptions['output'])) {
+                    $argOptions['output'] = $this->getOutputPathFor($argOptions['namespace']);
+                }
                 if (!isset($argOptions['tars_path'])) {
                     throw new \InvalidArgumentException("tars_path is required");
                 }
@@ -158,6 +169,26 @@ class TarsGenerator
             }
         }
         return $args;
+    }
+
+    private function getOutputPathFor(string $namespace): string
+    {
+        $lastMatch = null;
+        foreach ($this->psr4 as $ns => $path) {
+            if (strpos($namespace, $ns) === 0) {
+                if (!$lastMatch) {
+                    $lastMatch = $ns;
+                } elseif (strlen($lastMatch) > strlen($ns)) {
+                    $lastMatch = $ns;
+                }
+            }
+        }
+        if (!$lastMatch) {
+            throw new \InvalidArgumentException("Cannot infer output path for $namespace, autoload namespaces: "
+                . implode(", ", array_keys($this->psr4)));
+        }
+        return rtrim($this->psr4[$lastMatch], '/') . '/'
+            . trim(str_replace('\\', '/', substr($namespace, strlen($lastMatch))), '/');
     }
 }
 

@@ -107,7 +107,7 @@ class TarsGenerator
                 } else {
                     foreach (glob($this->projectPath . '/tars/*.tars') as $file) {
                         $config[] = [
-                            'tars_path' => basename($file)
+                            'tars_path' => 'tars/'.basename($file)
                         ];
                     }
                 }

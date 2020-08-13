@@ -63,13 +63,13 @@ public class Type {
             return PRIMITIVE_TYPES.get(tarsType.primitiveType());
         }
         if (tarsType.isVector()) {
-            return "array";
+            return createType(tarsType.asVector().subType()).getPhpType() + "[]";
         }
         if (tarsType.isMap()) {
             if (tarsType.asMap().keyType().isCustom()) {
                 return "\\wenbinye\\tars\\protocol\\type\\StructMap";
             } else {
-                return "array";
+                return createType(tarsType.asMap().valueType()) + "[]";
             }
         }
         if (tarsType.isCustom()) {

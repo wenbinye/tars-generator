@@ -12,6 +12,15 @@ namespace {{ namespace }};
 
 use kuiper\helper\Enum;
 
+/**
+ *
+{% for member in members %}
+ * @method {{ class_name }} {{ member.name }}(): static
+{% endfor %}
+ *
+ * @property string $name
+ * @property int $value
+ */
 final class {{ class_name }} extends Enum
 {
 {% for member in members %}

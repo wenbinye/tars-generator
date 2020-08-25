@@ -14,6 +14,6 @@ final class {{ class_name }}
 
 {
 {% for const in constants %}
-    const {{ const.constName }} = {{ const.constValue | raw }};
+    public const {{ const.constName }} = {{ const.constValue | raw }};
 {% endfor %}
 }

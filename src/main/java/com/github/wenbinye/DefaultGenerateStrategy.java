@@ -12,7 +12,6 @@ import com.qq.tars.maven.parse.ast.TarsNamespace;
 import com.qq.tars.maven.parse.ast.TarsOperation;
 import com.qq.tars.maven.parse.ast.TarsParam;
 import com.qq.tars.maven.parse.ast.TarsStruct;
-import com.qq.tars.maven.parse.ast.TarsStructMember;
 import org.antlr.runtime.tree.Tree;
 
 import java.io.File;
@@ -64,26 +63,17 @@ public class DefaultGenerateStrategy implements GenerateStrategy {
             TarsStruct tarsStruct = (TarsStruct) tree;
             context.put(KEY_CLASS_NAME, capitalize(tarsStruct.structName()));
             context.put(KEY_NAME, tarsStruct.structName());
-            List<StructMember> members = new ArrayList<>(tarsStruct.memberList().size());
-            for (TarsStructMember tarsStructMember : tarsStruct.memberList()) {
-                members.add(StructMember.builder()
-                        .tag(tarsStructMember.tag())
-                        .required(tarsStructMember.isRequire())
-                        .name(tarsStructMember.memberName())
-                        .defaultValue(tarsStructMember.defaultValue())
-                        .type(new Type(tarsStructMember.memberType(), (String) context.get("namespace")))
-                        .build());
-            }
+            List<StructMember> members = StructMember.fromStruct(tarsStruct, (String) context.get("namespace"));
             context.put(KEY_MEMBERS, members);
         }),
         INTERFACE(TEMPLATE_DIR + "interface.peb", ContextType::extractInterfaceContext);
 
-        private static final Map<Class<? extends Tree>, ContextType> classMap = new HashMap<>();
+        private static final Map<Class<? extends Tree>, ContextType> CLASS_MAP = new HashMap<>();
 
         static {
-            classMap.put(TarsEnum.class, ENUM);
-            classMap.put(TarsStruct.class, STRUCT);
-            classMap.put(TarsInterface.class, INTERFACE);
+            CLASS_MAP.put(TarsEnum.class, ENUM);
+            CLASS_MAP.put(TarsStruct.class, STRUCT);
+            CLASS_MAP.put(TarsInterface.class, INTERFACE);
         }
 
         private final String templateFile;
@@ -128,8 +118,8 @@ public class DefaultGenerateStrategy implements GenerateStrategy {
         }
 
         public static ContextType fromElement(Tree element) {
-            if (classMap.containsKey(element.getClass())) {
-                return classMap.get(element.getClass());
+            if (CLASS_MAP.containsKey(element.getClass())) {
+                return CLASS_MAP.get(element.getClass());
             }
             throw new IllegalArgumentException("Cannot find context type for " + element.getClass());
         }

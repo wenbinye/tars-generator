@@ -1,0 +1,9 @@
+module test
+{
+    struct SimpleStruct {
+        0 require long id=0;
+        1 require unsigned int count=0;
+        1 require short page=0;
+        3 optional TE te;
+    };
+}

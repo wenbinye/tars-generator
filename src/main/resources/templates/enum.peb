@@ -15,7 +15,7 @@ use kuiper\helper\Enum;
 /**
  *
 {% for member in members %}
- * @method {{ class_name }} {{ member.name }}(): static
+ * @method static {{ class_name }} {{ member.name }}(): static
 {% endfor %}
  *
  * @property string $name

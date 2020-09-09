@@ -100,7 +100,7 @@ class TarsGenerator
                     throw new \InvalidArgumentException("tars_path is required");
                 }
                 $argOptions = array_merge([
-                    'flat' => true,
+                    'flat' => false,
                     'namespace' => $this->namespace . ($type === 'client' ? 'integration' : 'servant'),
                 ], $item);
                 $argOptions['tars_path'] = $this->normalizePath($item['tars_path']);
@@ -159,7 +159,7 @@ class TarsGenerator
         }
         $args[] = '-t';
         $args[] = escapeshellarg($options['tars_path']);
-        if (isset($options['flat'])) {
+        if (!empty($options['flat'])) {
             $args[] = '-f';
         }
         if (isset($options['namespace'])) {

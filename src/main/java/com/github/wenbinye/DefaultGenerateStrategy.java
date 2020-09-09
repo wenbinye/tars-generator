@@ -35,6 +35,7 @@ public class DefaultGenerateStrategy implements GenerateStrategy {
     public static final String KEY_TARS_NAMESPACE = "tars_namespace";
     public static final String KEY_MODULE = "module";
     public static final String KEY_CONFIG = "config";
+    public static final String KEY_PATH = "path";
     public static final String KEY_NAMESPACE = "namespace";
     public static final String KEY_TYPE = "type";
     public static final String KEY_CLASS_NAME = "class_name";
@@ -63,7 +64,7 @@ public class DefaultGenerateStrategy implements GenerateStrategy {
             TarsStruct tarsStruct = (TarsStruct) tree;
             context.put(KEY_CLASS_NAME, capitalize(tarsStruct.structName()));
             context.put(KEY_NAME, tarsStruct.structName());
-            List<StructMember> members = StructMember.fromStruct(tarsStruct, (String) context.get("namespace"));
+            List<StructMember> members = StructMember.fromStruct(tarsStruct, (String) context.get(KEY_NAMESPACE));
             context.put(KEY_MEMBERS, members);
         }),
         INTERFACE(TEMPLATE_DIR + "interface.peb", ContextType::extractInterfaceContext);
@@ -140,7 +141,7 @@ public class DefaultGenerateStrategy implements GenerateStrategy {
     }
 
     @Override
-    public Map<String, Object> createConstContext(TarsNamespace namespace) {
+    public Map<String, Object> createConstContext(TarsNamespace namespace) throws IOException {
         Map<String, Object> context = createContext(namespace);
         context.put(KEY_TYPE, ContextType.CONSTANT);
         context.put(KEY_CLASS_NAME, capitalize(namespace.namespace()) + "Const");
@@ -149,11 +150,11 @@ public class DefaultGenerateStrategy implements GenerateStrategy {
     }
 
     @Override
-    public Map<String, Object> createContext(TarsNamespace namespace, Tree element) {
+    public Map<String, Object> createContext(TarsNamespace namespace, Tree element) throws IOException {
         return createContext(namespace, element, Collections.emptyMap());
     }
 
-    private Map<String, Object> createContext(TarsNamespace namespace, Tree element, Map<String, Object> extras) {
+    private Map<String, Object> createContext(TarsNamespace namespace, Tree element, Map<String, Object> extras) throws IOException {
         Map<String, Object> context = createContext(namespace);
         ContextType contextType = ContextType.fromElement(element);
         context.put(KEY_TYPE, contextType);
@@ -164,17 +165,8 @@ public class DefaultGenerateStrategy implements GenerateStrategy {
     }
 
     @Override
-    public File createOutputFile(Map<String, Object> context) throws IOException {
-        File dir;
-        if (config.isFlatNamespace()) {
-            dir = config.getOutputPath().toFile();
-        } else {
-            dir = new File(config.getOutputPath().toFile(), (String) context.get(KEY_MODULE));
-        }
-        if (!dir.exists() && !dir.mkdirs()) {
-            throw new IOException("cannot create directory " + dir);
-        }
-        return new File(dir, context.get(KEY_CLASS_NAME) + ".php");
+    public File createOutputFile(Map<String, Object> context) {
+        return new File((File) context.get(KEY_PATH), context.get(KEY_CLASS_NAME) + ".php");
     }
 
     @Override
@@ -183,17 +175,30 @@ public class DefaultGenerateStrategy implements GenerateStrategy {
         return contextType.getTemplateFile();
     }
 
-    private Map<String, Object> createContext(TarsNamespace ns) {
+    private Map<String, Object> createContext(TarsNamespace ns) throws IOException {
         Map<String, Object> context = new HashMap<>(30);
+        FullQualifiedName nsPrefix = FullQualifiedName.fromString(config.getNamespace());
+        FullQualifiedName module = FullQualifiedName.fromSnakeCase(ns.namespace());
+
         context.put(KEY_GENERATOR_VERSION, VERSION);
         context.put(KEY_TARS_NAMESPACE, ns);
         context.put(KEY_MODULE, ns.namespace());
         context.put(KEY_CONFIG, config);
         if (config.isFlatNamespace()) {
-            context.put(KEY_NAMESPACE, config.getNamespace());
+            context.put(KEY_NAMESPACE, nsPrefix.asNamespace());
         } else {
-            context.put(KEY_NAMESPACE, new FullQualifiedName(config.getNamespace(), ns.namespace()).asNamespace());
+            context.put(KEY_NAMESPACE, nsPrefix.concat(module).asNamespace());
         }
+        File dir;
+        if (config.isFlatNamespace()) {
+            dir = config.getOutputPath().toFile();
+        } else {
+            dir = new File(config.getOutputPath().toFile(), module.asNamespace().replace(FullQualifiedName.NAMESPACE_DELIMITER, '/'));
+        }
+        if (!dir.exists() && !dir.mkdirs()) {
+            throw new IOException("cannot create directory " + dir);
+        }
+        context.put(KEY_PATH, dir);
         return context;
     }
 

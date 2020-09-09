@@ -15,6 +15,7 @@ public class TarsGeneratorTest {
         PebbleEngine templateEngine = new PebbleEngine.Builder().build();
         GeneratorConfig config = new GeneratorConfig();
         config.setNamespace("foo");
+//        config.setFlatNamespace(true);
         config.setTarsPath(Paths.get("src/test/resources/simple.tars"));
         config.setOutputPath(Paths.get("target"));
 

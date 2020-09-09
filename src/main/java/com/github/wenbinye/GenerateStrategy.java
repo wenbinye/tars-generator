@@ -18,7 +18,7 @@ public interface GenerateStrategy {
      * @param namespace
      * @return
      */
-    Map<String, Object> createConstContext(TarsNamespace namespace);
+    Map<String, Object> createConstContext(TarsNamespace namespace) throws IOException;
 
     /**
      * Creates template context for enum, interface, struct etc.
@@ -26,7 +26,7 @@ public interface GenerateStrategy {
      * @param element
      * @return
      */
-    Map<String, Object> createContext(TarsNamespace namespace, Tree element);
+    Map<String, Object> createContext(TarsNamespace namespace, Tree element) throws IOException;
 
     /**
      * Gets the output file name

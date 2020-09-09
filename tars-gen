@@ -98,12 +98,12 @@ class TarsGenerator
             if ($type === 'client') {
                 $defaults = [
                     'flat' => false,
-                    'namespace' => $this->namespace . 'integration';
+                    'namespace' => $this->namespace . 'integration'
                 ];
             } else {
                 $defaults = [
                     'flat' => true,
-                    'namespace' => $this->namespace . 'servant';
+                    'namespace' => $this->namespace . 'servant'
                 ];
             }
             $config = $this->normalizeConfig($type, $options[$type] ?? null);

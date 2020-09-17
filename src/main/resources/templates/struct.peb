@@ -19,7 +19,6 @@ final class {{ class_name }}
     /**
      * @TarsProperty(order = {{ member.tag }}, required = {{ member.required }}, type = "{{ member.type | raw }}")
      * @var {{ member.type.phpType }}|null
-
      */
     public ${{ member.name }}{% if member.hasDefaultValue() %} = {{ member.defaultValue | raw }}{% endif %};
 

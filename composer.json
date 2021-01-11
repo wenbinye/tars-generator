@@ -1,16 +1,19 @@
 {
     "name": "wenbinye/tars-gen",
-    "license": "MIT",
-    "type": "application",
-    "description": "TARS PHP code generator",
-    "bin": [
-        "tars-gen"
-    ],
-    "archive": {
-        "exclude": ["src", "examples"]
-    },
     "require": {
-        "php": "^7.0",
-        "ext-json": "*"
+        "antlr/antlr4-php-runtime": "^0.4"
+    },
+    "require-dev": {
+        "phpunit/phpunit": "^7.0"
+    },
+    "autoload": {
+        "psr-4": {
+            "tars\\": "src/"
+        }
+    },
+    "autoload-dev": {
+        "psr-4": {
+            "tars\\": "tests/"
+        }
     }
 }

@@ -1,0 +1,7 @@
+module test
+{
+    /**
+     * doc for const
+     */
+    const int i = 1;
+};

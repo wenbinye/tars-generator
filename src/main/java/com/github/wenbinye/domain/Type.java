@@ -69,7 +69,7 @@ public class Type {
             if (tarsType.asMap().keyType().isCustom()) {
                 return "\\wenbinye\\tars\\protocol\\type\\StructMap";
             } else {
-                return createType(tarsType.asMap().valueType()) + "[]";
+                return createType(tarsType.asMap().valueType()).getPhpType() + "[]";
             }
         }
         if (tarsType.isCustom()) {

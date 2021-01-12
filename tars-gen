@@ -1,0 +1,212 @@
+#!/usr/bin/env php
+<?php
+
+class TarsGenerator
+{
+    private const TARS_FILE_PATH = 'tars';
+
+    /**
+     * @var string
+     */
+    private $jar;
+
+    /**
+     * @var string
+     */
+    private $java;
+
+    /**
+     * @var string
+     */
+    private $projectPath;
+
+    /**
+     * @var string
+     */
+    private $sourcePath;
+
+    /**
+     * @var array
+     */
+    private $psr4;
+
+    /**
+     * @var string
+     */
+    private $namespace;
+
+    /**
+     * TarsGenerator constructor.
+     */
+    public function __construct()
+    {
+        $jars = glob(__DIR__ . '/dist/tars-generator-*.jar');
+        if (!$jars) {
+            throw new \RuntimeException("Cannot find tars-generator-*.jar in " . __DIR__ . '/dist');
+        }
+        $this->jar = end($jars);
+        $this->java = exec("command -v java") ?: "java";
+        $this->namespace = '';
+        $this->sourcePath = 'src';
+        $this->psr4 = [];
+    }
+
+    public function run(array $args): void
+    {
+        if (!empty($args)) {
+            passthru(sprintf("%s -jar %s %s", $this->java, escapeshellarg($this->jar),
+                implode(" ", array_map('escapeshellarg', $args))));
+            return;
+        }
+        if (!$this->projectPath) {
+            $this->projectPath = getcwd();
+        }
+        $this->generate($this->loadConfig());
+    }
+
+    private function loadConfig(): array
+    {
+        if (!file_exists($this->projectPath . '/composer.json')) {
+            die('No composer.json find in current directory');
+        }
+        $composerJson = json_decode(file_get_contents($this->projectPath . '/composer.json'), true);
+
+        if (!empty($composerJson['autoload']['psr-4'])) {
+            $autoload = $composerJson['autoload']['psr-4'];
+            $this->namespace = array_keys($autoload)[0];
+            $this->sourcePath = $autoload[$this->namespace];
+            $this->psr4 = $autoload;
+        }
+        $options = $composerJson['extra']['tars']['generator'] ?? [];
+        $configJson = sprintf('%s/%s/config.json', $this->projectPath, self::TARS_FILE_PATH);
+        if (file_exists($configJson)) {
+            if (!empty($options)) {
+                throw new \RuntimeException($configJson . " does exist, please remove extra.tars.generator from composer.json");
+            }
+            $options = json_decode(file_get_contents($configJson), true);
+            if (!isset($options)) {
+                throw new \RuntimeException($configJson . " read failed, please check json syntax");
+            }
+        }
+        return $options;
+    }
+
+    private function generate(array $options): void
+    {
+        foreach (['client', 'servant'] as $type) {
+            $defaults = [];
+            if ($type === 'client') {
+                $defaults = [
+                    'flat' => false,
+                    'namespace' => $this->namespace . 'integration'
+                ];
+            } else {
+                $defaults = [
+                    'flat' => true,
+                    'namespace' => $this->namespace . 'servant'
+                ];
+            }
+            $config = $this->normalizeConfig($type, $options[$type] ?? null);
+            foreach ($config as $i => $item) {
+                if (!isset($item['tars_path']) || $item['tars_path'] === '') {
+                    throw new \InvalidArgumentException("tars_path is required");
+                }
+                $argOptions = array_merge($defaults, $item);
+                $argOptions['tars_path'] = $this->normalizePath($item['tars_path']);
+                if (!file_exists($argOptions['tars_path'])) {
+                    if (isset($item['tars_path']) && $item['tars_path'] !== 'servant') {
+                        throw new \InvalidArgumentException("tars file '{$item['tars_path']}' not found");
+                    }
+                    continue;
+                }
+                if (!isset($argOptions['output'])) {
+                    $argOptions['output'] = $this->getOutputPathFor($argOptions['namespace']);
+                }
+
+                $cmd = sprintf("%s -jar %s %s", $this->java, escapeshellarg($this->jar),
+                    implode(" ", $this->buildCmdOptions($type, $argOptions)));
+                $this->log("exec $cmd");
+                system($cmd);
+            }
+        }
+    }
+
+    private function normalizeConfig(string $configType, ?array $config): array
+    {
+        if (isset($config)) {
+            return !isset($config[0]) ? [$config] : $config;
+        }
+
+        if ($configType === 'servant') {
+            return [['tars_path' => $configType]];
+        }
+        return [];
+    }
+
+    private function normalizePath(string $path): string
+    {
+        if (strpos($path, '/') === 0) {
+            return $path;
+        }
+        if ($path !== self::TARS_FILE_PATH
+            && strpos($path, self::TARS_FILE_PATH . '/') !== 0) {
+            $path = self::TARS_FILE_PATH . '/' . $path;
+        }
+        return $this->projectPath . '/' . $path;
+    }
+
+    private function log($message): void
+    {
+        error_log(date('[Y-m-d H:i:s] ') . $message);
+    }
+
+    private function buildCmdOptions(string $type, array $options): array
+    {
+        $args = [];
+        if ($type === 'client') {
+            $args[] = '--client';
+        }
+        $args[] = '-t';
+        $args[] = escapeshellarg($options['tars_path']);
+        if (!empty($options['flat'])) {
+            $args[] = '-f';
+        }
+        if (isset($options['namespace'])) {
+            $args[] = '-n';
+            $args[] = escapeshellarg($options['namespace']);
+        }
+        if (isset($options['output'])) {
+            $args[] = '-o';
+            $args[] = escapeshellarg($options['output']);
+        }
+        if (!empty($options['servants'])) {
+            foreach ($options['servants'] as $name => $servant) {
+                $args[] = '-s';
+                $args[] = escapeshellarg($name . '=' . $servant);
+            }
+        }
+        return $args;
+    }
+
+    private function getOutputPathFor(string $namespace): string
+    {
+        $lastMatch = null;
+        foreach ($this->psr4 as $ns => $path) {
+            if (strpos($namespace, $ns) === 0) {
+                if (!$lastMatch) {
+                    $lastMatch = $ns;
+                } elseif (strlen($lastMatch) > strlen($ns)) {
+                    $lastMatch = $ns;
+                }
+            }
+        }
+        if (!$lastMatch) {
+            throw new \InvalidArgumentException("Cannot infer output path for $namespace, autoload namespaces: "
+                . implode(", ", array_keys($this->psr4)));
+        }
+        return rtrim($this->psr4[$lastMatch], '/') . '/'
+            . trim(str_replace('\\', '/', substr($namespace, strlen($lastMatch))), '/');
+    }
+}
+
+(new TarsGenerator())->run(array_slice($argv, 1));

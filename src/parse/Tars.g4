@@ -6,7 +6,7 @@ includeDef: '#include' fileName;
 
 fileName: String;
 
-namespaceDef: 'module' moduleName '{' (definition ';')* '}';
+namespaceDef: 'module' moduleName '{' definition* '}';
 
 moduleName: Identifier;
 
@@ -18,11 +18,11 @@ definition
     | keyMap
     ;
 
-constDef: 'const' primitiveType? constName '=' value;
+constDef: 'const' primitiveType? constName '=' value ';';
 
 constName: Identifier;
 
-enum: 'enum' enumName '{' enumeratorList* '}';
+enum: 'enum' enumName '{' enumeratorList* '}' ';'?;
 
 enumName: Identifier;
 
@@ -35,7 +35,7 @@ enumerator: enumMember ('=' value)?;
 
 enumMember: Identifier;
 
-struct: 'struct' structName '{' structMember* '}';
+struct: 'struct' structName '{' structMember* '}' ';'?;
 
 structName: Identifier;
 
@@ -47,7 +47,7 @@ fieldRequire: 'require' | 'optional';
 
 fieldName: Identifier;
 
-interfaceDef: 'interface' interfaceName '{' operation* '}';
+interfaceDef: 'interface' interfaceName '{' operation* '}' ';'?;
 
 interfaceName: Identifier;
 
@@ -101,11 +101,32 @@ voidType: 'void';
 
 boolType: 'bool';
 
-byteType: 'byte' | 'unsigned byte';
+byteType
+    : signedByteType
+    | unsignedByteType
+    ;
 
-shortType: 'short' | 'unsigned short';
+signedByteType: 'byte';
 
-intType: 'int' | 'unsigned int';
+unsignedByteType: 'unsigned byte';
+
+shortType
+    : signedShortType
+    | unsignedShortType
+    ;
+
+signedShortType: 'short';
+
+unsignedShortType: 'unsigned short';
+
+intType
+    : signedIntType
+    | unsignedIntType
+    ;
+
+signedIntType: 'int';
+
+unsignedIntType: 'unsigned int';
 
 longType: 'long';
 
@@ -128,6 +149,6 @@ Float : Number+ '.' Digit* ;
 //------ Strings
 String : '"' (ESC | .)*? '"' ;
 fragment ESC : '\\' [btnr"\\] ;  // \b, \t, \n, ...
-LineComment: '//' .*? '\n' -> skip;
+LineComment: '//' .*? '\n' -> channel(HIDDEN);
 BlockComment : '/*' .*? '*/' -> channel(HIDDEN);
 WS: [ \t\n\r]+ -> skip;

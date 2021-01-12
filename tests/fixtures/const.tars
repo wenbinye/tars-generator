@@ -1,7 +1,9 @@
 module test
 {
     /**
-     * doc for const
+     * doc for i
      */
     const int i = 1;
+    // doc for s
+    const string s = "tars";
 };

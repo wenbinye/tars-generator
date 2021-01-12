@@ -1,7 +1,7 @@
 <?php
 
 
-namespace tars;
+namespace tars\parse;
 
 
 use Antlr\Antlr4\Runtime\BufferedTokenStream;

@@ -4,7 +4,7 @@
  * Generated from Tars.g4 by ANTLR 4.8
  */
 
-namespace tars;
+namespace tars\parse;
 use Antlr\Antlr4\Runtime\Tree\ParseTreeListener;
 
 /**
@@ -393,6 +393,26 @@ interface TarsListener extends ParseTreeListener {
 	 */
 	public function exitByteType(Context\ByteTypeContext $context) : void;
 	/**
+	 * Enter a parse tree produced by {@see TarsParser::signedByteType()}.
+	 * @param $context The parse tree.
+	 */
+	public function enterSignedByteType(Context\SignedByteTypeContext $context) : void;
+	/**
+	 * Exit a parse tree produced by {@see TarsParser::signedByteType()}.
+	 * @param $context The parse tree.
+	 */
+	public function exitSignedByteType(Context\SignedByteTypeContext $context) : void;
+	/**
+	 * Enter a parse tree produced by {@see TarsParser::unsignedByteType()}.
+	 * @param $context The parse tree.
+	 */
+	public function enterUnsignedByteType(Context\UnsignedByteTypeContext $context) : void;
+	/**
+	 * Exit a parse tree produced by {@see TarsParser::unsignedByteType()}.
+	 * @param $context The parse tree.
+	 */
+	public function exitUnsignedByteType(Context\UnsignedByteTypeContext $context) : void;
+	/**
 	 * Enter a parse tree produced by {@see TarsParser::shortType()}.
 	 * @param $context The parse tree.
 	 */
@@ -403,6 +423,26 @@ interface TarsListener extends ParseTreeListener {
 	 */
 	public function exitShortType(Context\ShortTypeContext $context) : void;
 	/**
+	 * Enter a parse tree produced by {@see TarsParser::signedShortType()}.
+	 * @param $context The parse tree.
+	 */
+	public function enterSignedShortType(Context\SignedShortTypeContext $context) : void;
+	/**
+	 * Exit a parse tree produced by {@see TarsParser::signedShortType()}.
+	 * @param $context The parse tree.
+	 */
+	public function exitSignedShortType(Context\SignedShortTypeContext $context) : void;
+	/**
+	 * Enter a parse tree produced by {@see TarsParser::unsignedShortType()}.
+	 * @param $context The parse tree.
+	 */
+	public function enterUnsignedShortType(Context\UnsignedShortTypeContext $context) : void;
+	/**
+	 * Exit a parse tree produced by {@see TarsParser::unsignedShortType()}.
+	 * @param $context The parse tree.
+	 */
+	public function exitUnsignedShortType(Context\UnsignedShortTypeContext $context) : void;
+	/**
 	 * Enter a parse tree produced by {@see TarsParser::intType()}.
 	 * @param $context The parse tree.
 	 */
@@ -412,6 +452,26 @@ interface TarsListener extends ParseTreeListener {
 	 * @param $context The parse tree.
 	 */
 	public function exitIntType(Context\IntTypeContext $context) : void;
+	/**
+	 * Enter a parse tree produced by {@see TarsParser::signedIntType()}.
+	 * @param $context The parse tree.
+	 */
+	public function enterSignedIntType(Context\SignedIntTypeContext $context) : void;
+	/**
+	 * Exit a parse tree produced by {@see TarsParser::signedIntType()}.
+	 * @param $context The parse tree.
+	 */
+	public function exitSignedIntType(Context\SignedIntTypeContext $context) : void;
+	/**
+	 * Enter a parse tree produced by {@see TarsParser::unsignedIntType()}.
+	 * @param $context The parse tree.
+	 */
+	public function enterUnsignedIntType(Context\UnsignedIntTypeContext $context) : void;
+	/**
+	 * Exit a parse tree produced by {@see TarsParser::unsignedIntType()}.
+	 * @param $context The parse tree.
+	 */
+	public function exitUnsignedIntType(Context\UnsignedIntTypeContext $context) : void;
 	/**
 	 * Enter a parse tree produced by {@see TarsParser::longType()}.
 	 * @param $context The parse tree.

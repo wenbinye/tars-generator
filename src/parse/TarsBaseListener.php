@@ -4,7 +4,7 @@
  * Generated from Tars.g4 by ANTLR 4.8
  */
 
-namespace tars;
+namespace tars\parse;
 
 use Antlr\Antlr4\Runtime\ParserRuleContext;
 use Antlr\Antlr4\Runtime\Tree\ErrorNode;
@@ -516,6 +516,32 @@ class TarsBaseListener implements TarsListener
 	 *
 	 * The default implementation does nothing.
 	 */
+	public function enterSignedByteType(Context\SignedByteTypeContext $context) : void {}
+
+	/**
+	 * {@inheritdoc}
+	 *
+	 * The default implementation does nothing.
+	 */
+	public function exitSignedByteType(Context\SignedByteTypeContext $context) : void {}
+	/**
+	 * {@inheritdoc}
+	 *
+	 * The default implementation does nothing.
+	 */
+	public function enterUnsignedByteType(Context\UnsignedByteTypeContext $context) : void {}
+
+	/**
+	 * {@inheritdoc}
+	 *
+	 * The default implementation does nothing.
+	 */
+	public function exitUnsignedByteType(Context\UnsignedByteTypeContext $context) : void {}
+	/**
+	 * {@inheritdoc}
+	 *
+	 * The default implementation does nothing.
+	 */
 	public function enterShortType(Context\ShortTypeContext $context) : void {}
 
 	/**
@@ -529,6 +555,32 @@ class TarsBaseListener implements TarsListener
 	 *
 	 * The default implementation does nothing.
 	 */
+	public function enterSignedShortType(Context\SignedShortTypeContext $context) : void {}
+
+	/**
+	 * {@inheritdoc}
+	 *
+	 * The default implementation does nothing.
+	 */
+	public function exitSignedShortType(Context\SignedShortTypeContext $context) : void {}
+	/**
+	 * {@inheritdoc}
+	 *
+	 * The default implementation does nothing.
+	 */
+	public function enterUnsignedShortType(Context\UnsignedShortTypeContext $context) : void {}
+
+	/**
+	 * {@inheritdoc}
+	 *
+	 * The default implementation does nothing.
+	 */
+	public function exitUnsignedShortType(Context\UnsignedShortTypeContext $context) : void {}
+	/**
+	 * {@inheritdoc}
+	 *
+	 * The default implementation does nothing.
+	 */
 	public function enterIntType(Context\IntTypeContext $context) : void {}
 
 	/**
@@ -537,6 +589,32 @@ class TarsBaseListener implements TarsListener
 	 * The default implementation does nothing.
 	 */
 	public function exitIntType(Context\IntTypeContext $context) : void {}
+	/**
+	 * {@inheritdoc}
+	 *
+	 * The default implementation does nothing.
+	 */
+	public function enterSignedIntType(Context\SignedIntTypeContext $context) : void {}
+
+	/**
+	 * {@inheritdoc}
+	 *
+	 * The default implementation does nothing.
+	 */
+	public function exitSignedIntType(Context\SignedIntTypeContext $context) : void {}
+	/**
+	 * {@inheritdoc}
+	 *
+	 * The default implementation does nothing.
+	 */
+	public function enterUnsignedIntType(Context\UnsignedIntTypeContext $context) : void {}
+
+	/**
+	 * {@inheritdoc}
+	 *
+	 * The default implementation does nothing.
+	 */
+	public function exitUnsignedIntType(Context\UnsignedIntTypeContext $context) : void {}
 	/**
 	 * {@inheritdoc}
 	 *

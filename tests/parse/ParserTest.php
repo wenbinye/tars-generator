@@ -1,6 +1,6 @@
 <?php
 
-namespace tars;
+namespace tars\parse;
 
 use Antlr\Antlr4\Runtime\CommonTokenStream;
 use Antlr\Antlr4\Runtime\Error\Listeners\DiagnosticErrorListener;
@@ -12,7 +12,7 @@ class ParserTest extends TestCase
 {
     public function testName()
     {
-        $file = __DIR__ . '/fixtures/const.tars';
+        $file = __DIR__ . '/../fixtures/const.tars';
         $input = InputStream::fromPath($file);
         $lexer = new TarsLexer($input);
         $tokens = new CommonTokenStream($lexer);
@@ -26,7 +26,7 @@ class ParserTest extends TestCase
 
     public function testDocString()
     {
-        $file = __DIR__ . '/fixtures/const.tars';
+        $file = __DIR__ . '/../fixtures/const.tars';
         $input = InputStream::fromPath($file);
         $lexer = new TarsLexer($input);
         $tokens = new CommonTokenStream($lexer);

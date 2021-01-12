@@ -1,7 +1,17 @@
 {
     "name": "wenbinye/tars-gen",
+    "license": "MIT",
+    "type": "application",
+    "description": "TARS PHP code generator",
+    "bin": [
+        "bin/tars-gen"
+    ],
     "require": {
-        "antlr/antlr4-php-runtime": "^0.4"
+        "php": "^7.0",
+        "ext-json": "*",
+        "antlr/antlr4-php-runtime": "^0.4",
+        "symfony/console": "^5.2",
+        "twig/twig": "^3.2"
     },
     "require-dev": {
         "phpunit/phpunit": "^7.0"

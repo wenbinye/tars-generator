@@ -6,6 +6,6 @@
 ## X-URL: 
 
 gen:
-	cd src && antlr4 -Dlanguage=PHP -package tars Tars.g4
+	cd src/parse && antlr4 -Dlanguage=PHP -package tars\\parse Tars.g4
 
 .PHONY: gen

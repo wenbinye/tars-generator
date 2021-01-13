@@ -10,7 +10,7 @@ class TarsConst
     public $name;
 
     /**
-     * @var string
+     * @var TarsPrimitiveType|null
      */
     public $type;
 
@@ -18,4 +18,17 @@ class TarsConst
      * @var string
      */
     public $value;
+
+    /**
+     * TarsConst constructor.
+     * @param string $name
+     * @param string $type
+     * @param string $value
+     */
+    public function __construct(string $name, ?TarsPrimitiveType $type, string $value)
+    {
+        $this->name = $name;
+        $this->type = $type;
+        $this->value = $value;
+    }
 }

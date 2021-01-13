@@ -5,17 +5,12 @@ namespace tars\domain;
 class TarsEnumContext extends AbstractContext
 {
     /**
-     * @var string
-     */
-    public $name;
-
-    /**
-     * @var string
-     */
-    public $className;
-
-    /**
      * @var TarsEnum
      */
     public $enum;
+
+    public function setEnum(TarsEnum $enum): void
+    {
+        $this->enum = $enum;
+    }
 }

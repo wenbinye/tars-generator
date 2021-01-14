@@ -12,7 +12,7 @@ class TarsStruct
     /**
      * @var TarsStructField[]
      */
-    private $fields;
+    private $fields = [];
 
     /**
      * TarsStruct constructor.

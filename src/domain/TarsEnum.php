@@ -12,7 +12,7 @@ class TarsEnum
     /**
      * @var array
      */
-    private $enumerators;
+    private $enumerators = [];
 
     /**
      * @var int
@@ -38,11 +38,12 @@ class TarsEnum
 
     public function addEnumerator(string $name, ?int $value): void
     {
-        $this->ordinal = ($value ?? ($this->ordinal + 1));
+        $value = $value ?? $this->ordinal;
         $this->enumerators[] = [
             'name' => $name,
-            'value' => $this->ordinal
+            'value' => $value
         ];
+        $this->ordinal = $value + 1;
     }
 
     /**

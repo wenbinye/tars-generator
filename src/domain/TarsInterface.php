@@ -12,7 +12,7 @@ class TarsInterface
     /**
      * @var TarsOperation[]
      */
-    private $operations;
+    private $operations = [];
 
     /**
      * TarsInterface constructor.

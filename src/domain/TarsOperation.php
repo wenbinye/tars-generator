@@ -17,7 +17,12 @@ class TarsOperation
     /**
      * @var TarsParameter[]
      */
-    private $parameters;
+    private $parameters = [];
+
+    /**
+     * @var DocBlock|null
+     */
+    private $docBlock;
 
     /**
      * TarsOperation constructor.
@@ -67,5 +72,21 @@ class TarsOperation
     public function getPhpReturnType(): ?string
     {
         return $this->returnType->getReturnType();
+    }
+
+    /**
+     * @return DocBlock|null
+     */
+    public function getDocBlock(): ?DocBlock
+    {
+        return $this->docBlock;
+    }
+
+    /**
+     * @param DocBlock|null $docBlock
+     */
+    public function setDocBlock(?DocBlock $docBlock): void
+    {
+        $this->docBlock = $docBlock;
     }
 }

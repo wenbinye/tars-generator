@@ -7,7 +7,7 @@ class TarsConstContext extends AbstractContext
     /**
      * @var TarsConst[]
      */
-    private $constants;
+    private $constants = [];
 
     public function getClassName(): string
     {

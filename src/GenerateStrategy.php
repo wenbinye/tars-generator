@@ -10,7 +10,7 @@ interface GenerateStrategy
 
     public function getStructClassName(string $structName): string;
 
-    public function getInterfaceClassName($interfaceName): string;
+    public function getInterfaceClassName(string $interfaceName): string;
 
     public function getNamespace(string $moduleName): string;
 

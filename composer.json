@@ -10,6 +10,7 @@
         "php": "^7.2",
         "ext-json": "*",
         "antlr/antlr4-php-runtime": "^0.4",
+        "psr/log": "^1.1",
         "symfony/console": "^5.2",
         "twig/twig": "^3.2"
     },

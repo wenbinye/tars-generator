@@ -12,6 +12,18 @@ class TarsPrimitiveType implements TarsType
         "void", "bool", "byte", "short", "int", "long", "float", "double", "string"
     ];
 
+    private static $TYPE_MAP = [
+        'void' => 'void',
+        'bool' => 'bool',
+        'byte' => 'int',
+        'short' => 'int',
+        'int' => 'int',
+        'long' => 'int',
+        'float' => 'float',
+        'double' => 'float',
+        'string' => 'string'
+    ];
+
     /**
      * @var string
      */
@@ -28,7 +40,7 @@ class TarsPrimitiveType implements TarsType
 
     public function __toString(): string
     {
-        return $this->name;
+        return self::$TYPE_MAP[$this->name] ?? $this->name;
     }
 
     public static function create(PrimitiveTypeContext $type): self
@@ -49,6 +61,6 @@ class TarsPrimitiveType implements TarsType
 
     public function getReturnType(): ?string
     {
-        return $this->name;
+        return (string) $this;
     }
 }

@@ -34,7 +34,6 @@ class TarsGeneratorContext
     /**
      * TarsGeneratorContext constructor.
      * @param GenerateStrategy $generateStrategy
-     * @param bool $servant
      * @param string[] $servants
      */
     public function __construct(GenerateStrategy $generateStrategy, bool $servant, array $servants = [])
@@ -107,6 +106,6 @@ class TarsGeneratorContext
     {
         return $this->servants[$moduleName . '.' . $interfaceName]
             ?? $this->servants[$interfaceName]
-            ?? $interfaceName;
+            ?? $interfaceName . 'Obj';
     }
 }

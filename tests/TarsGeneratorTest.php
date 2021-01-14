@@ -29,6 +29,13 @@ class TarsGeneratorTest extends TestCase
         $generator->generate();
     }
 
+    public function testInterface()
+    {
+        $file = __DIR__ . '/fixtures/interface.tars';
+        $generator = new TarsGenerator($this->createContext()->withFile($file));
+        $generator->generate();
+    }
+
 
     /**
      * @return TarsGeneratorContext
@@ -40,6 +47,6 @@ class TarsGeneratorTest extends TestCase
         $twig = new Environment($loader);
         $twig->addGlobal('generator_version', TarsGenerator::VERSION);
         $generatorStrategy = new GenerateStrategyImpl("foo\\bar", "/tmp/src", "foo\\bar\\integration", $twig);
-        return new TarsGeneratorContext($generatorStrategy);
+        return new TarsGeneratorContext($generatorStrategy, false);
     }
 }

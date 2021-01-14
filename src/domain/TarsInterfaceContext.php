@@ -21,7 +21,7 @@ class TarsInterfaceContext extends AbstractContext
 
     public function getClassName(): string
     {
-        $this->generatorContext->getGenerateStrategy()->getInterfaceClassName($this->interface->getName());
+        return $this->generatorContext->getGenerateStrategy()->getInterfaceClassName($this->interface->getName());
     }
 
     /**

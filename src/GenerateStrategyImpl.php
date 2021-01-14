@@ -4,14 +4,18 @@
 namespace tars;
 
 
+use Psr\Log\LoggerAwareInterface;
+use Psr\Log\LoggerAwareTrait;
 use tars\domain\TarsConstContext;
 use tars\domain\TarsEnumContext;
 use tars\domain\TarsInterfaceContext;
 use tars\domain\TarsStructContext;
 use Twig\Environment;
 
-class GenerateStrategyImpl implements GenerateStrategy
+class GenerateStrategyImpl implements GenerateStrategy, LoggerAwareInterface
 {
+    use LoggerAwareTrait;
+
     /**
      * @var string
      */
@@ -21,6 +25,11 @@ class GenerateStrategyImpl implements GenerateStrategy
      * @var string
      */
     private $psr4Path;
+
+    /**
+     * @var bool
+     */
+    private $flat;
 
     /**
      * @var string
@@ -46,12 +55,13 @@ class GenerateStrategyImpl implements GenerateStrategy
      * @param string $namespace
      * @param Environment $twig
      */
-    public function __construct(string $psr4Namespace, string $psr4Path, string $namespace, Environment $twig)
+    public function __construct(string $psr4Namespace, string $psr4Path, string $namespace, Environment $twig, bool $flat)
     {
         $this->psr4Namespace = $psr4Namespace;
         $this->psr4Path = $psr4Path;
         $this->namespace = $namespace;
         $this->twig = $twig;
+        $this->flat = $flat;
     }
 
     public function getConstClassName(): string
@@ -71,18 +81,25 @@ class GenerateStrategyImpl implements GenerateStrategy
 
     public function getInterfaceClassName($interfaceName): string
     {
-        return $interfaceName;
+        return $interfaceName . 'Servant';
     }
 
     public function getNamespace(string $moduleName): string
     {
-        return $this->namespace;
+        return $this->namespace . ($this->flat ? '' : '\\' . $this->moduleToNamespace($moduleName));
+    }
+
+    private function moduleToNamespace(string $moduleName): string
+    {
+        return str_replace('_', '\\', $moduleName);
     }
 
     public function generate(domain\AbstractContext $context): void
     {
         $code = $this->twig->render($this->getTemplate($context), $this->extractContext($context));
-        file_put_contents($this->getOutputFile($context), $code);
+        $outputFile = $this->getOutputFile($context);
+        file_put_contents($outputFile, $code);
+        $this->logger && $this->logger->info("$outputFile was created");
     }
 
     private function getTemplate(domain\AbstractContext $context): string

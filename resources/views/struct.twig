@@ -5,7 +5,6 @@
  *
  * Do not edit the class manually.
  * Tars Generator version: {{ generator_version }}
-
  */
 
 namespace {{ namespace }};
@@ -13,12 +12,11 @@ namespace {{ namespace }};
 use wenbinye\tars\protocol\annotation\TarsProperty;
 
 final class {{ className }}
-
 {
 {% for member in struct.fields %}
     /**
-     * @TarsProperty(order = {{ member.order }}, required = {{ member.required }}, type = "{{ member.type.tarsType | raw }}")
-     * @var {{ member.type }}
+     * @TarsProperty(order = {{ member.order }}, required = {{ member.required ? 'true' : 'false' }}, type = "{{ member.type.tarsType | raw }}")
+     * @var {{ member.type }}|null
      */
     public ${{ member.name }}{% if member.hasDefaultValue() %} = {{ member.defaultValue | raw }}{% endif %};
 

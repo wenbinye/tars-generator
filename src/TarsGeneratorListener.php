@@ -2,6 +2,8 @@
 
 namespace tars;
 
+use Antlr\Antlr4\Runtime\Token;
+use tars\domain\DocBlock;
 use tars\domain\TarsConst;
 use tars\domain\TarsConstContext;
 use tars\domain\TarsEnum;
@@ -77,7 +79,9 @@ class TarsGeneratorListener extends TarsBaseListener
 
     public function exitModuleDef(Context\ModuleDefContext $context): void
     {
-        $this->constContext->generate();
+        if (!empty($this->constContext->getConstants())) {
+            $this->constContext->generate();
+        }
     }
 
     public function enterEnum(Context\EnumContext $context): void
@@ -143,6 +147,11 @@ class TarsGeneratorListener extends TarsBaseListener
         $operation = new TarsOperation($context->operationName()->getText(), TarsUnionType::create($context->type()));
         $this->extractParams($operation, $context->paramList());
         $this->interfaceContext->getInterface()->addOperation($operation);
+
+        $docs = $this->context->getTokenStream()->getHiddenTokensToLeft($context->getStart()->getTokenIndex(), Token::HIDDEN_CHANNEL);
+        if (isset($docs[0])) {
+            $operation->setDocBlock(DocBlock::create($docs[0]->getText()));
+        }
     }
 
     private function extractParams(TarsOperation $operation, Context\ParamListContext $paramList): void

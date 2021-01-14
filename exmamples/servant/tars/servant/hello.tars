@@ -1,0 +1,11 @@
+module test
+{
+    interface Hello
+    {
+        /**
+         * doc string for hello
+         * @deprecated
+         */
+        long hello(int no, vector<string> name, map<string, string> tags);
+    };
+};

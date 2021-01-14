@@ -30,7 +30,7 @@ class TarsVectorType implements TarsType
         return 'vector<' . $this->itemType->getTarsType() . '>';
     }
 
-    public function getReturnType(): ?string
+    public function getDeclarationType(): ?string
     {
         return 'array';
     }

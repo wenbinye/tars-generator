@@ -33,7 +33,7 @@ class TarsCustomType implements TarsType
         return $this->name;
     }
 
-    public function getReturnType(): ?string
+    public function getDeclarationType(): ?string
     {
         return $this->name;
     }

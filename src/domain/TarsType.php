@@ -19,8 +19,8 @@ interface TarsType
     public function getTarsType(): string;
 
     /**
-     * 返回 php 返回值类型
+     * 返回 php 类型声明表示
      * @return string|null
      */
-    public function getReturnType(): ?string;
+    public function getDeclarationType(): ?string;
 }

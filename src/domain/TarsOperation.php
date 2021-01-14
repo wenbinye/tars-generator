@@ -66,12 +66,12 @@ class TarsOperation
 
     public function hasPhpReturnType(): bool
     {
-        return $this->returnType->getReturnType() !== null;
+        return $this->returnType->getDeclarationType() !== null;
     }
 
     public function getPhpReturnType(): ?string
     {
-        return $this->returnType->getReturnType();
+        return $this->returnType->getDeclarationType();
     }
 
     /**

@@ -66,6 +66,26 @@ class TarsUnionType implements TarsType
         throw new \InvalidArgumentException("Unknown type");
     }
 
+    public function isPrimitiveType(): bool
+    {
+        return $this->primitiveType !== null;
+    }
+
+    public function isCustomType(): bool
+    {
+        return $this->customType !== null;
+    }
+
+    public function isMapType(): bool
+    {
+        return $this->mapType !== null;
+    }
+
+    public function isVectorType(): bool
+    {
+        return $this->vectorType !== null;
+    }
+
     public function __toString(): string
     {
         return (string)$this->getType();
@@ -76,8 +96,8 @@ class TarsUnionType implements TarsType
         return $this->getType()->getTarsType();
     }
 
-    public function getReturnType(): ?string
+    public function getDeclarationType(): ?string
     {
-        return $this->getType()->getReturnType();
+        return $this->getType()->getDeclarationType();
     }
 }

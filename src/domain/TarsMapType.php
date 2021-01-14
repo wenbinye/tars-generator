@@ -27,7 +27,11 @@ class TarsMapType implements TarsType
 
     public function __toString(): string
     {
-        return ((string)$this->valueType) . '[]';
+        if ($this->keyType->isPrimitiveType()) {
+            return ((string)$this->valueType) . '[]';
+        } else {
+            return "\\wenbinye\\tars\\protocol\\type\\StructMap";
+        }
     }
 
     public function getTarsType(): string
@@ -35,12 +39,11 @@ class TarsMapType implements TarsType
         return sprintf('map<%s,%s>', $this->keyType->getTarsType(), $this->valueType->getTarsType());
     }
 
-    public function getReturnType(): ?string
+    public function getDeclarationType(): ?string
     {
-        if ($this->keyType instanceof TarsPrimitiveType) {
+        if ($this->keyType->isPrimitiveType()) {
             return 'array';
         }
         return null;
     }
-
 }

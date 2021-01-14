@@ -154,8 +154,11 @@ class TarsGeneratorListener extends TarsBaseListener
         }
     }
 
-    private function extractParams(TarsOperation $operation, Context\ParamListContext $paramList): void
+    private function extractParams(TarsOperation $operation, ?Context\ParamListContext $paramList): void
     {
+        if ($paramList === null) {
+            return;
+        }
         if ($paramList->paramList() !== null) {
             $this->extractParams($operation, $paramList->paramList());
         }

@@ -128,7 +128,8 @@ class GenerateStrategyImpl implements GenerateStrategy, LoggerAwareInterface
         if (strpos($className, $this->psr4Namespace) !== 0) {
             throw new \InvalidArgumentException("namespace not match, expected namespace {$this->psr4Namespace}, got class {$className}");
         }
-        $file = $this->psr4Path . '/' . str_replace('\\', '/', substr($className, strlen($this->psr4Namespace))) . ".php";
+        $relativeName = ltrim(substr($className, strlen($this->psr4Namespace)), '\\');
+        $file = $this->psr4Path . '/' . str_replace('\\', '/', $relativeName) . ".php";
         $dir = dirname($file);
         if (!is_dir($dir) && !mkdir($dir, 0777, true) && !is_dir($dir)) {
             throw new \RuntimeException("Cannot create directory $dir");

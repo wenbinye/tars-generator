@@ -4,7 +4,7 @@
     "type": "application",
     "description": "TARS PHP code generator",
     "bin": [
-        "bin/tars-gen"
+        "tars-gen"
     ],
     "require": {
         "php": "^7.2",

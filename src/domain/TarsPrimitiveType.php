@@ -59,7 +59,7 @@ class TarsPrimitiveType implements TarsType
         return $this->name;
     }
 
-    public function getReturnType(): ?string
+    public function getDeclarationType(): ?string
     {
         return (string) $this;
     }

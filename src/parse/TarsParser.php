@@ -33,11 +33,11 @@ namespace tars\parse {
                Identifier = 38, Int = 39, Float = 40, String = 41, LineComment = 42, 
                BlockComment = 43, WS = 44;
 
-		public const RULE_root = 0, RULE_includeDef = 1, RULE_fileName = 2, RULE_namespaceDef = 3, 
+		public const RULE_root = 0, RULE_includeDef = 1, RULE_fileName = 2, RULE_moduleDef = 3, 
                RULE_moduleName = 4, RULE_definition = 5, RULE_constDef = 6, 
                RULE_constName = 7, RULE_enum = 8, RULE_enumName = 9, RULE_enumeratorList = 10, 
-               RULE_enumerator = 11, RULE_enumMember = 12, RULE_struct = 13, 
-               RULE_structName = 14, RULE_structMember = 15, RULE_fieldOrder = 16, 
+               RULE_enumerator = 11, RULE_enumeratorName = 12, RULE_struct = 13, 
+               RULE_structName = 14, RULE_structField = 15, RULE_fieldOrder = 16, 
                RULE_fieldRequire = 17, RULE_fieldName = 18, RULE_interfaceDef = 19, 
                RULE_interfaceName = 20, RULE_operation = 21, RULE_operationName = 22, 
                RULE_paramList = 23, RULE_param = 24, RULE_paramName = 25, 
@@ -54,15 +54,15 @@ namespace tars\parse {
 		 * @var array<string>
 		 */
 		public const RULE_NAMES = [
-			'root', 'includeDef', 'fileName', 'namespaceDef', 'moduleName', 'definition', 
+			'root', 'includeDef', 'fileName', 'moduleDef', 'moduleName', 'definition', 
 			'constDef', 'constName', 'enum', 'enumName', 'enumeratorList', 'enumerator', 
-			'enumMember', 'struct', 'structName', 'structMember', 'fieldOrder', 'fieldRequire', 
-			'fieldName', 'interfaceDef', 'interfaceName', 'operation', 'operationName', 
-			'paramList', 'param', 'paramName', 'keyMap', 'keyList', 'keyName', 'type', 
-			'vectorType', 'mapType', 'customType', 'value', 'primitiveType', 'voidType', 
-			'boolType', 'byteType', 'signedByteType', 'unsignedByteType', 'shortType', 
-			'signedShortType', 'unsignedShortType', 'intType', 'signedIntType', 'unsignedIntType', 
-			'longType', 'floatType', 'doubleType', 'stringType'
+			'enumeratorName', 'struct', 'structName', 'structField', 'fieldOrder', 
+			'fieldRequire', 'fieldName', 'interfaceDef', 'interfaceName', 'operation', 
+			'operationName', 'paramList', 'param', 'paramName', 'keyMap', 'keyList', 
+			'keyName', 'type', 'vectorType', 'mapType', 'customType', 'value', 'primitiveType', 
+			'voidType', 'boolType', 'byteType', 'signedByteType', 'unsignedByteType', 
+			'shortType', 'signedShortType', 'unsignedShortType', 'intType', 'signedIntType', 
+			'unsignedIntType', 'longType', 'floatType', 'doubleType', 'stringType'
 		];
 
 		/**
@@ -420,7 +420,7 @@ namespace tars\parse {
 		        $_la = $this->input->LA(1);
 		        while ($_la === self::T__1) {
 		        	$this->setState(106);
-		        	$this->namespaceDef();
+		        	$this->moduleDef();
 		        	$this->setState(111);
 		        	$this->errorHandler->sync($this);
 		        	$_la = $this->input->LA(1);
@@ -489,11 +489,11 @@ namespace tars\parse {
 		/**
 		 * @throws RecognitionException
 		 */
-		public function namespaceDef() : Context\NamespaceDefContext
+		public function moduleDef() : Context\ModuleDefContext
 		{
-		    $localContext = new Context\NamespaceDefContext($this->ctx, $this->getState());
+		    $localContext = new Context\ModuleDefContext($this->ctx, $this->getState());
 
-		    $this->enterRule($localContext, 6, self::RULE_namespaceDef);
+		    $this->enterRule($localContext, 6, self::RULE_moduleDef);
 
 		    try {
 		        $this->enterOuterAlt($localContext, 1);
@@ -833,7 +833,7 @@ namespace tars\parse {
 		    try {
 		        $this->enterOuterAlt($localContext, 1);
 		        $this->setState(177);
-		        $this->enumMember();
+		        $this->enumeratorName();
 		        $this->setState(180);
 		        $this->errorHandler->sync($this);
 
@@ -859,11 +859,11 @@ namespace tars\parse {
 		/**
 		 * @throws RecognitionException
 		 */
-		public function enumMember() : Context\EnumMemberContext
+		public function enumeratorName() : Context\EnumeratorNameContext
 		{
-		    $localContext = new Context\EnumMemberContext($this->ctx, $this->getState());
+		    $localContext = new Context\EnumeratorNameContext($this->ctx, $this->getState());
 
-		    $this->enterRule($localContext, 24, self::RULE_enumMember);
+		    $this->enterRule($localContext, 24, self::RULE_enumeratorName);
 
 		    try {
 		        $this->enterOuterAlt($localContext, 1);
@@ -903,7 +903,7 @@ namespace tars\parse {
 		        $_la = $this->input->LA(1);
 		        while ($_la === self::Int) {
 		        	$this->setState(187);
-		        	$this->structMember();
+		        	$this->structField();
 		        	$this->setState(192);
 		        	$this->errorHandler->sync($this);
 		        	$_la = $this->input->LA(1);
@@ -956,11 +956,11 @@ namespace tars\parse {
 		/**
 		 * @throws RecognitionException
 		 */
-		public function structMember() : Context\StructMemberContext
+		public function structField() : Context\StructFieldContext
 		{
-		    $localContext = new Context\StructMemberContext($this->ctx, $this->getState());
+		    $localContext = new Context\StructFieldContext($this->ctx, $this->getState());
 
-		    $this->enterRule($localContext, 30, self::RULE_structMember);
+		    $this->enterRule($localContext, 30, self::RULE_structField);
 
 		    try {
 		        $this->enterOuterAlt($localContext, 1);
@@ -1299,7 +1299,7 @@ namespace tars\parse {
 
 		        if ($_la === self::T__15) {
 		        	$this->setState(252);
-		        	$this->match(self::T__15);
+		        	$localContext->out = $this->match(self::T__15);
 		        }
 		        $this->setState(256);
 		        $this->errorHandler->sync($this);
@@ -1307,7 +1307,7 @@ namespace tars\parse {
 
 		        if ($_la === self::T__16) {
 		        	$this->setState(255);
-		        	$this->match(self::T__16);
+		        	$localContext->routeKey = $this->match(self::T__16);
 		        }
 		        $this->setState(258);
 		        $this->type();
@@ -1581,11 +1581,11 @@ namespace tars\parse {
 		        $this->setState(295);
 		        $this->match(self::T__21);
 		        $this->setState(296);
-		        $this->type();
+		        $localContext->keyType = $this->type();
 		        $this->setState(297);
 		        $this->match(self::T__8);
 		        $this->setState(298);
-		        $this->type();
+		        $localContext->valueType = $this->type();
 		        $this->setState(299);
 		        $this->match(self::T__22);
 		    } catch (RecognitionException $exception) {
@@ -2252,15 +2252,15 @@ namespace tars\parse\Context {
 	    }
 
 	    /**
-	     * @return array<NamespaceDefContext>|NamespaceDefContext|null
+	     * @return array<ModuleDefContext>|ModuleDefContext|null
 	     */
-	    public function namespaceDef(?int $index = null)
+	    public function moduleDef(?int $index = null)
 	    {
 	    	if ($index === null) {
-	    		return $this->getTypedRuleContexts(NamespaceDefContext::class);
+	    		return $this->getTypedRuleContexts(ModuleDefContext::class);
 	    	}
 
-	        return $this->getTypedRuleContext(NamespaceDefContext::class, $index);
+	        return $this->getTypedRuleContext(ModuleDefContext::class, $index);
 	    }
 
 		public function enterRule(ParseTreeListener $listener) : void
@@ -2342,7 +2342,7 @@ namespace tars\parse\Context {
 		}
 	} 
 
-	class NamespaceDefContext extends ParserRuleContext
+	class ModuleDefContext extends ParserRuleContext
 	{
 		public function __construct(?ParserRuleContext $parent, ?int $invokingState = null)
 		{
@@ -2351,7 +2351,7 @@ namespace tars\parse\Context {
 
 		public function getRuleIndex() : int
 		{
-		    return TarsParser::RULE_namespaceDef;
+		    return TarsParser::RULE_moduleDef;
 	    }
 
 	    public function moduleName() : ?ModuleNameContext
@@ -2374,14 +2374,14 @@ namespace tars\parse\Context {
 		public function enterRule(ParseTreeListener $listener) : void
 		{
 			if ($listener instanceof TarsListener) {
-			    $listener->enterNamespaceDef($this);
+			    $listener->enterModuleDef($this);
 		    }
 		}
 
 		public function exitRule(ParseTreeListener $listener) : void
 		{
 			if ($listener instanceof TarsListener) {
-			    $listener->exitNamespaceDef($this);
+			    $listener->exitModuleDef($this);
 		    }
 		}
 	} 
@@ -2669,9 +2669,9 @@ namespace tars\parse\Context {
 		    return TarsParser::RULE_enumerator;
 	    }
 
-	    public function enumMember() : ?EnumMemberContext
+	    public function enumeratorName() : ?EnumeratorNameContext
 	    {
-	    	return $this->getTypedRuleContext(EnumMemberContext::class, 0);
+	    	return $this->getTypedRuleContext(EnumeratorNameContext::class, 0);
 	    }
 
 	    public function value() : ?ValueContext
@@ -2694,7 +2694,7 @@ namespace tars\parse\Context {
 		}
 	} 
 
-	class EnumMemberContext extends ParserRuleContext
+	class EnumeratorNameContext extends ParserRuleContext
 	{
 		public function __construct(?ParserRuleContext $parent, ?int $invokingState = null)
 		{
@@ -2703,7 +2703,7 @@ namespace tars\parse\Context {
 
 		public function getRuleIndex() : int
 		{
-		    return TarsParser::RULE_enumMember;
+		    return TarsParser::RULE_enumeratorName;
 	    }
 
 	    public function Identifier() : ?TerminalNode
@@ -2714,14 +2714,14 @@ namespace tars\parse\Context {
 		public function enterRule(ParseTreeListener $listener) : void
 		{
 			if ($listener instanceof TarsListener) {
-			    $listener->enterEnumMember($this);
+			    $listener->enterEnumeratorName($this);
 		    }
 		}
 
 		public function exitRule(ParseTreeListener $listener) : void
 		{
 			if ($listener instanceof TarsListener) {
-			    $listener->exitEnumMember($this);
+			    $listener->exitEnumeratorName($this);
 		    }
 		}
 	} 
@@ -2744,15 +2744,15 @@ namespace tars\parse\Context {
 	    }
 
 	    /**
-	     * @return array<StructMemberContext>|StructMemberContext|null
+	     * @return array<StructFieldContext>|StructFieldContext|null
 	     */
-	    public function structMember(?int $index = null)
+	    public function structField(?int $index = null)
 	    {
 	    	if ($index === null) {
-	    		return $this->getTypedRuleContexts(StructMemberContext::class);
+	    		return $this->getTypedRuleContexts(StructFieldContext::class);
 	    	}
 
-	        return $this->getTypedRuleContext(StructMemberContext::class, $index);
+	        return $this->getTypedRuleContext(StructFieldContext::class, $index);
 	    }
 
 		public function enterRule(ParseTreeListener $listener) : void
@@ -2802,7 +2802,7 @@ namespace tars\parse\Context {
 		}
 	} 
 
-	class StructMemberContext extends ParserRuleContext
+	class StructFieldContext extends ParserRuleContext
 	{
 		public function __construct(?ParserRuleContext $parent, ?int $invokingState = null)
 		{
@@ -2811,7 +2811,7 @@ namespace tars\parse\Context {
 
 		public function getRuleIndex() : int
 		{
-		    return TarsParser::RULE_structMember;
+		    return TarsParser::RULE_structField;
 	    }
 
 	    public function fieldOrder() : ?FieldOrderContext
@@ -2842,14 +2842,14 @@ namespace tars\parse\Context {
 		public function enterRule(ParseTreeListener $listener) : void
 		{
 			if ($listener instanceof TarsListener) {
-			    $listener->enterStructMember($this);
+			    $listener->enterStructField($this);
 		    }
 		}
 
 		public function exitRule(ParseTreeListener $listener) : void
 		{
 			if ($listener instanceof TarsListener) {
-			    $listener->exitStructMember($this);
+			    $listener->exitStructField($this);
 		    }
 		}
 	} 
@@ -3134,6 +3134,16 @@ namespace tars\parse\Context {
 
 	class ParamContext extends ParserRuleContext
 	{
+		/**
+		 * @var Token|null $out
+		 */
+		public $out;
+
+		/**
+		 * @var Token|null $routeKey
+		 */
+		public $routeKey;
+
 		public function __construct(?ParserRuleContext $parent, ?int $invokingState = null)
 		{
 			parent::__construct($parent, $invokingState);
@@ -3388,6 +3398,16 @@ namespace tars\parse\Context {
 
 	class MapTypeContext extends ParserRuleContext
 	{
+		/**
+		 * @var TypeContext|null $keyType
+		 */
+		public $keyType;
+
+		/**
+		 * @var TypeContext|null $valueType
+		 */
+		public $valueType;
+
 		public function __construct(?ParserRuleContext $parent, ?int $invokingState = null)
 		{
 			parent::__construct($parent, $invokingState);

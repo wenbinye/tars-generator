@@ -61,14 +61,14 @@ class TarsBaseListener implements TarsListener
 	 *
 	 * The default implementation does nothing.
 	 */
-	public function enterNamespaceDef(Context\NamespaceDefContext $context) : void {}
+	public function enterModuleDef(Context\ModuleDefContext $context) : void {}
 
 	/**
 	 * {@inheritdoc}
 	 *
 	 * The default implementation does nothing.
 	 */
-	public function exitNamespaceDef(Context\NamespaceDefContext $context) : void {}
+	public function exitModuleDef(Context\ModuleDefContext $context) : void {}
 	/**
 	 * {@inheritdoc}
 	 *
@@ -178,14 +178,14 @@ class TarsBaseListener implements TarsListener
 	 *
 	 * The default implementation does nothing.
 	 */
-	public function enterEnumMember(Context\EnumMemberContext $context) : void {}
+	public function enterEnumeratorName(Context\EnumeratorNameContext $context) : void {}
 
 	/**
 	 * {@inheritdoc}
 	 *
 	 * The default implementation does nothing.
 	 */
-	public function exitEnumMember(Context\EnumMemberContext $context) : void {}
+	public function exitEnumeratorName(Context\EnumeratorNameContext $context) : void {}
 	/**
 	 * {@inheritdoc}
 	 *
@@ -217,14 +217,14 @@ class TarsBaseListener implements TarsListener
 	 *
 	 * The default implementation does nothing.
 	 */
-	public function enterStructMember(Context\StructMemberContext $context) : void {}
+	public function enterStructField(Context\StructFieldContext $context) : void {}
 
 	/**
 	 * {@inheritdoc}
 	 *
 	 * The default implementation does nothing.
 	 */
-	public function exitStructMember(Context\StructMemberContext $context) : void {}
+	public function exitStructField(Context\StructFieldContext $context) : void {}
 	/**
 	 * {@inheritdoc}
 	 *

@@ -17,6 +17,8 @@ class TarsGenerator
      */
     private $context;
 
+    public const VERSION = '1.0';
+
     public function __construct(TarsGeneratorContext $context)
     {
         $this->context = $context;

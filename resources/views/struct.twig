@@ -17,9 +17,8 @@ final class {{ className }}
 {
 {% for member in struct.fields %}
     /**
-     * @TarsProperty(order = {{ member.tag }}, required = {{ member.required }}, type = "{{ member.type | raw }}")
+     * @TarsProperty(order = {{ member.order }}, required = {{ member.required }}, type = "{{ member.type.tarsType | raw }}")
      * @var {{ member.type }}
-
      */
     public ${{ member.name }}{% if member.hasDefaultValue() %} = {{ member.defaultValue | raw }}{% endif %};
 

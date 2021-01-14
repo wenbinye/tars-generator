@@ -9,12 +9,12 @@ abstract class AbstractContext
     /**
      * @var string
      */
-    public $moduleName;
+    protected $moduleName;
 
     /**
      * @var TarsGeneratorContext
      */
-    public $generatorContext;
+    protected $generatorContext;
 
     /**
      * AbstractContext constructor.
@@ -36,4 +36,22 @@ abstract class AbstractContext
     {
         $this->generatorContext->getGenerateStrategy()->generate($this);
     }
+
+    /**
+     * @return string
+     */
+    public function getModuleName(): string
+    {
+        return $this->moduleName;
+    }
+
+    /**
+     * @return TarsGeneratorContext
+     */
+    public function getGeneratorContext(): TarsGeneratorContext
+    {
+        return $this->generatorContext;
+    }
+
+    abstract public function getClassName(): string;
 }

@@ -7,10 +7,23 @@ class TarsEnumContext extends AbstractContext
     /**
      * @var TarsEnum
      */
-    public $enum;
+    private $enum;
 
     public function setEnum(TarsEnum $enum): void
     {
         $this->enum = $enum;
+    }
+
+    /**
+     * @return TarsEnum
+     */
+    public function getEnum(): TarsEnum
+    {
+        return $this->enum;
+    }
+
+    public function getClassName(): string
+    {
+        return $this->generatorContext->getGenerateStrategy()->getEnumClassName($this->enum->getName());
     }
 }

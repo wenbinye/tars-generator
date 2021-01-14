@@ -1,12 +1,12 @@
 grammar Tars;
 
-root: includeDef* namespaceDef*;
+root: includeDef* moduleDef*;
 
 includeDef: '#include' fileName;
 
 fileName: String;
 
-namespaceDef: 'module' moduleName '{' definition* '}';
+moduleDef: 'module' moduleName '{' definition* '}';
 
 moduleName: Identifier;
 
@@ -31,15 +31,15 @@ enumeratorList
     | enumeratorList ',' enumerator ','?
     ;
 
-enumerator: enumMember ('=' value)?;
+enumerator: enumeratorName ('=' value)?;
 
-enumMember: Identifier;
+enumeratorName: Identifier;
 
-struct: 'struct' structName '{' structMember* '}' ';'?;
+struct: 'struct' structName '{' structField* '}' ';'?;
 
 structName: Identifier;
 
-structMember: fieldOrder fieldRequire type fieldName ('=' value)? ';';
+structField: fieldOrder fieldRequire type fieldName ('=' value)? ';';
 
 fieldOrder: Int;
 
@@ -60,7 +60,7 @@ paramList
     | paramList ',' param
     ;
 
-param: 'out'? 'routekey'? type paramName;
+param: (out='out')? (routeKey='routekey')? type paramName;
 
 paramName: Identifier;
 
@@ -81,7 +81,7 @@ type: primitiveType
 
 vectorType: 'vector' '<' type '>';
 
-mapType: 'map' '<' type ',' type '>';
+mapType: 'map' '<' keyType=type ',' valueType=type '>';
 
 customType: Identifier | moduleName '.' Identifier;
 

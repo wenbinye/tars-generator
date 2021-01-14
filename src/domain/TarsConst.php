@@ -7,22 +7,22 @@ class TarsConst
     /**
      * @var string
      */
-    public $name;
+    private $name;
 
     /**
      * @var TarsPrimitiveType|null
      */
-    public $type;
+    private $type;
 
     /**
      * @var string
      */
-    public $value;
+    private $value;
 
     /**
      * TarsConst constructor.
      * @param string $name
-     * @param string $type
+     * @param TarsPrimitiveType|null $type
      * @param string $value
      */
     public function __construct(string $name, ?TarsPrimitiveType $type, string $value)
@@ -30,5 +30,29 @@ class TarsConst
         $this->name = $name;
         $this->type = $type;
         $this->value = $value;
+    }
+
+    /**
+     * @return string
+     */
+    public function getName(): string
+    {
+        return $this->name;
+    }
+
+    /**
+     * @return TarsPrimitiveType|null
+     */
+    public function getType(): ?TarsPrimitiveType
+    {
+        return $this->type;
+    }
+
+    /**
+     * @return string
+     */
+    public function getValue(): string
+    {
+        return $this->value;
     }
 }

@@ -96,7 +96,7 @@ rule names:
 root
 includeDef
 fileName
-namespaceDef
+moduleDef
 moduleName
 definition
 constDef
@@ -105,10 +105,10 @@ enum
 enumName
 enumeratorList
 enumerator
-enumMember
+enumeratorName
 struct
 structName
-structMember
+structField
 fieldOrder
 fieldRequire
 fieldName

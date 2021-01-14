@@ -5,14 +5,9 @@ namespace tars\domain;
 class TarsConstContext extends AbstractContext
 {
     /**
-     * @var string
-     */
-    public $className;
-
-    /**
      * @var TarsConst[]
      */
-    public $constants;
+    private $constants;
 
     public function getClassName(): string
     {
@@ -22,6 +17,14 @@ class TarsConstContext extends AbstractContext
     public function addConstant(TarsConst $const): void
     {
         $this->constants[] = $const;
+    }
+
+    /**
+     * @return TarsConst[]
+     */
+    public function getConstants(): array
+    {
+        return $this->constants;
     }
 }
    

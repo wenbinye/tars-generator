@@ -7,12 +7,17 @@ class TarsEnum
     /**
      * @var string
      */
-    public $name;
+    private $name;
 
     /**
      * @var array
      */
-    public $enumerators;
+    private $enumerators;
+
+    /**
+     * @var int
+     */
+    private $ordinal = 0;
 
     /**
      * TarsEnum constructor.
@@ -23,11 +28,28 @@ class TarsEnum
         $this->name = $name;
     }
 
-    public function addEnumerator(string $name, int $value): void
+    /**
+     * @return string
+     */
+    public function getName(): string
     {
+        return $this->name;
+    }
+
+    public function addEnumerator(string $name, ?int $value): void
+    {
+        $this->ordinal = ($value ?? ($this->ordinal + 1));
         $this->enumerators[] = [
             'name' => $name,
-            'value' => $value
+            'value' => $this->ordinal
         ];
+    }
+
+    /**
+     * @return array
+     */
+    public function getEnumerators(): array
+    {
+        return $this->enumerators;
     }
 }

@@ -7,10 +7,37 @@ class TarsInterface
     /**
      * @var string
      */
-    public $name;
+    private $name;
 
     /**
      * @var TarsOperation[]
      */
-    public $operations;
+    private $operations;
+
+    /**
+     * TarsInterface constructor.
+     * @param string $name
+     */
+    public function __construct(string $name)
+    {
+        $this->name = $name;
+    }
+
+    public function getName(): string
+    {
+        return $this->name;
+    }
+
+    public function addOperation(TarsOperation $operation): void
+    {
+        $this->operations[] = $operation;
+    }
+
+    /**
+     * @return TarsOperation[]
+     */
+    public function getOperations(): array
+    {
+        return $this->operations;
+    }
 }

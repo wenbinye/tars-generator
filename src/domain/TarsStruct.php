@@ -7,10 +7,39 @@ class TarsStruct
     /**
      * @var string
      */
-    public $name;
+    private $name;
 
     /**
      * @var TarsStructField[]
      */
-    public $fields;
+    private $fields;
+
+    /**
+     * TarsStruct constructor.
+     * @param string $name
+     */
+    public function __construct(string $name)
+    {
+        $this->name = $name;
+    }
+
+    public function getName(): string
+    {
+        return $this->name;
+    }
+
+    public function addField(TarsStructField $field): void
+    {
+        $this->fields[] = $field;
+    }
+
+    /**
+     * @return TarsStructField[]
+     */
+    public function getFields(): array
+    {
+        return $this->fields;
+    }
+
+
 }

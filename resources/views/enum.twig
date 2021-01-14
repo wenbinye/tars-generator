@@ -13,8 +13,7 @@ namespace {{ namespace }};
 use kuiper\helper\Enum;
 
 /**
- *
-{% for member in enum.enumurators %}
+{% for member in enum.enumerators %}
  * @method static {{ className }} {{ member.name }}(): static
 {% endfor %}
  *
@@ -23,7 +22,7 @@ use kuiper\helper\Enum;
  */
 final class {{ className }} extends Enum
 {
-{% for member in enum.enumurators %}
-    const {{ member.name }} = {{ member.value }};
+{% for member in enum.enumerators %}
+    public const {{ member.name }} = {{ member.value }};
 {% endfor %}
 }

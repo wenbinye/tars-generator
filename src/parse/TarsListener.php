@@ -43,15 +43,15 @@ interface TarsListener extends ParseTreeListener {
 	 */
 	public function exitFileName(Context\FileNameContext $context) : void;
 	/**
-	 * Enter a parse tree produced by {@see TarsParser::namespaceDef()}.
+	 * Enter a parse tree produced by {@see TarsParser::moduleDef()}.
 	 * @param $context The parse tree.
 	 */
-	public function enterNamespaceDef(Context\NamespaceDefContext $context) : void;
+	public function enterModuleDef(Context\ModuleDefContext $context) : void;
 	/**
-	 * Exit a parse tree produced by {@see TarsParser::namespaceDef()}.
+	 * Exit a parse tree produced by {@see TarsParser::moduleDef()}.
 	 * @param $context The parse tree.
 	 */
-	public function exitNamespaceDef(Context\NamespaceDefContext $context) : void;
+	public function exitModuleDef(Context\ModuleDefContext $context) : void;
 	/**
 	 * Enter a parse tree produced by {@see TarsParser::moduleName()}.
 	 * @param $context The parse tree.
@@ -133,15 +133,15 @@ interface TarsListener extends ParseTreeListener {
 	 */
 	public function exitEnumerator(Context\EnumeratorContext $context) : void;
 	/**
-	 * Enter a parse tree produced by {@see TarsParser::enumMember()}.
+	 * Enter a parse tree produced by {@see TarsParser::enumeratorName()}.
 	 * @param $context The parse tree.
 	 */
-	public function enterEnumMember(Context\EnumMemberContext $context) : void;
+	public function enterEnumeratorName(Context\EnumeratorNameContext $context) : void;
 	/**
-	 * Exit a parse tree produced by {@see TarsParser::enumMember()}.
+	 * Exit a parse tree produced by {@see TarsParser::enumeratorName()}.
 	 * @param $context The parse tree.
 	 */
-	public function exitEnumMember(Context\EnumMemberContext $context) : void;
+	public function exitEnumeratorName(Context\EnumeratorNameContext $context) : void;
 	/**
 	 * Enter a parse tree produced by {@see TarsParser::struct()}.
 	 * @param $context The parse tree.
@@ -163,15 +163,15 @@ interface TarsListener extends ParseTreeListener {
 	 */
 	public function exitStructName(Context\StructNameContext $context) : void;
 	/**
-	 * Enter a parse tree produced by {@see TarsParser::structMember()}.
+	 * Enter a parse tree produced by {@see TarsParser::structField()}.
 	 * @param $context The parse tree.
 	 */
-	public function enterStructMember(Context\StructMemberContext $context) : void;
+	public function enterStructField(Context\StructFieldContext $context) : void;
 	/**
-	 * Exit a parse tree produced by {@see TarsParser::structMember()}.
+	 * Exit a parse tree produced by {@see TarsParser::structField()}.
 	 * @param $context The parse tree.
 	 */
-	public function exitStructMember(Context\StructMemberContext $context) : void;
+	public function exitStructField(Context\StructFieldContext $context) : void;
 	/**
 	 * Enter a parse tree produced by {@see TarsParser::fieldOrder()}.
 	 * @param $context The parse tree.

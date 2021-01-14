@@ -12,6 +12,16 @@ class TarsGeneratorContext
     private $generateStrategy;
 
     /**
+     * @var string[]
+     */
+    private $servants;
+
+    /**
+     * @var bool
+     */
+    private $servant;
+
+    /**
      * @var string
      */
     private $file;
@@ -20,6 +30,35 @@ class TarsGeneratorContext
      * @var CommonTokenStream
      */
     private $tokenStream;
+
+    /**
+     * TarsGeneratorContext constructor.
+     * @param GenerateStrategy $generateStrategy
+     * @param bool $servant
+     * @param string[] $servants
+     */
+    public function __construct(GenerateStrategy $generateStrategy, bool $servant, array $servants = [])
+    {
+        $this->generateStrategy = $generateStrategy;
+        $this->servant = $servant;
+        $this->servants = $servants;
+    }
+
+    /**
+     * @return array
+     */
+    public function getServants(): array
+    {
+        return $this->servants;
+    }
+
+    /**
+     * @return bool
+     */
+    public function isServant(): bool
+    {
+        return $this->servant;
+    }
 
     /**
      * @return string
@@ -62,5 +101,12 @@ class TarsGeneratorContext
     public function getGenerateStrategy(): GenerateStrategy
     {
         return $this->generateStrategy;
+    }
+
+    public function getServantName(string $moduleName, string $interfaceName): string
+    {
+        return $this->servants[$moduleName . '.' . $interfaceName]
+            ?? $this->servants[$interfaceName]
+            ?? $interfaceName;
     }
 }

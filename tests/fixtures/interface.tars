@@ -4,6 +4,7 @@ module test
     {
         /**
          * doc string for hello
+         * @param no the number
          * @deprecated
          */
         long hello(int no, vector<string> name, map<string, string> tags);

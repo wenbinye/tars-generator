@@ -46,7 +46,7 @@ class TarsGeneratorTest extends TestCase
         $loader = new FilesystemLoader($viewPath);
         $twig = new Environment($loader);
         $twig->addGlobal('generator_version', TarsGenerator::VERSION);
-        $generatorStrategy = new GenerateStrategyImpl("foo\\bar", "/tmp/src", "foo\\bar\\integration", $twig);
+        $generatorStrategy = new GenerateStrategyImpl("foo\\bar", "/tmp/src", "foo\\bar\\integration", $twig, false);
         return new TarsGeneratorContext($generatorStrategy, false);
     }
 }

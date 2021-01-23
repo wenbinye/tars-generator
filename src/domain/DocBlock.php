@@ -28,7 +28,7 @@ class DocBlock implements \Iterator
             if (strpos($line, '/**') === 0 || strpos($line, '*/') === 0) {
                 continue;
             }
-            $lines[] = trim($line, '* ');
+            $lines[] = preg_replace('#@(var|return|param)\s+#', '@tars-\1 ', trim($line, '* '));
         }
         return new self(new \ArrayIterator($lines));
     }

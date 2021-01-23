@@ -1,0 +1,7 @@
+module test
+{
+    interface HealthCheck
+    {
+        string ping();
+    };
+};

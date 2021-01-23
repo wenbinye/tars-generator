@@ -67,16 +67,22 @@ class TarsGenerateCommand extends Command
         $generatorStrategy->setLogger($this->logger);
         $context = new TarsGeneratorContext($generatorStrategy, $servant, $servants);
         foreach ($tarsPath as $path) {
-            $this->generate($context, $path);
+            $this->generate($context, $path, null);
         }
     }
 
-    private function generate(TarsGeneratorContext $context, string $path): void
+    private function generate(TarsGeneratorContext $context, string $path, ?TarsGeneratorCache $cache): void
     {
         if (is_file($path)) {
+            if ($cache !== null && $cache->isHit($path)) {
+                return;
+            }
             $this->logger->info("Processing $path");
             $generator = new TarsGenerator($context->withFile($path));
             $generator->generate();
+            if ($cache !== null) {
+                $cache->add($path);
+            }
             return;
         }
         if (!is_dir($path)) {
@@ -87,7 +93,7 @@ class TarsGenerateCommand extends Command
             if (!is_file($file) || strrpos($file, '.tars') === false) {
                 continue;
             }
-            $this->generate($context, $file);
+            $this->generate($context, $file, $cache);
         }
     }
 
@@ -102,6 +108,7 @@ class TarsGenerateCommand extends Command
             throw new \RuntimeException('No psr-4 autoload rule in composer.json');
         }
 
+        $cache = new TarsGeneratorCache($projectPath . "/.tars-gen.cache");
         $autoload = $composerJson['autoload']['psr-4'];
         $psr4Namespace = trim(array_keys($autoload)[0], '\\');
         $psr4Path = rtrim(array_values($autoload)[0], '/');
@@ -121,7 +128,7 @@ class TarsGenerateCommand extends Command
                 );
                 $generatorStrategy->setLogger($this->logger);
                 $context = new TarsGeneratorContext($generatorStrategy, $servant, $config['servants'] ?? []);
-                $this->generate($context, $path);
+                $this->generate($context, $path, $cache);
             }
         }
     }

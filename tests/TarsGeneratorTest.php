@@ -31,7 +31,7 @@ class TarsGeneratorTest extends TestCase
 
     public function testInterface()
     {
-        $file = __DIR__ . '/fixtures/interface.tars';
+        $file = __DIR__ . '/fixtures/healthcheck.tars';
         $generator = new TarsGenerator($this->createContext()->withFile($file));
         $generator->generate();
     }

@@ -75,4 +75,14 @@ class TarsParameter
     {
         return $this->routeKey;
     }
+
+    public function getDeclarationType(): ?string
+    {
+        $type = $this->getType()->getDeclarationType();
+        if (isset($type)) {
+            return ($this->isOut() ? '?' : '') . $type;
+        } else {
+            return null;
+        }
+    }
 }

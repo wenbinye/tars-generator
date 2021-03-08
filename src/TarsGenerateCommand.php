@@ -118,18 +118,22 @@ class TarsGenerateCommand extends Command
             $servant = $type === 'servant';
             $config = $options[$type] ?? [];
             $path = $config['tars_path'] ?? self::TARS_FILE_PATH . '/' . $type;
-            if (is_dir($path)) {
-                $generatorStrategy = new GenerateStrategyImpl(
-                    $config['namespace'] ?? $psr4Namespace,
-                    $config['output'] ?? $psr4Path,
-                    $config['namespace'] ?? ($psr4Namespace . ($servant ? '\\servant' : '\\integration')),
-                    $this->createTwig(),
-                    $config['flat'] ?? $servant
-                );
-                $generatorStrategy->setLogger($this->logger);
-                $context = new TarsGeneratorContext($generatorStrategy, $servant, $config['servants'] ?? []);
-                $this->generate($context, $path, $cache);
+            if (!is_dir($path) && $path === $type) {
+                $path = self::TARS_FILE_PATH . '/' . $type;
             }
+            if (!is_dir($path)) {
+                throw new \InvalidArgumentException("tars definition file path '$path' for $type does not exist");
+            }
+            $generatorStrategy = new GenerateStrategyImpl(
+                $config['namespace'] ?? $psr4Namespace,
+                $config['output'] ?? $psr4Path,
+                $config['namespace'] ?? ($psr4Namespace . ($servant ? '\\servant' : '\\integration')),
+                $this->createTwig(),
+                $config['flat'] ?? $servant
+            );
+            $generatorStrategy->setLogger($this->logger);
+            $context = new TarsGeneratorContext($generatorStrategy, $servant, $config['servants'] ?? []);
+            $this->generate($context, $path, $cache);
         }
     }
 

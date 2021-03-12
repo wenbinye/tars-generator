@@ -122,7 +122,10 @@ class TarsGenerateCommand extends Command
                 $path = self::TARS_FILE_PATH . '/' . $type;
             }
             if (!is_dir($path)) {
-                throw new \InvalidArgumentException("tars definition file path '$path' for $type does not exist");
+                if (isset($options[$type])) {
+                    $output->writeln("<error>tars definition file path '$path' for $type does not exist</error>");
+                }
+                continue;
             }
             $generatorStrategy = new GenerateStrategyImpl(
                 $config['namespace'] ?? $psr4Namespace,

@@ -66,7 +66,7 @@ class GenerateStrategyImpl implements GenerateStrategy, LoggerAwareInterface
 
     public function getConstClassName(): string
     {
-        return 'Const';
+        return 'Constants';
     }
 
     public function getEnumClassName(string $enumName): string

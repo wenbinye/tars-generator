@@ -60,7 +60,7 @@ class TarsParameter
      */
     public function isOut(): bool
     {
-        return $this->out;
+        return $this->out && !$this->getType()->isCustomType();
     }
 
     public function getOut(): bool
@@ -80,7 +80,10 @@ class TarsParameter
     {
         $type = $this->getType()->getDeclarationType();
         if (isset($type)) {
-            return ($this->isOut() ? '?' : '') . $type;
+            if ($this->isOut() && !$this->getType()->isCustomType()) {
+                return '?' . $type;
+            }
+            return $type;
         } else {
             return null;
         }

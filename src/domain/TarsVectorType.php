@@ -22,6 +22,9 @@ class TarsVectorType implements TarsType
 
     public function __toString(): string
     {
+        if ($this->itemType->getTarsType() === 'byte') {
+            return 'string';
+        }
         return ((string) $this->itemType) . '[]';
     }
 
@@ -32,6 +35,9 @@ class TarsVectorType implements TarsType
 
     public function getDeclarationType(): ?string
     {
+        if ($this->itemType->getTarsType() === 'byte') {
+            return 'string';
+        }
         return 'array';
     }
 }

@@ -9,13 +9,13 @@
 
 namespace {{ namespace }};
 
-use wenbinye\tars\protocol\annotation\TarsProperty;
+use kuiper\tars\annotation\TarsProperty;
 
 final class {{ className }}
 {
 {% for member in struct.fields %}
     /**
-     * @TarsProperty(order = {{ member.order }}, required = {{ member.required ? 'true' : 'false' }}, type = "{{ member.type.tarsType | raw }}")
+     * @TarsProperty(order={{ member.order }}, required={{ member.required ? 'true' : 'false' }}, type="{{ member.type.tarsType | raw }}")
      * @var {{ member.type }}|null
      */
     public ${{ member.name }}{% if member.hasDefaultValue() %} = {{ member.defaultValue | raw }}{% endif %};

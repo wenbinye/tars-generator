@@ -30,7 +30,7 @@ class TarsMapType implements TarsType
         if ($this->keyType->isPrimitiveType()) {
             return ((string)$this->valueType) . '[]';
         } else {
-            return "\\wenbinye\\tars\\protocol\\type\\StructMap";
+            return "\\kuiper\\tars\\type\\StructMap";
         }
     }
 

@@ -13,11 +13,8 @@ use kuiper\helper\Enum;
 
 /**
 {% for member in enum.enumerators %}
- * @method static {{ className }} {{ member.name }}(): static
+ * @method static {{ className }} {{ member.name }}()
 {% endfor %}
- *
- * @property string $name
- * @property int $value
  */
 final class {{ className }} extends Enum
 {

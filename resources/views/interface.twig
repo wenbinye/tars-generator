@@ -10,15 +10,15 @@
 namespace {{ namespace }};
 
 {% if servant %}
-use wenbinye\tars\protocol\annotation\TarsServant;
+use kuiper\tars\annotation\TarsServant;
 {% else %}
-use wenbinye\tars\protocol\annotation\TarsClient;
+use kuiper\tars\annotation\TarsClient;
 {% endif %}
-use wenbinye\tars\protocol\annotation\TarsParameter;
-use wenbinye\tars\protocol\annotation\TarsReturnType;
+use kuiper\tars\annotation\TarsParameter;
+use kuiper\tars\annotation\TarsReturnType;
 
 /**
- * @{% if servant %}TarsServant{% else %}TarsClient{% endif %}(name="{{ servantName }}")
+ * @{% if servant %}TarsServant{% else %}TarsClient{% endif %}("{{ servantName }}")
  */
 interface {{ className }}
 {
@@ -31,9 +31,9 @@ interface {{ className }}
      *
 {% endif %}
 {% for param in operation.parameters %}
-     * @TarsParameter(name = "{{ param.name }}", type = "{{ param.type.tarsType | raw }}"{% if param.out %}, out=true{% endif %})
+     * @TarsParameter(name="{{ param.name }}", type="{{ param.type.tarsType | raw }}"{% if param.out %}, out=true{% endif %})
 {% endfor %}
-     * @TarsReturnType(type = "{{ operation.returnType.tarsType | raw }}")
+     * @TarsReturnType("{{ operation.returnType.tarsType | raw }}")
      *
 {% for param in operation.parameters %}
      * @param {{ param.type }} ${{ param.name }}

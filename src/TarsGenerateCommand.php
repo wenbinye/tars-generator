@@ -115,29 +115,40 @@ class TarsGenerateCommand extends Command
         $options = $this->loadConfig($composerJson, $projectPath);
 
         foreach (['client', 'servant'] as $type) {
-            $servant = $type === 'servant';
             $config = $options[$type] ?? [];
-            $path = $config['tars_path'] ?? self::TARS_FILE_PATH . '/' . $type;
-            if (!is_dir($path) && $path === $type) {
-                $path = self::TARS_FILE_PATH . '/' . $type;
-            }
-            if (!is_dir($path)) {
-                if (isset($options[$type])) {
-                    $output->writeln("<error>tars definition file path '$path' for $type does not exist</error>");
+            if (isset($config[0])) {
+                foreach ($config as $oneConfig) {
+                    $this->generateOne($type, $oneConfig, $cache, $psr4Namespace, $psr4Path, $output);
                 }
-                continue;
+            } else {
+                $this->generateOne($type, $config, $cache, $psr4Namespace, $psr4Path, $output);
             }
-            $generatorStrategy = new GenerateStrategyImpl(
-                $config['namespace'] ?? $psr4Namespace,
-                $config['output'] ?? $psr4Path,
-                $config['namespace'] ?? ($psr4Namespace . ($servant ? '\\servant' : '\\integration')),
-                $this->createTwig(),
-                $config['flat'] ?? $servant
-            );
-            $generatorStrategy->setLogger($this->logger);
-            $context = new TarsGeneratorContext($generatorStrategy, $servant, $config['servants'] ?? []);
-            $this->generate($context, $path, $cache);
         }
+    }
+
+    private function generateOne(string $type, array $config, TarsGeneratorCache $cache, string $psr4Namespace, string $psr4Path, OutputInterface $output): void
+    {
+        $servant = $type === 'servant';
+        $path = $config['tars_path'] ?? self::TARS_FILE_PATH . '/' . $type;
+        if (!is_dir($path) && $path === $type) {
+            $path = self::TARS_FILE_PATH . '/' . $type;
+        }
+        if (!is_dir($path)) {
+            if (isset($options[$type])) {
+                $output->writeln("<error>tars definition file path '$path' for $type does not exist</error>");
+            }
+            return;
+        }
+        $generatorStrategy = new GenerateStrategyImpl(
+            $config['namespace'] ?? $psr4Namespace,
+            $config['output'] ?? $psr4Path,
+            $config['namespace'] ?? ($psr4Namespace . ($servant ? '\\servant' : '\\integration')),
+            $this->createTwig(),
+            $config['flat'] ?? $servant
+        );
+        $generatorStrategy->setLogger($this->logger);
+        $context = new TarsGeneratorContext($generatorStrategy, $servant, $config['servants'] ?? []);
+        $this->generate($context, $path, $cache);
     }
 
     private function loadConfig(array $composerJson, string $projectPath): array

@@ -10,11 +10,22 @@
 namespace {{ namespace }};
 
 use kuiper\tars\annotation\TarsProperty;
+{% if enable_openapi %}
+use OpenApi\Annotations as OA;
+{% endif %}
 
+{% if enable_openapi %}
+/**
+ * @OA\Schema
+ */
+{% endif %}
 final class {{ className }}
 {
 {% for member in struct.fields %}
     /**
+{% if enable_openapi %}
+     * @OA\Property({{ member.openapiDeclaration|raw }})
+{% endif %}
      * @TarsProperty(order={{ member.order }}, required={{ member.required ? 'true' : 'false' }}, type="{{ member.type.tarsType | raw }}")
      * @var {{ member.type }}|null
      */

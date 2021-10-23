@@ -90,4 +90,9 @@ class TarsStructField
     {
         return isset($this->defaultValue);
     }
+
+    public function getOpenapiDeclaration(): string
+    {
+        return $this->type->getOpenapiDeclaration();
+    }
 }

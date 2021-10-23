@@ -23,4 +23,10 @@ interface TarsType
      * @return string|null
      */
     public function getDeclarationType(): ?string;
+
+    /**
+     * 返回 openapi 类型声明
+     * @return string
+     */
+    public function getOpenapiDeclaration(): string;
 }

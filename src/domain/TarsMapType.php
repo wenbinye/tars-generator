@@ -46,4 +46,9 @@ class TarsMapType implements TarsType
         }
         return null;
     }
+
+    public function getOpenapiDeclaration(): string
+    {
+        return 'type="object"';
+    }
 }

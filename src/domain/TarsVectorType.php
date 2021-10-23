@@ -9,7 +9,7 @@ use tars\parse\Context\VectorTypeContext;
 class TarsVectorType implements TarsType
 {
     /**
-     * @var TarsType
+     * @var TarsUnionType
      */
     private $itemType;
 
@@ -33,11 +33,24 @@ class TarsVectorType implements TarsType
         return 'vector<' . $this->itemType->getTarsType() . '>';
     }
 
+    public function getItemType(): TarsUnionType
+    {
+        return $this->itemType;
+    }
+
     public function getDeclarationType(): ?string
     {
         if ($this->itemType->getTarsType() === 'byte') {
             return 'string';
         }
         return 'array';
+    }
+
+    public function getOpenapiDeclaration(): string
+    {
+        if ($this->itemType->getTarsType() === 'byte') {
+            return 'type="string"';
+        }
+        return sprintf('type="array", @OA\Items(%s)', $this->itemType->getOpenapiDeclaration());
     }
 }

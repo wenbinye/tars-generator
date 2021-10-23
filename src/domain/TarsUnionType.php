@@ -71,9 +71,25 @@ class TarsUnionType implements TarsType
         return $this->primitiveType !== null;
     }
 
+    public function asPrimitiveType(): TarsPrimitiveType
+    {
+        if (!$this->isPrimitiveType()) {
+            throw new \InvalidArgumentException("not primitive type");
+        }
+        return $this->primitiveType;
+    }
+
     public function isCustomType(): bool
     {
         return $this->customType !== null;
+    }
+
+    public function asCustomType(): TarsCustomType
+    {
+        if (!$this->isCustomType()) {
+            throw new \InvalidArgumentException("not custom type");
+        }
+        return $this->customType;
     }
 
     public function isMapType(): bool
@@ -81,9 +97,25 @@ class TarsUnionType implements TarsType
         return $this->mapType !== null;
     }
 
+    public function asMapType(): TarsMapType
+    {
+        if (!$this->isMapType()) {
+            throw new \InvalidArgumentException("not map type");
+        }
+        return $this->mapType;
+    }
+
     public function isVectorType(): bool
     {
         return $this->vectorType !== null;
+    }
+
+    public function asVectorType(): TarsVectorType
+    {
+        if (!$this->isVectorType()) {
+            throw new \InvalidArgumentException("not vector type");
+        }
+        return $this->vectorType;
     }
 
     public function __toString(): string
@@ -99,5 +131,10 @@ class TarsUnionType implements TarsType
     public function getDeclarationType(): ?string
     {
         return $this->getType()->getDeclarationType();
+    }
+
+    public function getOpenapiDeclaration(): string
+    {
+        return $this->getType()->getOpenapiDeclaration();
     }
 }

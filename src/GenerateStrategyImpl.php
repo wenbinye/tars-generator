@@ -37,6 +37,11 @@ class GenerateStrategyImpl implements GenerateStrategy, LoggerAwareInterface
     private $namespace;
 
     /**
+     * @var bool
+     */
+    private $enableOpenapi;
+
+    /**
      * @var Environment
      */
     private $twig;
@@ -48,20 +53,14 @@ class GenerateStrategyImpl implements GenerateStrategy, LoggerAwareInterface
         TarsStructContext::class => 'struct.twig'
     ];
 
-    /**
-     * GenerateStrategyImpl constructor.
-     * @param string $psr4Namespace
-     * @param string $psr4Path
-     * @param string $namespace
-     * @param Environment $twig
-     */
-    public function __construct(string $psr4Namespace, string $psr4Path, string $namespace, Environment $twig, bool $flat)
+    public function __construct(Environment $twig, array $config)
     {
-        $this->psr4Namespace = $psr4Namespace;
-        $this->psr4Path = $psr4Path;
-        $this->namespace = $namespace;
         $this->twig = $twig;
-        $this->flat = $flat;
+        $this->psr4Namespace = $config['psr4_namespace'];
+        $this->psr4Path = $config['output'];
+        $this->namespace = $config['namespace'] ?? $config['psr4_namespace'];
+        $this->flat = $config['flat'] ?? false;
+        $this->enableOpenapi = $config['enable_openapi'] ?? false;
     }
 
     public function getConstClassName(): string
@@ -119,6 +118,7 @@ class GenerateStrategyImpl implements GenerateStrategy, LoggerAwareInterface
                 $vars[lcfirst(substr($method, 3))] = $context->$method();
             }
         }
+        $vars['enable_openapi'] = $this->enableOpenapi;
         return $vars;
     }
 

@@ -27,6 +27,15 @@ class TarsGeneratorTest extends TestCase
         $file = __DIR__ . '/fixtures/struct.tars';
         $generator = new TarsGenerator($this->createContext()->withFile($file));
         $generator->generate();
+        $this->assertFileEquals('/tmp/src/integration/test/SimpleStruct.php', __DIR__.'/fixtures/generated/struct.php');
+    }
+
+    public function testStructOpenapi()
+    {
+        $file = __DIR__ . '/fixtures/struct.tars';
+        $generator = new TarsGenerator($this->createContext(true)->withFile($file));
+        $generator->generate();
+        $this->assertFileEquals('/tmp/src/integration/test/SimpleStruct.php', __DIR__.'/fixtures/generated/struct_openapi.php');
     }
 
     public function testInterface()
@@ -40,13 +49,20 @@ class TarsGeneratorTest extends TestCase
     /**
      * @return TarsGeneratorContext
      */
-    private function createContext(): TarsGeneratorContext
+    private function createContext(bool $enableOpenapi = false): TarsGeneratorContext
     {
         $viewPath = __DIR__ . '/../resources/views';
         $loader = new FilesystemLoader($viewPath);
         $twig = new Environment($loader);
         $twig->addGlobal('generator_version', TarsGenerator::VERSION);
-        $generatorStrategy = new GenerateStrategyImpl("foo\\bar", "/tmp/src", "foo\\bar\\integration", $twig, false);
+        $config = [
+            'namespace' => "foo\\bar\\integration",
+            'psr4_namespace' => "foo\\bar",
+            'output' => "/tmp/src",
+            'flat' => false,
+            'enable_openapi' => $enableOpenapi
+        ];
+        $generatorStrategy = new GenerateStrategyImpl($twig, $config);
         return new TarsGeneratorContext($generatorStrategy, false);
     }
 }

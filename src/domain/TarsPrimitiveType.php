@@ -24,6 +24,17 @@ class TarsPrimitiveType implements TarsType
         'string' => 'string'
     ];
 
+    private static $OPENAPI_TYPE = [
+        'bool' => 'type="boolean"',
+        'byte' => 'type="string", format="byte"',
+        'int' => 'type="integer", format="int32"',
+        'short' => 'type="integer", format="int32"',
+        'long' => 'type="integer", format="int64"',
+        'double' => 'type="number", format="float"',
+        'float' => 'type="number", format="double"',
+        'string' => 'type="string"'
+    ];
+
     /**
      * @var string
      */
@@ -62,5 +73,10 @@ class TarsPrimitiveType implements TarsType
     public function getDeclarationType(): ?string
     {
         return (string) $this;
+    }
+
+    public function getOpenapiDeclaration(): string
+    {
+        return self::$OPENAPI_TYPE[$this->name] ?? '';
     }
 }

@@ -29,6 +29,7 @@ class TarsGenerateCommand extends Command
         $this->addOption("output-path", 'o', InputOption::VALUE_REQUIRED, "");
         $this->addOption('servants', null, InputOption::VALUE_IS_ARRAY | InputOption::VALUE_REQUIRED, "");
         $this->addOption("client", null, InputOption::VALUE_NONE, "generate client class");
+        $this->addOption("enable-openapi", null, InputOption::VALUE_NONE, "generate openapi annotation");
         $this->addArgument("tars-path", InputArgument::IS_ARRAY | InputArgument::OPTIONAL, "");
     }
 
@@ -57,13 +58,12 @@ class TarsGenerateCommand extends Command
             list($name, $servantName) = explode("=", $pair);
             $servants[$name] = $servantName;
         }
-        $generatorStrategy = new GenerateStrategyImpl(
-            $namespace,
-            $path,
-            $namespace,
-            $this->createTwig(),
-            $servant
-        );
+        $generatorStrategy = new GenerateStrategyImpl($this->createTwig(), [
+            'namespace' => $namespace,
+            'psr4_namespace' => $namespace,
+            'output' => $path,
+            'flat' => $servant
+        ]);
         $generatorStrategy->setLogger($this->logger);
         $context = new TarsGeneratorContext($generatorStrategy, $servant, $servants);
         foreach ($tarsPath as $path) {
@@ -139,13 +139,18 @@ class TarsGenerateCommand extends Command
             }
             return;
         }
-        $generatorStrategy = new GenerateStrategyImpl(
-            $config['namespace'] ?? $psr4Namespace,
-            $config['output'] ?? $psr4Path,
-            $config['namespace'] ?? ($psr4Namespace . ($servant ? '\\servant' : '\\integration')),
-            $this->createTwig(),
-            $config['flat'] ?? $servant
-        );
+        $config['psr4_namespace'] = $config['namespace'] ?? $psr4Namespace;
+        if (!isset($config['namespace'])) {
+            $config['namespace'] = ($psr4Namespace . ($servant ? '\\servant' : '\\integration'));
+        }
+        if (!isset($config['output'])) {
+            $config['output'] = $psr4Path;
+        }
+        if (!isset($config['flat'])) {
+            $config['flat'] = $servant;
+        }
+        $config['is_servant'] = $servant;
+        $generatorStrategy = new GenerateStrategyImpl($this->createTwig(), $config);
         $generatorStrategy->setLogger($this->logger);
         $context = new TarsGeneratorContext($generatorStrategy, $servant, $config['servants'] ?? []);
         $this->generate($context, $path, $cache);

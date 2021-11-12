@@ -1,36 +1,41 @@
 <?php
 
+declare(strict_types=1);
 
 namespace tars\domain;
 
-
 use tars\parse\Context\VectorTypeContext;
+use Webmozart\Assert\Assert;
 
 class TarsVectorType implements TarsType
 {
     /**
      * @var TarsUnionType
      */
-    private $itemType;
+    private TarsUnionType $itemType;
 
     public static function create(VectorTypeContext $vectorType): self
     {
-        $type = new self;
-        $type->itemType = TarsUnionType::create($vectorType->type());
+        $type = new self();
+        $typeContext = $vectorType->type();
+        Assert::notNull($typeContext);
+        $type->itemType = TarsUnionType::create($typeContext);
+
         return $type;
     }
 
     public function __toString(): string
     {
-        if ($this->itemType->getTarsType() === 'byte') {
+        if ('byte' === $this->itemType->getTarsType()) {
             return 'string';
         }
-        return ((string) $this->itemType) . '[]';
+
+        return ((string) $this->itemType).'[]';
     }
 
     public function getTarsType(): string
     {
-        return 'vector<' . $this->itemType->getTarsType() . '>';
+        return 'vector<'.$this->itemType->getTarsType().'>';
     }
 
     public function getItemType(): TarsUnionType
@@ -40,17 +45,28 @@ class TarsVectorType implements TarsType
 
     public function getDeclarationType(): ?string
     {
-        if ($this->itemType->getTarsType() === 'byte') {
+        if ('byte' === $this->itemType->getTarsType()) {
             return 'string';
         }
+
         return 'array';
     }
 
     public function getOpenapiDeclaration(): string
     {
-        if ($this->itemType->getTarsType() === 'byte') {
+        if ('byte' === $this->itemType->getTarsType()) {
             return 'type="string"';
         }
+
         return sprintf('type="array", @OA\Items(%s)', $this->itemType->getOpenapiDeclaration());
+    }
+
+    public function getDefaultValue(): ?string
+    {
+        if ('byte' === $this->itemType->getTarsType()) {
+            return null;
+        }
+
+        return '[]';
     }
 }

@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace tars\domain;
 
 class TarsParameter
@@ -7,29 +9,30 @@ class TarsParameter
     /**
      * @var string
      */
-    private $name;
+    private string $name;
 
     /**
      * @var TarsUnionType
      */
-    private $type;
+    private TarsUnionType $type;
 
     /**
      * @var bool
      */
-    private $out;
+    private bool $out;
 
     /**
      * @var bool
      */
-    private $routeKey;
+    private bool $routeKey;
 
     /**
      * TarsParameter constructor.
-     * @param string $name
+     *
+     * @param string        $name
      * @param TarsUnionType $type
-     * @param bool $out
-     * @param bool $routeKey
+     * @param bool          $out
+     * @param bool          $routeKey
      */
     public function __construct(string $name, TarsUnionType $type, bool $out, bool $routeKey)
     {
@@ -81,8 +84,9 @@ class TarsParameter
         $type = $this->getType()->getDeclarationType();
         if (isset($type)) {
             if ($this->isOut() && !$this->getType()->isCustomType()) {
-                return '?' . $type;
+                return '?'.$type;
             }
+
             return $type;
         } else {
             return null;

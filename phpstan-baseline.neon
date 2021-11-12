@@ -1,0 +1,12 @@
+parameters:
+	ignoreErrors:
+		-
+			message: "#^Variable method call on tars\\\\domain\\\\AbstractContext\\.$#"
+			count: 1
+			path: src/GenerateStrategyImpl.php
+
+		-
+			message: "#^Variable method call on tars\\\\parse\\\\Context\\\\PrimitiveTypeContext\\.$#"
+			count: 1
+			path: src/domain/TarsPrimitiveType.php
+

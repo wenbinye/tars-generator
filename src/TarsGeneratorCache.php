@@ -1,35 +1,42 @@
 <?php
 
+declare(strict_types=1);
 
 namespace tars;
 
-
 class TarsGeneratorCache
 {
-    private const VERSION = TarsGenerator::VERSION . '#429df7c73fb1213665c4b3cbab2d9a5cbae13475';
+    private const VERSION = TarsGenerator::VERSION.'#1738600ba43a1c4349e5c3553425cf89dd05d5ec';
 
     /**
      * @var string
      */
-    private $cacheFile;
+    private string $cacheFile;
 
     /**
      * @var array
      */
-    private $cache;
+    private array $cache;
 
     /**
      * TarsGeneratorCache constructor.
+     *
      * @param string $cacheFile
+     *
+     * @throws \JsonException
      */
     public function __construct(string $cacheFile)
     {
         $this->cacheFile = $cacheFile;
         if (is_readable($cacheFile)) {
-            $this->cache = json_decode(file_get_contents($this->cacheFile), true);
+            $json = file_get_contents($cacheFile);
+            if (false === $json) {
+                throw new \RuntimeException("Cannot read $cacheFile");
+            }
+            $this->cache = json_decode($json, true, 512, JSON_THROW_ON_ERROR);
         }
         if (!isset($this->cache['version'])
-            || $this->cache['version'] !== self::VERSION) {
+            || self::VERSION !== $this->cache['version']) {
             $this->cache = ['version' => self::VERSION];
         }
     }
@@ -40,14 +47,17 @@ class TarsGeneratorCache
             && $this->cache['hashes'][$file] === $this->hash($file);
     }
 
+    /**
+     * @throws \JsonException
+     */
     public function add(string $file): void
     {
         $this->cache['hashes'][$file] = $this->hash($file);
-        file_put_contents($this->cacheFile, json_encode($this->cache, JSON_UNESCAPED_SLASHES));
+        file_put_contents($this->cacheFile, json_encode($this->cache, JSON_THROW_ON_ERROR | JSON_UNESCAPED_SLASHES));
     }
 
     private function hash(string $file): string
     {
-        return is_readable($file) ? crc32(file_get_contents($file)) : '';
+        return is_readable($file) ? (string) md5_file($file) : '';
     }
 }

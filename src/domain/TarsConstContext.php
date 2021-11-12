@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace tars\domain;
 
 class TarsConstContext extends AbstractContext
@@ -7,7 +9,7 @@ class TarsConstContext extends AbstractContext
     /**
      * @var TarsConst[]
      */
-    private $constants = [];
+    private array $constants = [];
 
     public function getClassName(): string
     {
@@ -27,4 +29,3 @@ class TarsConstContext extends AbstractContext
         return $this->constants;
     }
 }
-   

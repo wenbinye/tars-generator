@@ -1,9 +1,13 @@
 # TARS 代码生成器
 
+## Requirement
+
+- PHP >= 7.4
+
 ## Installation
 
 ```bash
-composer require --dev wenbinye/tars-gen:^0.3
+composer require --dev wenbinye/tars-gen:^0.5
 ```
 
 ## Usage
@@ -24,12 +28,27 @@ Add Configuration in composer.json:
 }
 ```
 
+在项目中运行 `composer gen` 生成代码。
+
+## 目录结构
+
+```
+ |- src/
+ | |- integration/
+ | `- servant/
+ `- tars/
+  |- config.json
+  |- client/
+  `- servant/
+   `- includes/
+```
+
 生成器配置文件为 tars/config.json 文件。配置文件示例：
 ```json
 {
     "client": {
         "servants": {
-            "Hello": "TestApp.HelloServer.HelloObj"
+            "Hello": "app.server.HelloObj"
         }
     }
 }
@@ -44,7 +63,19 @@ Add Configuration in composer.json:
 - `flat` 是否将文件中的 module 加入到命名空间中，默认对于 client 为 false，对于 servant 为 true
 - `tars_path` tars 文件目录，默认为 client 为 tars/client, servant 为 tars/servant
 - `servants` tars 服务名列表，通过 `{moduleName}.{interfaceName}` 或 `{interfaceName}` 查询
+- `enable_openapi` 是否生成 OpenAPI 注解
+- `default_value_strategy` 生成 struct 字段默认值的方式，默认不生成默认值；值为 `'all'` 时生成所有字段默认值。
 
-> tars 文件目录结构通常包含 servant 和 client 两个目录。如果确定本项目不会提供
-> tars rpc 服务，可以将所有 client 的定义文件都放到 tars 目录下，然后设置 client.tars_path 为 "tars"。
+## ANTLR4 代码生成
 
+在 .bashrc 中添加：
+
+```
+alias antlr4="java -Xmx500M -cp /path/to/antlr-4.8-complete.jar org.antlr.v4.Tool"
+```
+
+生成代码：
+
+```
+antlr4 -Dlanguage=PHP -package tars\\parse src/parse/Tars.g4
+```

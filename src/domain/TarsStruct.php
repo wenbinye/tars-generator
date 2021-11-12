@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace tars\domain;
 
 class TarsStruct
@@ -7,15 +9,16 @@ class TarsStruct
     /**
      * @var string
      */
-    private $name;
+    private string $name;
 
     /**
      * @var TarsStructField[]
      */
-    private $fields = [];
+    private array $fields = [];
 
     /**
      * TarsStruct constructor.
+     *
      * @param string $name
      */
     public function __construct(string $name)
@@ -40,6 +43,4 @@ class TarsStruct
     {
         return $this->fields;
     }
-
-
 }

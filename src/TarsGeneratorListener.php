@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace tars;
 
 use Antlr\Antlr4\Runtime\Token;
@@ -19,41 +21,43 @@ use tars\domain\TarsStructField;
 use tars\domain\TarsUnionType;
 use tars\parse\Context;
 use tars\parse\TarsBaseListener;
+use Webmozart\Assert\Assert;
 
 class TarsGeneratorListener extends TarsBaseListener
 {
     /**
      * @var TarsGeneratorContext
      */
-    private $context;
+    private TarsGeneratorContext $context;
 
     /**
      * @var string
      */
-    private $moduleName;
+    private string $moduleName;
 
     /**
      * @var TarsConstContext
      */
-    private $constContext;
+    private TarsConstContext $constContext;
 
     /**
      * @var TarsEnumContext
      */
-    private $enumContext;
+    private TarsEnumContext $enumContext;
 
     /**
      * @var TarsStructContext
      */
-    private $structContext;
+    private TarsStructContext $structContext;
 
     /**
      * @var TarsInterfaceContext
      */
-    private $interfaceContext;
+    private TarsInterfaceContext $interfaceContext;
 
     /**
      * TarsGeneratorListener constructor.
+     *
      * @param TarsGeneratorContext $context
      */
     public function __construct(TarsGeneratorContext $context)
@@ -63,17 +67,24 @@ class TarsGeneratorListener extends TarsBaseListener
 
     public function enterModuleName(Context\ModuleNameContext $context): void
     {
-        $this->moduleName = $context->Identifier()->getText();
+        $node = $context->Identifier();
+        Assert::notNull($node);
+        Assert::notNull($node->getText());
+        $this->moduleName = $node->getText();
         $this->constContext = new TarsConstContext($this->moduleName, $this->context);
     }
 
     public function enterConstDef(Context\ConstDefContext $context): void
     {
         $type = $context->primitiveType();
+        $constNameContext = $context->constName();
+        Assert::notNull($constNameContext);
+        $valueContext = $context->value();
+        Assert::notNull($valueContext);
         $this->constContext->addConstant(new TarsConst(
-            $context->constName()->getText(),
-            $type === null ? null : TarsPrimitiveType::create($type),
-            $context->value()->getText()
+            $constNameContext->getText(),
+            null === $type ? null : TarsPrimitiveType::create($type),
+            $valueContext->getText()
         ));
     }
 
@@ -87,7 +98,9 @@ class TarsGeneratorListener extends TarsBaseListener
     public function enterEnum(Context\EnumContext $context): void
     {
         $this->enumContext = new TarsEnumContext($this->moduleName, $this->context);
-        $enum = new TarsEnum($context->enumName()->getText());
+        $enumNameContext = $context->enumName();
+        Assert::notNull($enumNameContext);
+        $enum = new TarsEnum($enumNameContext->getText());
         $this->enumContext->setEnum($enum);
     }
 
@@ -98,16 +111,20 @@ class TarsGeneratorListener extends TarsBaseListener
 
     public function enterEnumerator(Context\EnumeratorContext $context): void
     {
+        $enumeratorNameContext = $context->enumeratorName();
+        Assert::notNull($enumeratorNameContext);
         $this->enumContext->getEnum()->addEnumerator(
-            $context->enumeratorName()->getText(),
-            $context->value() !== null ? (int) $context->value()->getText() : null
+            $enumeratorNameContext->getText(),
+            null !== $context->value() ? (int) $context->value()->getText() : null
         );
     }
 
     public function enterStruct(Context\StructContext $context): void
     {
         $this->structContext = new TarsStructContext($this->moduleName, $this->context);
-        $this->structContext->setStruct(new TarsStruct($context->structName()->getText()));
+        $structNameContext = $context->structName();
+        Assert::notNull($structNameContext);
+        $this->structContext->setStruct(new TarsStruct($structNameContext->getText()));
     }
 
     public function exitStruct(Context\StructContext $context): void
@@ -117,19 +134,39 @@ class TarsGeneratorListener extends TarsBaseListener
 
     public function enterStructField(Context\StructFieldContext $context): void
     {
+        Assert::notNull($context->type());
         $type = TarsUnionType::create($context->type());
+        Assert::notNull($context->fieldName());
+        Assert::notNull($context->fieldOrder());
+        Assert::notNull($context->fieldRequire());
         $this->structContext->getStruct()->addField(new TarsStructField(
             $context->fieldName()->getText(),
             (int) $context->fieldOrder()->getText(),
-            $context->fieldRequire()->getText() === 'require',
+            'require' === $context->fieldRequire()->getText(),
             $type,
-            $context->value() !== null ? $context->value()->getText() : null
+            $this->createFieldDefaultValue($context, $type)
         ));
+    }
+
+    private function createFieldDefaultValue(Context\StructFieldContext $context, TarsUnionType $type): ?string
+    {
+        $defaultValueStrategy = $this->context->getGenerateStrategy()->getConfig()->getDefaultValueStrategy();
+        $defaultValue = null !== $context->value() ? $context->value()->getText() : null;
+        if (null !== $defaultValue) {
+            return $defaultValue;
+        }
+        if ('all' === $defaultValueStrategy
+            || ('require' === $defaultValueStrategy && 'require' === $context->fieldRequire()->getText())) {
+            return $type->getDefaultValue();
+        }
+
+        return null;
     }
 
     public function enterInterfaceDef(Context\InterfaceDefContext $context): void
     {
         $this->interfaceContext = new TarsInterfaceContext($this->moduleName, $this->context);
+        Assert::notNull($context->interfaceName());
         $this->interfaceContext->setInterface(new TarsInterface($context->interfaceName()->getText()));
         $this->interfaceContext->setServant($this->context->isServant());
         $this->interfaceContext->setServantName($this->context->getServantName(
@@ -144,31 +181,36 @@ class TarsGeneratorListener extends TarsBaseListener
 
     public function enterOperation(Context\OperationContext $context): void
     {
+        Assert::notNull($context->operationName());
+        Assert::notNull($context->type());
+        Assert::notNull($context->getStart());
         $operation = new TarsOperation($context->operationName()->getText(), TarsUnionType::create($context->type()));
         $this->extractParams($operation, $context->paramList());
         $this->interfaceContext->getInterface()->addOperation($operation);
 
         $docs = $this->context->getTokenStream()->getHiddenTokensToLeft($context->getStart()->getTokenIndex(), Token::HIDDEN_CHANNEL);
         if (isset($docs[0])) {
-            $operation->setDocBlock(DocBlock::create($docs[0]->getText()));
+            $operation->setDocBlock(DocBlock::create($docs[0]->getText() ?? ''));
         }
     }
 
     private function extractParams(TarsOperation $operation, ?Context\ParamListContext $paramList): void
     {
-        if ($paramList === null) {
+        if (null === $paramList) {
             return;
         }
-        if ($paramList->paramList() !== null) {
+        if (null !== $paramList->paramList()) {
             $this->extractParams($operation, $paramList->paramList());
         }
         $paramContext = $paramList->param();
-        if ($paramContext !== null) {
+        if (null !== $paramContext) {
+            Assert::notNull($paramContext->paramName());
+            Assert::notNull($paramContext->type());
             $operation->addParameter(new TarsParameter(
                 $paramContext->paramName()->getText(),
                 TarsUnionType::create($paramContext->type()),
-                $paramContext->out !== null,
-                $paramContext->routeKey !== null
+                null !== $paramContext->out,
+                null !== $paramContext->routeKey
             ));
         }
     }

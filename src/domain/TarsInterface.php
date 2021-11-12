@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace tars\domain;
 
 class TarsInterface
@@ -7,15 +9,16 @@ class TarsInterface
     /**
      * @var string
      */
-    private $name;
+    private string $name;
 
     /**
      * @var TarsOperation[]
      */
-    private $operations = [];
+    private array $operations = [];
 
     /**
      * TarsInterface constructor.
+     *
      * @param string $name
      */
     public function __construct(string $name)

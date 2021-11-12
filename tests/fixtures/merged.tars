@@ -1,0 +1,26 @@
+module demo
+{
+    const int i = 1;
+    const string s = "sss";
+
+    enum TE
+    {
+        E1,
+        E3,
+        E2
+    };
+    struct SimpleStruct
+    {
+        0 require  long         id;
+        1 require  unsigned int count;
+        2 require  short        page = 10;
+        3 optional TE           te;
+    };
+    interface Hello
+    {
+        /**
+         * doc string for hello
+         */
+        long hello(int no, vector<string> name, map<string, string> tags, TE te, out map<int, SimpleStruct> result);
+    };
+};

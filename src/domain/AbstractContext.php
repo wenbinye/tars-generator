@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace tars\domain;
 
 use tars\TarsGeneratorContext;
@@ -9,16 +11,17 @@ abstract class AbstractContext
     /**
      * @var string
      */
-    protected $moduleName;
+    protected string $moduleName;
 
     /**
      * @var TarsGeneratorContext
      */
-    protected $generatorContext;
+    protected TarsGeneratorContext $generatorContext;
 
     /**
      * AbstractContext constructor.
-     * @param string $moduleName
+     *
+     * @param string               $moduleName
      * @param TarsGeneratorContext $generatorContext
      */
     public function __construct(string $moduleName, TarsGeneratorContext $generatorContext)

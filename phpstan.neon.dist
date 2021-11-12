@@ -1,0 +1,18 @@
+# -*- mode: yaml -*-
+
+includes:
+  - phpstan-baseline.neon
+
+parameters:
+  level: 8
+  parallel:
+    processTimeout: 300.0
+  paths:
+    - src
+  excludePaths:
+    analyse:
+      - src/parse
+  checkMissingIterableValueType: false
+  checkGenericClassInNonGenericObjectType: false
+  ignoreErrors:
+     - '#Construct empty\(\) is not allowed. Use more strict comparison#'

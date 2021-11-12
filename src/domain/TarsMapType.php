@@ -1,36 +1,40 @@
 <?php
 
+declare(strict_types=1);
 
 namespace tars\domain;
 
-
 use tars\parse\Context\MapTypeContext;
+use Webmozart\Assert\Assert;
 
 class TarsMapType implements TarsType
 {
     /**
      * @var TarsUnionType
      */
-    private $keyType;
+    private TarsUnionType $keyType;
     /**
      * @var TarsUnionType
      */
-    private $valueType;
+    private TarsUnionType $valueType;
 
-    public static function create(MapTypeContext $mapTypeContext)
+    public static function create(MapTypeContext $mapTypeContext): self
     {
         $type = new self();
+        Assert::notNull($mapTypeContext->keyType);
+        Assert::notNull($mapTypeContext->valueType);
         $type->keyType = TarsUnionType::create($mapTypeContext->keyType);
         $type->valueType = TarsUnionType::create($mapTypeContext->valueType);
+
         return $type;
     }
 
     public function __toString(): string
     {
         if ($this->keyType->isPrimitiveType()) {
-            return ((string)$this->valueType) . '[]';
+            return ((string) $this->valueType).'[]';
         } else {
-            return "\\kuiper\\tars\\type\\StructMap";
+            return '\\kuiper\\tars\\type\\StructMap';
         }
     }
 
@@ -44,11 +48,21 @@ class TarsMapType implements TarsType
         if ($this->keyType->isPrimitiveType()) {
             return 'array';
         }
+
         return null;
     }
 
     public function getOpenapiDeclaration(): string
     {
         return 'type="object"';
+    }
+
+    public function getDefaultValue(): ?string
+    {
+        if ($this->keyType->isPrimitiveType()) {
+            return '[]';
+        }
+
+        return 'null';
     }
 }

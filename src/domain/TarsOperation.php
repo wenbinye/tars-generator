@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace tars\domain;
 
 class TarsOperation
@@ -7,26 +9,27 @@ class TarsOperation
     /**
      * @var string
      */
-    private $name;
+    private string $name;
 
     /**
      * @var TarsUnionType
      */
-    private $returnType;
+    private TarsUnionType $returnType;
 
     /**
      * @var TarsParameter[]
      */
-    private $parameters = [];
+    private array $parameters = [];
 
     /**
      * @var DocBlock|null
      */
-    private $docBlock;
+    private ?DocBlock $docBlock = null;
 
     /**
      * TarsOperation constructor.
-     * @param string $name
+     *
+     * @param string        $name
      * @param TarsUnionType $returnType
      */
     public function __construct(string $name, TarsUnionType $returnType)
@@ -66,7 +69,7 @@ class TarsOperation
 
     public function hasPhpReturnType(): bool
     {
-        return $this->returnType->getDeclarationType() !== null;
+        return null !== $this->returnType->getDeclarationType();
     }
 
     public function getPhpReturnType(): ?string

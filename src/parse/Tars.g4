@@ -6,7 +6,7 @@ includeDef: '#include' fileName;
 
 fileName: String;
 
-moduleDef: 'module' moduleName '{' definition* '}';
+moduleDef: 'module' moduleName '{' definition* '}' ';'?;
 
 moduleName: Identifier;
 

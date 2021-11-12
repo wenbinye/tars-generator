@@ -1,0 +1,7 @@
+module demo
+{
+    /** test1 */
+    const int i = 1;
+    // test2
+    const string s = "sss"; // test3
+};

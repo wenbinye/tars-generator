@@ -1,0 +1,10 @@
+module demo
+{
+    struct SimpleStruct
+    {
+        0 require  long         id;
+        1 require  unsigned int count;
+        2 require  short        page = 10;
+        3 optional TE           te;
+    };
+};

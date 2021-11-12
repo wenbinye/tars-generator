@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace tars\domain;
 
 class TarsEnumContext extends AbstractContext
@@ -7,7 +9,7 @@ class TarsEnumContext extends AbstractContext
     /**
      * @var TarsEnum
      */
-    private $enum;
+    private TarsEnum $enum;
 
     public function setEnum(TarsEnum $enum): void
     {

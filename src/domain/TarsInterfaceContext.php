@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace tars\domain;
 
 class TarsInterfaceContext extends AbstractContext
@@ -7,17 +9,17 @@ class TarsInterfaceContext extends AbstractContext
     /**
      * @var bool
      */
-    private $servant;
+    private bool $servant;
 
     /**
      * @var string
      */
-    private $servantName;
+    private string $servantName;
 
     /**
      * @var TarsInterface
      */
-    private $interface;
+    private TarsInterface $interface;
 
     public function getClassName(): string
     {

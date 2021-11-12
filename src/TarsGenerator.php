@@ -1,5 +1,6 @@
 <?php
 
+declare(strict_types=1);
 
 namespace tars;
 
@@ -15,9 +16,9 @@ class TarsGenerator
     /**
      * @var TarsGeneratorContext
      */
-    private $context;
+    private TarsGeneratorContext $context;
 
-    public const VERSION = '1.0';
+    public const VERSION = '0.5';
 
     public function __construct(TarsGeneratorContext $context)
     {
@@ -35,5 +36,5 @@ class TarsGenerator
         $tree = $parser->root();
 
         ParseTreeWalker::default()->walk(new TarsGeneratorListener($this->context->withTokenStream($tokens)), $tree);
-   }
+    }
 }

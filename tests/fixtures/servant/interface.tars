@@ -1,0 +1,10 @@
+module demo
+{
+    interface Hello
+    {
+        /**
+         * doc string for hello
+         */
+        long hello(int no, vector<string> name, map<string, string> tags, TE te, out map<int, SimpleStruct> result);
+    };
+};

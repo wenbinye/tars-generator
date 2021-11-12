@@ -1,25 +1,29 @@
 <?php
 
+declare(strict_types=1);
 
 namespace tars\domain;
 
-
 use tars\parse\Context\CustomTypeContext;
+use Webmozart\Assert\Assert;
 
 class TarsCustomType implements TarsType
 {
     /**
      * @var string
      */
-    private $name;
+    private string $name;
 
     public static function create(CustomTypeContext $customType): self
     {
-        if ($customType->moduleName() !== null) {
-            throw new \InvalidArgumentException("暂时不支持引用其他 module 类型");
+        if (null !== $customType->moduleName()) {
+            throw new \InvalidArgumentException('暂时不支持引用其他 module 类型');
         }
         $type = new self();
-        $type->name = $customType->Identifier()->getText();
+        $identifier = $customType->Identifier();
+        Assert::notNull($identifier);
+        $type->name = $identifier->getText() ?? '';
+
         return $type;
     }
 
@@ -41,5 +45,10 @@ class TarsCustomType implements TarsType
     public function getOpenapiDeclaration(): string
     {
         return sprintf('ref="#/components/schemas/%s"', $this->name);
+    }
+
+    public function getDefaultValue(): ?string
+    {
+        return 'null';
     }
 }

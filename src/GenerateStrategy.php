@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace tars;
 
 interface GenerateStrategy
@@ -16,4 +18,5 @@ interface GenerateStrategy
 
     public function generate(domain\AbstractContext $context): void;
 
+    public function getConfig(): GeneratorConfig;
 }

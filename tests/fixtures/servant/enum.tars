@@ -1,0 +1,9 @@
+module demo
+{
+    enum TE
+    {
+        E1,
+        E3,
+        E2
+    };
+};

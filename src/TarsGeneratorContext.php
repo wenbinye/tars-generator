@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace tars;
 
 use Antlr\Antlr4\Runtime\CommonTokenStream;
@@ -9,33 +11,28 @@ class TarsGeneratorContext
     /**
      * @var GenerateStrategy
      */
-    private $generateStrategy;
+    private GenerateStrategy $generateStrategy;
 
     /**
      * @var string[]
      */
-    private $servants;
+    private array $servants;
 
     /**
      * @var bool
      */
-    private $servant;
+    private bool $servant;
 
     /**
      * @var string
      */
-    private $file;
+    private string $file;
 
     /**
      * @var CommonTokenStream
      */
-    private $tokenStream;
+    private CommonTokenStream $tokenStream;
 
-    /**
-     * TarsGeneratorContext constructor.
-     * @param GenerateStrategy $generateStrategy
-     * @param string[] $servants
-     */
     public function __construct(GenerateStrategy $generateStrategy, bool $servant, array $servants = [])
     {
         $this->generateStrategy = $generateStrategy;
@@ -71,6 +68,7 @@ class TarsGeneratorContext
     {
         $new = clone $this;
         $new->file = $file;
+
         return $new;
     }
 
@@ -86,6 +84,7 @@ class TarsGeneratorContext
     {
         $new = clone $this;
         $new->tokenStream = $tokenStream;
+
         return $new;
     }
 
@@ -104,8 +103,8 @@ class TarsGeneratorContext
 
     public function getServantName(string $moduleName, string $interfaceName): string
     {
-        return $this->servants[$moduleName . '.' . $interfaceName]
+        return $this->servants[$moduleName.'.'.$interfaceName]
             ?? $this->servants[$interfaceName]
-            ?? $interfaceName . 'Obj';
+            ?? $interfaceName.'Obj';
     }
 }

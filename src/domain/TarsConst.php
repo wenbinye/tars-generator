@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace tars\domain;
 
 class TarsConst
@@ -7,23 +9,24 @@ class TarsConst
     /**
      * @var string
      */
-    private $name;
+    private string $name;
 
     /**
      * @var TarsPrimitiveType|null
      */
-    private $type;
+    private ?TarsPrimitiveType $type;
 
     /**
      * @var string
      */
-    private $value;
+    private string $value;
 
     /**
      * TarsConst constructor.
-     * @param string $name
+     *
+     * @param string                 $name
      * @param TarsPrimitiveType|null $type
-     * @param string $value
+     * @param string                 $value
      */
     public function __construct(string $name, ?TarsPrimitiveType $type, string $value)
     {

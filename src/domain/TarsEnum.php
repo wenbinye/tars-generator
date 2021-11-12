@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace tars\domain;
 
 class TarsEnum
@@ -7,20 +9,21 @@ class TarsEnum
     /**
      * @var string
      */
-    private $name;
+    private string $name;
 
     /**
      * @var array
      */
-    private $enumerators = [];
+    private array $enumerators = [];
 
     /**
      * @var int
      */
-    private $ordinal = 0;
+    private int $ordinal = 0;
 
     /**
      * TarsEnum constructor.
+     *
      * @param string $name
      */
     public function __construct(string $name)
@@ -41,7 +44,7 @@ class TarsEnum
         $value = $value ?? $this->ordinal;
         $this->enumerators[] = [
             'name' => $name,
-            'value' => $value
+            'value' => $value,
         ];
         $this->ordinal = $value + 1;
     }

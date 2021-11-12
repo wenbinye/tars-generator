@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace tars\domain;
 
 class TarsStructField
@@ -7,35 +9,36 @@ class TarsStructField
     /**
      * @var int
      */
-    private $order;
+    private int $order;
 
     /**
      * @var bool
      */
-    private $required;
+    private bool $required;
 
     /**
      * @var TarsUnionType
      */
-    private $type;
+    private TarsUnionType $type;
 
     /**
      * @var string
      */
-    private $name;
+    private string $name;
 
     /**
      * @var string|null
      */
-    private $defaultValue;
+    private ?string $defaultValue;
 
     /**
      * TarsStructField constructor.
-     * @param int $order
-     * @param bool $required
+     *
+     * @param int           $order
+     * @param bool          $required
      * @param TarsUnionType $type
-     * @param string $name
-     * @param string|null $defaultValue
+     * @param string        $name
+     * @param string|null   $defaultValue
      */
     public function __construct(string $name, int $order, bool $required, TarsUnionType $type, ?string $defaultValue)
     {

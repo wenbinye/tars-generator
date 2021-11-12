@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace tars\domain;
 
 class TarsStructContext extends AbstractContext
@@ -7,7 +9,7 @@ class TarsStructContext extends AbstractContext
     /**
      * @var TarsStruct
      */
-    private $struct;
+    private TarsStruct $struct;
 
     public function getClassName(): string
     {

@@ -20,21 +20,21 @@ final class SimpleStruct
     /**
      * @OA\Property(type="integer", format="int64")
      * @TarsProperty(order=0, required=true, type="long")
-     * @var int|null
+     * @var int
      */
     public $id;
 
     /**
      * @OA\Property(type="integer", format="int32")
      * @TarsProperty(order=1, required=true, type="int")
-     * @var int|null
+     * @var int
      */
     public $count = 0;
 
     /**
      * @OA\Property(type="object")
      * @TarsProperty(order=2, required=true, type="map<string,string>")
-     * @var string[]|null
+     * @var string[]
      */
     public $page;
 

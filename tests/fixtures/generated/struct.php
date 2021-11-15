@@ -15,19 +15,19 @@ final class SimpleStruct
 {
     /**
      * @TarsProperty(order=0, required=true, type="long")
-     * @var int|null
+     * @var int
      */
     public $id;
 
     /**
      * @TarsProperty(order=1, required=true, type="int")
-     * @var int|null
+     * @var int
      */
     public $count = 0;
 
     /**
      * @TarsProperty(order=2, required=true, type="map<string,string>")
-     * @var string[]|null
+     * @var string[]
      */
     public $page;
 

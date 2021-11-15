@@ -27,7 +27,7 @@ final class {{ className }}
      * @OA\Property({{ member.openapiDeclaration|raw }})
 {% endif %}
      * @TarsProperty(order={{ member.order }}, required={{ member.required ? 'true' : 'false' }}, type="{{ member.type.tarsType | raw }}")
-     * @var {{ member.type }}|null
+     * @var {{ member.type }}{{ member.required ? '' : '|null' }}
      */
     public ${{ member.name }}{% if member.hasDefaultValue() %} = {{ member.defaultValue | raw }}{% endif %};
 

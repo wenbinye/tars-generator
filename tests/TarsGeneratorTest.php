@@ -86,7 +86,10 @@ class TarsGeneratorTest extends TestCase
         $file = __DIR__.'/fixtures/struct.tars';
         $generator = new TarsGenerator($this->createContext(true)->withFile($file));
         $generator->generate();
-        $this->assertFileEquals('/tmp/src/integration/test/SimpleStruct.php', __DIR__.'/fixtures/generated/struct_openapi.php');
+        $this->assertEquals(
+            $this->generateStrategy->getCodes()['/tmp/src/integration/test/SimpleStruct.php'],
+            file_get_contents(__DIR__.'/fixtures/generated/struct_openapi.php')
+        );
     }
 
     public function testInterface()
@@ -105,13 +108,13 @@ class TarsGeneratorTest extends TestCase
         $loader = new FilesystemLoader($viewPath);
         $twig = new Environment($loader);
         $twig->addGlobal('generator_version', TarsGenerator::VERSION);
-        $config = [
+        $config = GeneratorConfig::fromArray([
             'namespace' => 'foo\\bar\\integration',
             'psr4_namespace' => 'foo\\bar',
             'output' => '/tmp/src',
             'flat' => false,
             'enable_openapi' => $enableOpenapi,
-        ];
+        ]);
         $this->generateStrategy = new InMemoryGenerateStrategy($twig, $config);
 
         return new TarsGeneratorContext($this->generateStrategy, false);

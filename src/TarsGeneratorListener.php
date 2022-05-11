@@ -26,11 +26,6 @@ use Webmozart\Assert\Assert;
 class TarsGeneratorListener extends TarsBaseListener
 {
     /**
-     * @var TarsGeneratorContext
-     */
-    private TarsGeneratorContext $context;
-
-    /**
      * @var string
      */
     private string $moduleName;
@@ -55,14 +50,8 @@ class TarsGeneratorListener extends TarsBaseListener
      */
     private TarsInterfaceContext $interfaceContext;
 
-    /**
-     * TarsGeneratorListener constructor.
-     *
-     * @param TarsGeneratorContext $context
-     */
-    public function __construct(TarsGeneratorContext $context)
+    public function __construct(private readonly TarsGeneratorContext $context)
     {
-        $this->context = $context;
     }
 
     public function enterModuleName(Context\ModuleNameContext $context): void

@@ -9,10 +9,7 @@ use Webmozart\Assert\Assert;
 
 class TarsCustomType implements TarsType
 {
-    /**
-     * @var string
-     */
-    private string $name;
+    private readonly string $name;
 
     public static function create(CustomTypeContext $customType): self
     {

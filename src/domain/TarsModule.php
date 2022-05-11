@@ -16,8 +16,6 @@ use Webmozart\Assert\Assert;
 
 class TarsModule
 {
-    private string $name;
-
     /**
      * @var array
      */
@@ -31,14 +29,8 @@ class TarsModule
         KeyMapContext::class => 4,
     ];
 
-    /**
-     * TarsModule constructor.
-     *
-     * @param string $name
-     */
-    public function __construct(string $name)
+    public function __construct(private readonly string $name)
     {
-        $this->name = $name;
     }
 
     /**

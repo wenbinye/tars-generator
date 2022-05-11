@@ -9,21 +9,6 @@ use Antlr\Antlr4\Runtime\CommonTokenStream;
 class TarsGeneratorContext
 {
     /**
-     * @var GenerateStrategy
-     */
-    private GenerateStrategy $generateStrategy;
-
-    /**
-     * @var string[]
-     */
-    private array $servants;
-
-    /**
-     * @var bool
-     */
-    private bool $servant;
-
-    /**
      * @var string
      */
     private string $file;
@@ -33,11 +18,16 @@ class TarsGeneratorContext
      */
     private CommonTokenStream $tokenStream;
 
-    public function __construct(GenerateStrategy $generateStrategy, bool $servant, array $servants = [])
+    /**
+     * @param GenerateStrategy $generateStrategy
+     * @param bool             $servant
+     * @param string[]         $servants
+     */
+    public function __construct(
+        private readonly GenerateStrategy $generateStrategy,
+        private readonly bool $servant,
+        private readonly array $servants = [])
     {
-        $this->generateStrategy = $generateStrategy;
-        $this->servant = $servant;
-        $this->servants = $servants;
     }
 
     /**

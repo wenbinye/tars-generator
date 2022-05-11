@@ -8,26 +8,10 @@ use tars\TarsGeneratorContext;
 
 abstract class AbstractContext
 {
-    /**
-     * @var string
-     */
-    protected string $moduleName;
-
-    /**
-     * @var TarsGeneratorContext
-     */
-    protected TarsGeneratorContext $generatorContext;
-
-    /**
-     * AbstractContext constructor.
-     *
-     * @param string               $moduleName
-     * @param TarsGeneratorContext $generatorContext
-     */
-    public function __construct(string $moduleName, TarsGeneratorContext $generatorContext)
+    public function __construct(
+        protected readonly string $moduleName,
+        protected readonly TarsGeneratorContext $generatorContext)
     {
-        $this->moduleName = $moduleName;
-        $this->generatorContext = $generatorContext;
     }
 
     public function getNamespace(): string

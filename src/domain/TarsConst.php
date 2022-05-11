@@ -6,33 +6,11 @@ namespace tars\domain;
 
 class TarsConst
 {
-    /**
-     * @var string
-     */
-    private string $name;
-
-    /**
-     * @var TarsPrimitiveType|null
-     */
-    private ?TarsPrimitiveType $type;
-
-    /**
-     * @var string
-     */
-    private string $value;
-
-    /**
-     * TarsConst constructor.
-     *
-     * @param string                 $name
-     * @param TarsPrimitiveType|null $type
-     * @param string                 $value
-     */
-    public function __construct(string $name, ?TarsPrimitiveType $type, string $value)
+    public function __construct(
+        private readonly string $name,
+        private readonly ?TarsPrimitiveType $type,
+        private readonly string $value)
     {
-        $this->name = $name;
-        $this->type = $type;
-        $this->value = $value;
     }
 
     /**

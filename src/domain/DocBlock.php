@@ -31,7 +31,7 @@ class DocBlock implements \Iterator
         $lines = [];
         foreach (explode("\n", $docBlock) as $line) {
             $line = trim($line);
-            if (0 === strpos($line, '/**') || 0 === strpos($line, '*/')) {
+            if (str_starts_with($line, '/**') || str_starts_with($line, '*/')) {
                 continue;
             }
             $lines[] = preg_replace('#@(var|return|param)\s+#', '@tars-\1 ', trim($line, '* '));
@@ -43,7 +43,7 @@ class DocBlock implements \Iterator
     /**
      * @return mixed
      */
-    public function current()
+    public function current(): mixed
     {
         return $this->lines->current();
     }
@@ -56,7 +56,7 @@ class DocBlock implements \Iterator
     /**
      * @return bool|float|int|string|null
      */
-    public function key()
+    public function key(): mixed
     {
         return $this->lines->key();
     }

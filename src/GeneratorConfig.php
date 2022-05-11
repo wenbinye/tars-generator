@@ -6,29 +6,26 @@ namespace tars;
 
 class GeneratorConfig
 {
-    private string $psr4Namespace;
-
-    private string $psr4Path;
-
-    private bool $flat;
-
-    private string $namespace;
-
-    private bool $enableOpenapi;
-
-    private ?string $defaultValueStrategy;
+    public function __construct(
+        private readonly string $psr4Namespace,
+        private readonly string $psr4Path,
+        private readonly bool $flat,
+        private readonly string $namespace,
+        private readonly bool $enableOpenapi,
+        private readonly ?string $defaultValueStrategy,
+    ) {
+    }
 
     public static function fromArray(array $options): self
     {
-        $config = new self();
-        $config->psr4Namespace = $options['psr4_namespace'];
-        $config->psr4Path = $options['output'];
-        $config->namespace = $options['namespace'] ?? $options['psr4_namespace'];
-        $config->flat = $options['flat'] ?? false;
-        $config->enableOpenapi = $options['enable_openapi'] ?? false;
-        $config->defaultValueStrategy = $options['default_value_strategy'] ?? null;
-
-        return $config;
+        return new self(
+            psr4Namespace: $options['psr4_namespace'],
+            psr4Path: $options['output'],
+            flat: $options['flat'] ?? false,
+            namespace: $options['namespace'] ?? $options['psr4_namespace'],
+            enableOpenapi: $options['enable_openapi'] ?? false,
+            defaultValueStrategy: $options['default_value_strategy'] ?? null,
+        );
     }
 
     /**

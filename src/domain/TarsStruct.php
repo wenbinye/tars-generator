@@ -7,23 +7,12 @@ namespace tars\domain;
 class TarsStruct
 {
     /**
-     * @var string
-     */
-    private string $name;
-
-    /**
      * @var TarsStructField[]
      */
     private array $fields = [];
 
-    /**
-     * TarsStruct constructor.
-     *
-     * @param string $name
-     */
-    public function __construct(string $name)
+    public function __construct(private readonly string $name)
     {
-        $this->name = $name;
     }
 
     public function getName(): string

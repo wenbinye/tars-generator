@@ -7,23 +7,12 @@ namespace tars\domain;
 class TarsInterface
 {
     /**
-     * @var string
-     */
-    private string $name;
-
-    /**
      * @var TarsOperation[]
      */
     private array $operations = [];
 
-    /**
-     * TarsInterface constructor.
-     *
-     * @param string $name
-     */
-    public function __construct(string $name)
+    public function __construct(private readonly string $name)
     {
-        $this->name = $name;
     }
 
     public function getName(): string

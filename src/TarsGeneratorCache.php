@@ -4,14 +4,11 @@ declare(strict_types=1);
 
 namespace tars;
 
+use JsonException;
+
 class TarsGeneratorCache
 {
     private const VERSION = TarsGenerator::VERSION.'#1738600ba43a1c4349e5c3553425cf89dd05d5ec';
-
-    /**
-     * @var string
-     */
-    private string $cacheFile;
 
     /**
      * @var array
@@ -23,11 +20,10 @@ class TarsGeneratorCache
      *
      * @param string $cacheFile
      *
-     * @throws \JsonException
+     * @throws JsonException
      */
-    public function __construct(string $cacheFile)
+    public function __construct(private readonly string $cacheFile)
     {
-        $this->cacheFile = $cacheFile;
         if (is_readable($cacheFile)) {
             $json = file_get_contents($cacheFile);
             if (false === $json) {
@@ -48,7 +44,7 @@ class TarsGeneratorCache
     }
 
     /**
-     * @throws \JsonException
+     * @throws JsonException
      */
     public function add(string $file): void
     {

@@ -11,16 +11,9 @@ declare(strict_types=1);
 
 namespace {{ namespace }};
 
-use kuiper\helper\Enum;
-
-/**
-{% for member in enum.enumerators %}
- * @method static {{ className }} {{ member.name }}()
-{% endfor %}
- */
-final class {{ className }} extends Enum
+enum {{ className }}: int
 {
 {% for member in enum.enumerators %}
-    public const {{ member.name }} = {{ member.value }};
+    case {{ member.name }} = {{ member.value }};
 {% endfor %}
 }

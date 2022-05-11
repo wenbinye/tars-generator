@@ -11,7 +11,7 @@ declare(strict_types=1);
 
 namespace {{ namespace }};
 
-use kuiper\tars\annotation\TarsProperty;
+use kuiper\tars\attribute\TarsProperty;
 {% if enable_openapi %}
 use OpenApi\Annotations as OA;
 {% endif %}
@@ -28,10 +28,20 @@ final class {{ className }}
 {% if enable_openapi %}
      * @OA\Property({{ member.openapiDeclaration|raw }})
 {% endif %}
-     * @TarsProperty(order={{ member.order }}, required={{ member.required ? 'true' : 'false' }}, type="{{ member.type.tarsType | raw }}")
      * @var {{ member.type }}{{  member.required ? '' : '|null' }}
      */
-    public ${{ member.name }}{% if member.hasDefaultValue() %} = {{ member.defaultValue | raw }}{% endif %};
+    #[TarsProperty(type: "{{ member.type.tarsType | raw }}", order: {{ member.order }})]
+    public {% if member.type.declarationType %}readonly {{  member.required ? '' : '?' }}{{ member.type.declarationType }} {% endif %}${{ member.name }};
 
 {% endfor %}
+    public function __construct(
+{% for member in struct.fields %}
+        {% if member.type.declarationType %}{{  member.required ? '' : '?' }}{{ member.type.declarationType }} {% endif %}${{ member.name }}{{  member.required ? '' : ' = null' }}{% if not loop.last %},{% endif %}
+
+{% endfor %}
+    ) {
+{% for member in struct.fields %}
+          $this->{{ member.name }} = ${{ member.name }};
+{% endfor %}
+    }
 }

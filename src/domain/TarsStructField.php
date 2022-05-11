@@ -6,47 +6,13 @@ namespace tars\domain;
 
 class TarsStructField
 {
-    /**
-     * @var int
-     */
-    private int $order;
-
-    /**
-     * @var bool
-     */
-    private bool $required;
-
-    /**
-     * @var TarsUnionType
-     */
-    private TarsUnionType $type;
-
-    /**
-     * @var string
-     */
-    private string $name;
-
-    /**
-     * @var string|null
-     */
-    private ?string $defaultValue;
-
-    /**
-     * TarsStructField constructor.
-     *
-     * @param int           $order
-     * @param bool          $required
-     * @param TarsUnionType $type
-     * @param string        $name
-     * @param string|null   $defaultValue
-     */
-    public function __construct(string $name, int $order, bool $required, TarsUnionType $type, ?string $defaultValue)
+    public function __construct(
+        private readonly string $name,
+        private readonly int $order,
+        private readonly bool $required,
+        private readonly TarsUnionType $type,
+        private readonly ?string $defaultValue)
     {
-        $this->order = $order;
-        $this->required = $required;
-        $this->type = $type;
-        $this->name = $name;
-        $this->defaultValue = $defaultValue;
     }
 
     /**

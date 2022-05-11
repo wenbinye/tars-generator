@@ -7,11 +7,6 @@ namespace tars\domain;
 class TarsEnum
 {
     /**
-     * @var string
-     */
-    private string $name;
-
-    /**
      * @var array
      */
     private array $enumerators = [];
@@ -21,14 +16,8 @@ class TarsEnum
      */
     private int $ordinal = 0;
 
-    /**
-     * TarsEnum constructor.
-     *
-     * @param string $name
-     */
-    public function __construct(string $name)
+    public function __construct(private readonly string $name)
     {
-        $this->name = $name;
     }
 
     /**

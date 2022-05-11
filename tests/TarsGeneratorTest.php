@@ -21,7 +21,7 @@ class TarsGeneratorTest extends TestCase
     public function testSimple()
     {
         $code = file_get_contents(__DIR__.'/fixtures/servant/const.tars');
-        echo $code, "\n";
+        // echo $code, "\n";
         $input = InputStream::fromString($code);
         $lexer = new TarsLexer($input);
         $tokens = new CommonTokenStream($lexer);
@@ -31,12 +31,13 @@ class TarsGeneratorTest extends TestCase
         $tree = $parser->root();
 
         ParseTreeWalker::default()->walk(new TarsMergeListener($tokens), $tree);
+        $this->assertTrue(true);
     }
 
     public function testMerge()
     {
         $code = implode("\n", array_map('file_get_contents', glob(__DIR__.'/fixtures/servant/*.tars')));
-        echo $code, "\n";
+        // echo $code, "\n";
         $input = InputStream::fromString($code);
         $lexer = new TarsLexer($input);
         $tokens = new CommonTokenStream($lexer);
@@ -48,6 +49,7 @@ class TarsGeneratorTest extends TestCase
         $listener = new TarsMergeListener();
         ParseTreeWalker::default()->walk($listener, $tree);
         echo implode("\n", $listener->getModules());
+        $this->assertCount(1, $listener->getModules());
     }
 
     public function testConst()
@@ -55,7 +57,10 @@ class TarsGeneratorTest extends TestCase
         $file = __DIR__.'/fixtures/const.tars';
         $generator = new TarsGenerator($this->createContext()->withFile($file));
         $generator->generate();
-        var_export($this->generateStrategy->getCodes());
+        $codes = $this->generateStrategy->getCodes();
+        // var_export($codes);
+        $this->assertStringEqualsFile(__DIR__.'/fixtures/generated/const.php',
+            $codes['/tmp/src/integration/test/Constants.php']);
     }
 
     public function testInclude()
@@ -63,7 +68,10 @@ class TarsGeneratorTest extends TestCase
         $file = __DIR__.'/fixtures/servant/interface.tars';
         $generator = new TarsGenerator($this->createContext()->withFile($file));
         $generator->generate();
-        var_export($this->generateStrategy->getCodes());
+        $codes = $this->generateStrategy->getCodes();
+        var_export($codes);
+        $this->assertStringEqualsFile(__DIR__.'/fixtures/generated/interface.php',
+            $codes['/tmp/src/integration/demo/HelloServant.php']);
     }
 
     public function testEnum()
@@ -71,6 +79,10 @@ class TarsGeneratorTest extends TestCase
         $file = __DIR__.'/fixtures/enum.tars';
         $generator = new TarsGenerator($this->createContext()->withFile($file));
         $generator->generate();
+        $codes = $this->generateStrategy->getCodes();
+        // var_export($codes);
+        $this->assertStringEqualsFile(__DIR__.'/fixtures/generated/enum.php',
+            $codes['/tmp/src/integration/test/TE.php']);
     }
 
     public function testStruct()
@@ -78,7 +90,10 @@ class TarsGeneratorTest extends TestCase
         $file = __DIR__.'/fixtures/struct.tars';
         $generator = new TarsGenerator($this->createContext()->withFile($file));
         $generator->generate();
-        $this->assertFileEquals('/tmp/src/integration/test/SimpleStruct.php', __DIR__.'/fixtures/generated/struct.php');
+        $codes = $this->generateStrategy->getCodes();
+        // var_export($codes);
+        $this->assertStringEqualsFile(__DIR__.'/fixtures/generated/struct.php',
+            $codes['/tmp/src/integration/test/SimpleStruct.php']);
     }
 
     public function testStructOpenapi()
@@ -86,9 +101,10 @@ class TarsGeneratorTest extends TestCase
         $file = __DIR__.'/fixtures/struct.tars';
         $generator = new TarsGenerator($this->createContext(true)->withFile($file));
         $generator->generate();
-        $this->assertEquals(
-            $this->generateStrategy->getCodes()['/tmp/src/integration/test/SimpleStruct.php'],
-            file_get_contents(__DIR__.'/fixtures/generated/struct_openapi.php')
+        $codes = $this->generateStrategy->getCodes();
+        $this->assertStringEqualsFile(
+            __DIR__.'/fixtures/generated/struct_openapi.php',
+            $codes['/tmp/src/integration/test/SimpleStruct.php']
         );
     }
 
@@ -97,6 +113,13 @@ class TarsGeneratorTest extends TestCase
         $file = __DIR__.'/fixtures/healthcheck.tars';
         $generator = new TarsGenerator($this->createContext()->withFile($file));
         $generator->generate();
+
+        $codes = $this->generateStrategy->getCodes();
+        // var_export($codes);
+        $this->assertStringEqualsFile(
+            __DIR__.'/fixtures/generated/HealthCheck.php',
+            $codes['/tmp/src/integration/test/HealthCheckServant.php']
+        );
     }
 
     /**

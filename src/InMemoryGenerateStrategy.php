@@ -6,6 +6,9 @@ namespace tars;
 
 class InMemoryGenerateStrategy extends AbstractGenerateStrategy
 {
+    /**
+     * @var string[]
+     */
     private array $codes = [];
 
     public function getCodes(): array

@@ -8,7 +8,12 @@ use Antlr\Antlr4\Runtime\CommonTokenStream;
 use Antlr\Antlr4\Runtime\Error\Listeners\DiagnosticErrorListener;
 use Antlr\Antlr4\Runtime\InputStream;
 use Antlr\Antlr4\Runtime\Tree\ParseTreeWalker;
+use InvalidArgumentException;
+use JsonException;
 use Psr\Log\LoggerInterface;
+use RecursiveDirectoryIterator;
+use RecursiveIteratorIterator;
+use RuntimeException;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
@@ -32,15 +37,15 @@ class TarsGenerateCommand extends Command
     {
         $this->setName('tars:generate');
         $this->addOption('namespace', null, InputOption::VALUE_REQUIRED, 'php class namespace');
-        $this->addOption('output-path', 'o', InputOption::VALUE_REQUIRED, '');
-        $this->addOption('servants', null, InputOption::VALUE_IS_ARRAY | InputOption::VALUE_REQUIRED, '');
+        $this->addOption('output-path', 'o', InputOption::VALUE_REQUIRED, 'output path');
+        $this->addOption('servants', null, InputOption::VALUE_IS_ARRAY | InputOption::VALUE_REQUIRED, 'servant names');
         $this->addOption('client', null, InputOption::VALUE_NONE, 'generate client class');
         $this->addOption('enable-openapi', null, InputOption::VALUE_NONE, 'generate openapi annotation');
-        $this->addArgument('tars-path', InputArgument::IS_ARRAY | InputArgument::OPTIONAL, '');
+        $this->addArgument('tars-path', InputArgument::IS_ARRAY | InputArgument::OPTIONAL, 'tars file path');
     }
 
     /**
-     * @throws \JsonException
+     * @throws JsonException
      */
     protected function execute(InputInterface $input, OutputInterface $output): int
     {
@@ -58,7 +63,7 @@ class TarsGenerateCommand extends Command
     {
         $tarsPath = $input->getArgument('tars-path');
         if (null === $tarsPath) {
-            throw new \InvalidArgumentException('Arguments tars-path is required');
+            throw new InvalidArgumentException('Arguments tars-path is required');
         }
         $servant = true !== $input->getOption('client');
         $namespace = $input->getOption('namespace');
@@ -82,24 +87,24 @@ class TarsGenerateCommand extends Command
     }
 
     /**
-     * @throws \JsonException
+     * @throws JsonException
      */
     private function generateFromProject(InputInterface $input, OutputInterface $output): void
     {
         $projectPath = getcwd();
         if (false === $projectPath) {
-            throw new \RuntimeException('Cannot get current directory');
+            throw new RuntimeException('Cannot get current directory');
         }
         if (!file_exists($projectPath.'/composer.json')) {
-            throw new \RuntimeException('No composer.json find in current directory');
+            throw new RuntimeException('No composer.json find in current directory');
         }
         $content = file_get_contents($projectPath.'/composer.json');
         if (false === $content) {
-            throw new \RuntimeException('Cannot read composer.json');
+            throw new RuntimeException('Cannot read composer.json');
         }
         $composerJson = json_decode($content, true, 512, JSON_THROW_ON_ERROR);
         if (empty($composerJson['autoload']['psr-4'])) {
-            throw new \RuntimeException('No psr-4 autoload rule in composer.json');
+            throw new RuntimeException('No psr-4 autoload rule in composer.json');
         }
 
         $cache = new TarsGeneratorCache($projectPath.'/.tars-gen.cache');
@@ -121,6 +126,9 @@ class TarsGenerateCommand extends Command
         }
     }
 
+    /**
+     * @throws JsonException
+     */
     private function generate(TarsGeneratorContext $context, string $path, ?TarsGeneratorCache $cache): void
     {
         if (is_file($path)) {
@@ -130,17 +138,15 @@ class TarsGenerateCommand extends Command
             $this->logger->info("Processing $path");
             $generator = new TarsGenerator($context->withFile($path));
             $generator->generate();
-            if (null !== $cache) {
-                $cache->add($path);
-            }
+            $cache?->add($path);
 
             return;
         }
         if (!is_dir($path)) {
-            throw new \InvalidArgumentException("Directory $path does not exist");
+            throw new InvalidArgumentException("Directory $path does not exist");
         }
-        $dirIterator = new \RecursiveDirectoryIterator($path);
-        foreach (new \RecursiveIteratorIterator($dirIterator) as $file => $fileInfo) {
+        $dirIterator = new RecursiveDirectoryIterator($path);
+        foreach (new RecursiveIteratorIterator($dirIterator) as $file => $fileInfo) {
             if (!is_file($file) || false === strrpos($file, '.tars')) {
                 continue;
             }
@@ -148,6 +154,9 @@ class TarsGenerateCommand extends Command
         }
     }
 
+    /**
+     * @throws JsonException
+     */
     private function generateOne(string $type, array $config, TarsGeneratorCache $cache, string $psr4Namespace, string $psr4Path, OutputInterface $output): void
     {
         $servant = 'servant' === $type;
@@ -179,7 +188,7 @@ class TarsGenerateCommand extends Command
     }
 
     /**
-     * @throws \JsonException
+     * @throws JsonException
      */
     private function loadConfig(string $projectPath): array
     {
@@ -205,6 +214,9 @@ class TarsGenerateCommand extends Command
         return $twig;
     }
 
+    /**
+     * @throws JsonException
+     */
     private function mergeServantFiles(string $projectPath, TarsGeneratorCache $cache): void
     {
         $includeFiles = glob($projectPath.'/'.self::TARS_FILE_PATH.'/servant/includes/*.tars');

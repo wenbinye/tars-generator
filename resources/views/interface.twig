@@ -12,37 +12,35 @@ declare(strict_types=1);
 namespace {{ namespace }};
 
 {% if servant %}
-use kuiper\tars\annotation\TarsServant;
+use kuiper\tars\attribute\TarsServant;
 {% else %}
-use kuiper\tars\annotation\TarsClient;
+use kuiper\tars\attribute\TarsClient;
 {% endif %}
-use kuiper\tars\annotation\TarsParameter;
-use kuiper\tars\annotation\TarsReturnType;
+use kuiper\tars\attribute\TarsParameter;
+use kuiper\tars\attribute\TarsReturnType;
 
-/**
- * @{% if servant %}TarsServant{% else %}TarsClient{% endif %}("{{ servantName }}")
- */
+#[{% if servant %}TarsServant{% else %}TarsClient{% endif %}("{{ servantName }}")]
 interface {{ className }}
 {
 {% for operation in interface.operations %}
-    /**
 {% if operation.docBlock %}
+    /**
 {% for doc in operation.docBlock %}
      * {{ doc | raw }}
 {% endfor %}
-     *
-{% endif %}
-{% for param in operation.parameters %}
-     * @TarsParameter(name="{{ param.name }}", type="{{ param.type.tarsType | raw }}"{% if param.out %}, out=true{% endif %})
-{% endfor %}
-     * @TarsReturnType("{{ operation.returnType.tarsType | raw }}")
-     *
-{% for param in operation.parameters %}
-     * @param {{ param.type }} ${{ param.name }}
-{% endfor %}
-     * @return {{ operation.returnType }}
      */
-    public function {{ operation.name }}({% for param in operation.parameters %}{% if param.declarationType %}{{ param.declarationType }} {% endif %}{% if param.out %}&{% endif %}${{ param.name }}{% if not loop.last %}, {% endif %}{% endfor %}){% if operation.hasPhpReturnType() %}: {{ operation.phpReturnType }}{% endif %};
+{% endif %}
+    #[TarsReturnType("{{ operation.returnType.tarsType | raw }}")]
+{% if operation.parameters %}
+    public function {{ operation.name }}(
+{% for param in operation.parameters %}
+        #[TarsParameter(type: "{{ param.type.tarsType | raw }}")] {% if param.declarationType %}{{ param.declarationType }} {% endif %}{% if param.out %}&{% endif %}${{ param.name }}{% if not loop.last %},{% endif %}
+
+{% endfor %}
+    ){% if operation.hasPhpReturnType() %}: {{ operation.phpReturnType }}{% endif %};
+{% else %}
+    public function {{ operation.name }}(){% if operation.hasPhpReturnType() %}: {{ operation.phpReturnType }}{% endif %};
+{% endif %}
 
 {% endfor %}
 }

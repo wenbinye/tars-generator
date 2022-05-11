@@ -3,7 +3,7 @@
 declare(strict_types=1);
 
 /*
- * Generated from src/parse/Tars.g4 by ANTLR 4.8
+ * Generated from src/parse/Tars.g4 by ANTLR 4.10.1
  */
 
 namespace tars\parse;

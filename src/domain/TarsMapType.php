@@ -33,9 +33,9 @@ class TarsMapType implements TarsType
     {
         if ($this->keyType->isPrimitiveType()) {
             return ((string) $this->valueType).'[]';
-        } else {
-            return '\\kuiper\\tars\\type\\StructMap';
         }
+
+        return '\\kuiper\\tars\\type\\StructMap';
     }
 
     public function getTarsType(): string

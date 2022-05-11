@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace tars;
 
+use InvalidArgumentException;
 use Psr\Log\LoggerAwareInterface;
 use Psr\Log\LoggerAwareTrait;
 use tars\domain\TarsConstContext;
@@ -11,17 +12,11 @@ use tars\domain\TarsEnumContext;
 use tars\domain\TarsInterfaceContext;
 use tars\domain\TarsStructContext;
 use Twig\Environment;
+use Twig\Error\Error;
 
 abstract class AbstractGenerateStrategy implements GenerateStrategy, LoggerAwareInterface
 {
     use LoggerAwareTrait;
-
-    /**
-     * @var Environment
-     */
-    private Environment $twig;
-
-    private GeneratorConfig $config;
 
     /**
      * @var string[]
@@ -33,10 +28,8 @@ abstract class AbstractGenerateStrategy implements GenerateStrategy, LoggerAware
         TarsStructContext::class => 'struct.twig',
     ];
 
-    public function __construct(Environment $twig, GeneratorConfig $config)
+    public function __construct(private readonly Environment $twig, private readonly GeneratorConfig $config)
     {
-        $this->twig = $twig;
-        $this->config = $config;
     }
 
     public function getConstClassName(): string
@@ -69,14 +62,15 @@ abstract class AbstractGenerateStrategy implements GenerateStrategy, LoggerAware
         return str_replace('_', '\\', $moduleName);
     }
 
+    /**
+     * @throws Error
+     */
     public function generate(domain\AbstractContext $context): void
     {
         $code = $this->twig->render($this->getTemplate($context), $this->extractContext($context));
         $outputFile = $this->getOutputFile($context);
         $this->write($outputFile, $code);
-        if (null !== $this->logger) {
-            $this->logger->info("$outputFile was created");
-        }
+        $this->logger?->info("$outputFile was created");
     }
 
     public function getConfig(): GeneratorConfig
@@ -90,7 +84,7 @@ abstract class AbstractGenerateStrategy implements GenerateStrategy, LoggerAware
     {
         $template = self::$TEMPLATES[get_class($context)] ?? null;
         if (!isset($template)) {
-            throw new \InvalidArgumentException('Unknown context type '.get_class($context));
+            throw new InvalidArgumentException('Unknown context type '.get_class($context));
         }
 
         return $template;
@@ -100,7 +94,7 @@ abstract class AbstractGenerateStrategy implements GenerateStrategy, LoggerAware
     {
         $vars = get_object_vars($context);
         foreach (get_class_methods($context) as $method) {
-            if (0 === strpos($method, 'get')) {
+            if (str_starts_with($method, 'get')) {
                 $vars[lcfirst(substr($method, 3))] = $context->$method();
             }
         }
@@ -113,8 +107,8 @@ abstract class AbstractGenerateStrategy implements GenerateStrategy, LoggerAware
     protected function getOutputFile(domain\AbstractContext $context): string
     {
         $className = $context->getNamespace().'\\'.$context->getClassName();
-        if (0 !== strpos($className, $this->config->getPsr4Namespace())) {
-            throw new \InvalidArgumentException("namespace not match, expected namespace {$this->config->getPsr4Namespace()}, got class {$className}");
+        if (!str_starts_with($className, $this->config->getPsr4Namespace())) {
+            throw new InvalidArgumentException("namespace not match, expected namespace {$this->config->getPsr4Namespace()}, got class $className");
         }
         $relativeName = ltrim(substr($className, strlen($this->config->getPsr4Namespace())), '\\');
 

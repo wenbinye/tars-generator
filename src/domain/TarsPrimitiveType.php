@@ -8,11 +8,11 @@ use tars\parse\Context\PrimitiveTypeContext;
 
 class TarsPrimitiveType implements TarsType
 {
-    private static array $TYPES = [
+    private const TYPES = [
         'void', 'bool', 'byte', 'short', 'int', 'long', 'float', 'double', 'string',
     ];
 
-    private static array $TYPE_MAP = [
+    private const TYPE_MAP = [
         'void' => 'void',
         'bool' => 'bool',
         'byte' => 'int',
@@ -24,10 +24,7 @@ class TarsPrimitiveType implements TarsType
         'string' => 'string',
     ];
 
-    /**
-     * @var string[]
-     */
-    private static array $OPENAPI_TYPE = [
+    private const OPENAPI_TYPE = [
         'bool' => 'type="boolean"',
         'byte' => 'type="string", format="byte"',
         'int' => 'type="integer", format="int32"',
@@ -48,29 +45,18 @@ class TarsPrimitiveType implements TarsType
         'string' => "''",
     ];
 
-    /**
-     * @var string
-     */
-    private string $name;
-
-    /**
-     * TarsPrimitiveType constructor.
-     *
-     * @param string $name
-     */
-    public function __construct(string $name)
+    public function __construct(private readonly string $name)
     {
-        $this->name = $name;
     }
 
     public function __toString(): string
     {
-        return self::$TYPE_MAP[$this->name] ?? $this->name;
+        return self::TYPE_MAP[$this->name] ?? $this->name;
     }
 
     public static function create(PrimitiveTypeContext $type): self
     {
-        foreach (self::$TYPES as $typeName) {
+        foreach (self::TYPES as $typeName) {
             $method = $typeName.'Type';
             if (null !== $type->$method()) {
                 return new self($typeName);
@@ -91,7 +77,7 @@ class TarsPrimitiveType implements TarsType
 
     public function getOpenapiDeclaration(): string
     {
-        return self::$OPENAPI_TYPE[$this->name] ?? '';
+        return self::OPENAPI_TYPE[$this->name] ?? '';
     }
 
     public function getDefaultValue(): ?string

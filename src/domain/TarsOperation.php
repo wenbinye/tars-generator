@@ -7,16 +7,6 @@ namespace tars\domain;
 class TarsOperation
 {
     /**
-     * @var string
-     */
-    private string $name;
-
-    /**
-     * @var TarsUnionType
-     */
-    private TarsUnionType $returnType;
-
-    /**
      * @var TarsParameter[]
      */
     private array $parameters = [];
@@ -26,16 +16,8 @@ class TarsOperation
      */
     private ?DocBlock $docBlock = null;
 
-    /**
-     * TarsOperation constructor.
-     *
-     * @param string        $name
-     * @param TarsUnionType $returnType
-     */
-    public function __construct(string $name, TarsUnionType $returnType)
+    public function __construct(private readonly string $name, private readonly TarsUnionType $returnType)
     {
-        $this->name = $name;
-        $this->returnType = $returnType;
     }
 
     /**

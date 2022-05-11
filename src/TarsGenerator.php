@@ -13,16 +13,10 @@ use tars\parse\TarsParser;
 
 class TarsGenerator
 {
-    /**
-     * @var TarsGeneratorContext
-     */
-    private TarsGeneratorContext $context;
+    public const VERSION = '0.6';
 
-    public const VERSION = '0.5';
-
-    public function __construct(TarsGeneratorContext $context)
+    public function __construct(private readonly TarsGeneratorContext $context)
     {
-        $this->context = $context;
     }
 
     public function generate(): void

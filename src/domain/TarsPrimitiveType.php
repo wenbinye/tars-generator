@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace tars\domain;
 
+use InvalidArgumentException;
 use tars\parse\Context\PrimitiveTypeContext;
 
 class TarsPrimitiveType implements TarsType
@@ -62,7 +63,7 @@ class TarsPrimitiveType implements TarsType
                 return new self($typeName);
             }
         }
-        throw new \InvalidArgumentException('unknown primitive type');
+        throw new InvalidArgumentException('unknown primitive type');
     }
 
     public function getTarsType(): string

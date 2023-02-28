@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace tars\domain;
 
+use InvalidArgumentException;
 use tars\parse\Context\CustomTypeContext;
 use Webmozart\Assert\Assert;
 
@@ -14,7 +15,7 @@ class TarsCustomType implements TarsType
     public static function create(CustomTypeContext $customType): self
     {
         if (null !== $customType->moduleName()) {
-            throw new \InvalidArgumentException('暂时不支持引用其他 module 类型');
+            throw new InvalidArgumentException('暂时不支持引用其他 module 类型');
         }
         $type = new self();
         $identifier = $customType->Identifier();

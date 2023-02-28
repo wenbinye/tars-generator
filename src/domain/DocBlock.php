@@ -5,11 +5,12 @@ declare(strict_types=1);
 namespace tars\domain;
 
 use ArrayIterator;
+use Iterator;
 
 /**
  * @template DocBlock<int, string|null>
  */
-class DocBlock implements \Iterator
+class DocBlock implements Iterator
 {
     /**
      * @var ArrayIterator<int,string|null>

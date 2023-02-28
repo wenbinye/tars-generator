@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace tars\domain;
 
+use InvalidArgumentException;
 use tars\parse\Context\TypeContext;
 use Webmozart\Assert\Assert;
 
@@ -53,7 +54,7 @@ class TarsUnionType implements TarsType
             return $ret;
         }
 
-        throw new \InvalidArgumentException('Invalid type');
+        throw new InvalidArgumentException('Invalid type');
     }
 
     private function getType(): TarsType
@@ -70,7 +71,7 @@ class TarsUnionType implements TarsType
         if (null !== $this->vectorType) {
             return $this->vectorType;
         }
-        throw new \InvalidArgumentException('Unknown type');
+        throw new InvalidArgumentException('Unknown type');
     }
 
     public function isPrimitiveType(): bool

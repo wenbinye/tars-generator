@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace tars;
 
 use JsonException;
+use RuntimeException;
 
 class TarsGeneratorCache
 {
@@ -27,7 +28,7 @@ class TarsGeneratorCache
         if (is_readable($cacheFile)) {
             $json = file_get_contents($cacheFile);
             if (false === $json) {
-                throw new \RuntimeException("Cannot read $cacheFile");
+                throw new RuntimeException("Cannot read $cacheFile");
             }
             $this->cache = json_decode($json, true, 512, JSON_THROW_ON_ERROR);
         }

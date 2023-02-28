@@ -79,7 +79,7 @@ class TarsGenerateCommand extends Command
             'psr4_namespace' => $namespace,
             'output' => $outputPath,
             'flat' => $servant,
-            'protocol' => $input->getOption('protocol')
+            'protocol' => $input->getOption('protocol'),
         ]));
         $generatorStrategy->setLogger($this->logger);
         $context = new TarsGeneratorContext($generatorStrategy, $servant, $servants);
@@ -107,7 +107,7 @@ class TarsGenerateCommand extends Command
         try {
             $composerJson = json_decode($content, true, 512, JSON_THROW_ON_ERROR);
         } catch (JsonException $e) {
-            throw new RuntimeException("Fail to load $projectPath/composer.json because of " . $e);
+            throw new RuntimeException("Fail to load $projectPath/composer.json because of ".$e);
         }
         if (empty($composerJson['autoload']['psr-4'])) {
             throw new RuntimeException('No psr-4 autoload rule in composer.json');
@@ -188,7 +188,7 @@ class TarsGenerateCommand extends Command
             $config['flat'] = $servant;
         }
         if (!isset($config['protocol'])) {
-            $config['protocol'] = $type === 'jsonrpc' ? 'jsonrpc' : 'tars';
+            $config['protocol'] = 'jsonrpc' === $type ? 'jsonrpc' : 'tars';
         }
         $generatorStrategy = new FileGenerateStrategy($this->createTwig(), GeneratorConfig::fromArray($config));
         $generatorStrategy->setLogger($this->logger);

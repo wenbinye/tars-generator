@@ -67,7 +67,7 @@ abstract class AbstractGenerateStrategy implements GenerateStrategy, LoggerAware
      */
     public function generate(domain\AbstractContext $context): void
     {
-        $code = $this->twig->render($this->config->getProtocol() . '/' . $this->getTemplate($context), $this->extractContext($context));
+        $code = $this->twig->render($this->config->getProtocol().'/'.$this->getTemplate($context), $this->extractContext($context));
         $outputFile = $this->getOutputFile($context);
         $this->write($outputFile, $code);
         $this->logger?->info("$outputFile was created");

@@ -67,17 +67,17 @@ class TarsStructField
 
     public function hasDeclarationType(): bool
     {
-        return $this->type->getDeclarationType() !== null;
+        return null !== $this->type->getDeclarationType();
     }
 
     public function getDeclarationType(): string
     {
         if ($this->hasDeclarationType()) {
             if ($this->type->isCustomType()) {
-                return '?' . $this->type->getDeclarationType();
+                return '?'.$this->type->getDeclarationType();
             }
 
-            return ($this->isRequired() ? '' : '?') . $this->type->getDeclarationType();
+            return ($this->isRequired() ? '' : '?').$this->type->getDeclarationType();
         }
 
         return '';
@@ -86,8 +86,9 @@ class TarsStructField
     public function needPhpDocType(): bool
     {
         if ($this->type->isVectorType()) {
-            return $this->type->asVectorType()->getDeclarationType() !== 'string';
+            return 'string' !== $this->type->asVectorType()->getDeclarationType();
         }
+
         return $this->type->isMapType();
     }
 }

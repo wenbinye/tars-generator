@@ -52,16 +52,42 @@ class TarsStructField
      */
     public function getDefaultValue(): ?string
     {
-        return $this->defaultValue;
+        return $this->defaultValue ?? 'null';
     }
 
     public function hasDefaultValue(): bool
     {
-        return isset($this->defaultValue);
+        return true;
     }
 
     public function getOpenapiDeclaration(): string
     {
         return $this->type->getOpenapiDeclaration();
+    }
+
+    public function hasDeclarationType(): bool
+    {
+        return $this->type->getDeclarationType() !== null;
+    }
+
+    public function getDeclarationType(): string
+    {
+        if ($this->hasDeclarationType()) {
+            if ($this->type->isCustomType()) {
+                return '?' . $this->type->getDeclarationType();
+            }
+
+            return ($this->isRequired() ? '' : '?') . $this->type->getDeclarationType();
+        }
+
+        return '';
+    }
+
+    public function needPhpDocType(): bool
+    {
+        if ($this->type->isVectorType()) {
+            return $this->type->asVectorType()->getDeclarationType() !== 'string';
+        }
+        return $this->type->isMapType();
     }
 }

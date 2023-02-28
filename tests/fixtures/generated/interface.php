@@ -15,19 +15,19 @@ use kuiper\tars\attribute\TarsClient;
 use kuiper\tars\attribute\TarsParameter;
 use kuiper\tars\attribute\TarsReturnType;
 
-#[TarsClient('HelloObj')]
+#[TarsClient("HelloObj")]
 interface HelloServant
 {
     /**
-     * doc string for hello.
-     *
-     * @TarsReturnType("long")
+     * doc string for hello
      */
+    #[TarsReturnType("long")]
     public function hello(
-        #[TarsParameter(type: 'int')] int $no,
-        #[TarsParameter(type: 'vector<string>')] array $name,
-        #[TarsParameter(type: 'map<string,string>')] array $tags,
-        #[TarsParameter(type: 'TE')] TE $te,
-        #[TarsParameter(type: 'map<int,SimpleStruct>')] ?array &$result
+        #[TarsParameter(type: "int")] int $no,
+        #[TarsParameter(type: "vector<string>")] array $name,
+        #[TarsParameter(type: "map<string,string>")] array $tags,
+        #[TarsParameter(type: "TE")] TE $te,
+        #[TarsParameter(type: "map<int,SimpleStruct>")] ?array &$result
     ): int;
+
 }

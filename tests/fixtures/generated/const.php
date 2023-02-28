@@ -14,5 +14,5 @@ namespace foo\bar\integration\test;
 final class Constants
 {
     public const i = 1;
-    public const s = 'tars';
+    public const s = "tars";
 }

@@ -25,14 +25,14 @@ class TarsPrimitiveType implements TarsType
     ];
 
     private const OPENAPI_TYPE = [
-        'bool' => 'type="boolean"',
-        'byte' => 'type="string", format="byte"',
-        'int' => 'type="integer", format="int32"',
-        'short' => 'type="integer", format="int32"',
-        'long' => 'type="integer", format="int64"',
-        'double' => 'type="number", format="float"',
-        'float' => 'type="number", format="double"',
-        'string' => 'type="string"',
+        'bool' => 'type: "boolean"',
+        'byte' => 'type: "string", format: "byte"',
+        'int' => 'type: "integer", format: "int32"',
+        'short' => 'type: "integer", format: "int32"',
+        'long' => 'type: "integer", format: "int64"',
+        'double' => 'type: "number", format: "float"',
+        'float' => 'type: "number", format: "double"',
+        'string' => 'type: "string"',
     ];
 
     private const DEFAULT_VALUE = [

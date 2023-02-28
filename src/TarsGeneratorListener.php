@@ -139,13 +139,11 @@ class TarsGeneratorListener extends TarsBaseListener
 
     private function createFieldDefaultValue(Context\StructFieldContext $context, TarsUnionType $type): ?string
     {
-        $defaultValueStrategy = $this->context->getGenerateStrategy()->getConfig()->getDefaultValueStrategy();
         $defaultValue = null !== $context->value() ? $context->value()->getText() : null;
         if (null !== $defaultValue) {
             return $defaultValue;
         }
-        if ('all' === $defaultValueStrategy
-            || ('require' === $defaultValueStrategy && 'require' === $context->fieldRequire()->getText())) {
+        if ('require' === $context->fieldRequire()->getText()) {
             return $type->getDefaultValue();
         }
 

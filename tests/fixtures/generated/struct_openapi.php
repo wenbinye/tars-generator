@@ -12,49 +12,34 @@ declare(strict_types=1);
 namespace foo\bar\integration\test;
 
 use kuiper\tars\attribute\TarsProperty;
-use OpenApi\Annotations as OA;
+use OpenApi\Attributes as OA;
 
-/**
- * @OA\Schema
- */
+#[OA\Schema]
 final class SimpleStruct
 {
-    /**
-     * @OA\Property(type="integer", format="int64")
-     *
-     * @var int
-     */
-    #[TarsProperty(type: 'long', order: 0)]
-    public readonly int $id;
+    #[OA\Property(type: "integer", format: "int64")]
+    #[TarsProperty(type: "long", order: 0)]
+    public int $id;
+
+    #[OA\Property(type: "integer", format: "int32")]
+    #[TarsProperty(type: "int", order: 1)]
+    public int $count;
 
     /**
-     * @OA\Property(type="integer", format="int32")
-     *
-     * @var int
-     */
-    #[TarsProperty(type: 'int', order: 1)]
-    public readonly int $count;
-
-    /**
-     * @OA\Property(type="object")
-     *
      * @var string[]
      */
-    #[TarsProperty(type: 'map<string,string>', order: 2)]
-    public readonly array $page;
+    #[OA\Property(type: "object")]
+    #[TarsProperty(type: "map<string,string>", order: 2)]
+    public array $page;
 
-    /**
-     * @OA\Property(ref="#/components/schemas/TE")
-     *
-     * @var TE|null
-     */
-    #[TarsProperty(type: 'TE', order: 3)]
-    public readonly ?TE $te;
+    #[OA\Property(ref: "#/components/schemas/TE")]
+    #[TarsProperty(type: "TE", order: 3)]
+    public ?TE $te;
 
     public function __construct(
-        int $id,
-        int $count,
-        array $page,
+        int $id = 0,
+        int $count = 0,
+        array $page = [],
         ?TE $te = null
     ) {
         $this->id = $id;

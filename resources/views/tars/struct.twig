@@ -13,35 +13,35 @@ namespace {{ namespace }};
 
 use kuiper\tars\attribute\TarsProperty;
 {% if enable_openapi %}
-use OpenApi\Annotations as OA;
+use OpenApi\Attributes as OA;
 {% endif %}
 
 {% if enable_openapi %}
-/**
- * @OA\Schema
- */
+#[OA\Schema]
 {% endif %}
 final class {{ className }}
 {
 {% for member in struct.fields %}
+{% if member.needPhpDocType() %}
     /**
-{% if enable_openapi %}
-     * @OA\Property({{ member.openapiDeclaration|raw }})
-{% endif %}
      * @var {{ member.type }}{{  member.required ? '' : '|null' }}
      */
+{% endif %}
+{% if enable_openapi %}
+    #[OA\Property({{ member.openapiDeclaration|raw }})]
+{% endif %}
     #[TarsProperty(type: "{{ member.type.tarsType | raw }}", order: {{ member.order }})]
-    public {% if member.type.declarationType %}readonly {{  member.required ? '' : '?' }}{{ member.type.declarationType }} {% endif %}${{ member.name }};
+    public {% if member.hasDeclarationType() %}{{ member.declarationType }} {% endif %}${{ member.name }};
 
 {% endfor %}
     public function __construct(
 {% for member in struct.fields %}
-        {% if member.type.declarationType %}{{  member.required ? '' : '?' }}{{ member.type.declarationType }} {% endif %}${{ member.name }}{{  member.required ? '' : ' = null' }}{% if not loop.last %},{% endif %}
+        {% if member.hasDeclarationType() %}{{ member.declarationType }} {% endif %}${{ member.name }} = {{ member.getDefaultValue() }}{% if not loop.last %},{% endif %}
 
 {% endfor %}
     ) {
 {% for member in struct.fields %}
-          $this->{{ member.name }} = ${{ member.name }};
+        $this->{{ member.name }} = ${{ member.name }};
 {% endfor %}
     }
 }

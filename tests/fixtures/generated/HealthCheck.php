@@ -12,13 +12,13 @@ declare(strict_types=1);
 namespace foo\bar\integration\test;
 
 use kuiper\tars\attribute\TarsClient;
+use kuiper\tars\attribute\TarsParameter;
 use kuiper\tars\attribute\TarsReturnType;
 
-#[TarsClient('HealthCheckObj')]
+#[TarsClient("HealthCheckObj")]
 interface HealthCheckServant
 {
-    /**
-     * @TarsReturnType("string")
-     */
+    #[TarsReturnType("string")]
     public function ping(): string;
+
 }

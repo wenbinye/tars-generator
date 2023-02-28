@@ -41,7 +41,7 @@ class TarsCustomType implements TarsType
 
     public function getOpenapiDeclaration(): string
     {
-        return sprintf('ref="#/components/schemas/%s"', $this->name);
+        return sprintf('ref: "#/components/schemas/%s"', $this->name);
     }
 
     public function getDefaultValue(): ?string

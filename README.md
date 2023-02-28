@@ -64,7 +64,11 @@ Add Configuration in composer.json:
 - `tars_path` tars 文件目录，默认为 client 为 tars/client, servant 为 tars/servant
 - `servants` tars 服务名列表，通过 `{moduleName}.{interfaceName}` 或 `{interfaceName}` 查询
 - `enable_openapi` 是否生成 OpenAPI 注解
-- `default_value_strategy` 生成 struct 字段默认值的方式，默认不生成默认值；值为 `'all'` 时生成所有字段默认值。
+- `protocol` 支持生成 tars 和 jsonrpc 两种代码。默认生成 tars 代码
+
+## jsonrpc 支持
+
+servant 目录下生成代码方式和 protocol 保持一致。client 目录生成 tars 客户端代码，jsonrpc 目录生成 jsonrpc 客户端代码。
 
 ## ANTLR4 代码生成
 

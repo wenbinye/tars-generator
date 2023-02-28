@@ -12,6 +12,7 @@ class GeneratorConfig
         private readonly bool $flat,
         private readonly string $namespace,
         private readonly bool $enableOpenapi,
+        private readonly string $protocol,
         private readonly ?string $defaultValueStrategy,
     ) {
     }
@@ -24,6 +25,7 @@ class GeneratorConfig
             flat: $options['flat'] ?? false,
             namespace: $options['namespace'] ?? $options['psr4_namespace'],
             enableOpenapi: $options['enable_openapi'] ?? false,
+            protocol: $options['protocol'] ?? 'tars',
             defaultValueStrategy: $options['default_value_strategy'] ?? null,
         );
     }
@@ -66,6 +68,14 @@ class GeneratorConfig
     public function isEnableOpenapi(): bool
     {
         return $this->enableOpenapi;
+    }
+
+    /**
+     * @return string
+     */
+    public function getProtocol(): string
+    {
+        return $this->protocol;
     }
 
     /**

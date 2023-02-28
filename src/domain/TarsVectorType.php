@@ -55,10 +55,10 @@ class TarsVectorType implements TarsType
     public function getOpenapiDeclaration(): string
     {
         if ('byte' === $this->itemType->getTarsType()) {
-            return 'type="string"';
+            return 'type: "string"';
         }
 
-        return sprintf('type="array", @OA\Items(%s)', $this->itemType->getOpenapiDeclaration());
+        return sprintf('type: "array", items: new OA\Items(%s)', $this->itemType->getOpenapiDeclaration());
     }
 
     public function getDefaultValue(): ?string

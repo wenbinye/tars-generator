@@ -15,34 +15,25 @@ use kuiper\tars\attribute\TarsProperty;
 
 final class SimpleStruct
 {
-    /**
-     * @var int
-     */
-    #[TarsProperty(type: 'long', order: 0)]
-    public readonly int $id;
+    #[TarsProperty(type: "long", order: 0)]
+    public int $id;
 
-    /**
-     * @var int
-     */
-    #[TarsProperty(type: 'int', order: 1)]
-    public readonly int $count;
+    #[TarsProperty(type: "int", order: 1)]
+    public int $count;
 
     /**
      * @var string[]
      */
-    #[TarsProperty(type: 'map<string,string>', order: 2)]
-    public readonly array $page;
+    #[TarsProperty(type: "map<string,string>", order: 2)]
+    public array $page;
 
-    /**
-     * @var TE|null
-     */
-    #[TarsProperty(type: 'TE', order: 3)]
-    public readonly ?TE $te;
+    #[TarsProperty(type: "TE", order: 3)]
+    public ?TE $te;
 
     public function __construct(
-        int $id,
-        int $count,
-        array $page,
+        int $id = 0,
+        int $count = 0,
+        array $page = [],
         ?TE $te = null
     ) {
         $this->id = $id;

@@ -54,7 +54,7 @@ class TarsMapType implements TarsType
 
     public function getOpenapiDeclaration(): string
     {
-        return 'type="object"';
+        return 'type: "object"';
     }
 
     public function getDefaultValue(): ?string

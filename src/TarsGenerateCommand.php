@@ -36,6 +36,7 @@ class TarsGenerateCommand extends Command
     protected function configure(): void
     {
         $this->setName('tars:generate');
+        $this->addOption('protocol', null, InputOption::VALUE_REQUIRED, 'rpc protocol, support tars and jsonrpc', 'tars');
         $this->addOption('namespace', null, InputOption::VALUE_REQUIRED, 'php class namespace');
         $this->addOption('output-path', 'o', InputOption::VALUE_REQUIRED, 'output path');
         $this->addOption('servants', null, InputOption::VALUE_IS_ARRAY | InputOption::VALUE_REQUIRED, 'servant names');
@@ -78,6 +79,7 @@ class TarsGenerateCommand extends Command
             'psr4_namespace' => $namespace,
             'output' => $outputPath,
             'flat' => $servant,
+            'protocol' => $input->getOption('protocol')
         ]));
         $generatorStrategy->setLogger($this->logger);
         $context = new TarsGeneratorContext($generatorStrategy, $servant, $servants);
@@ -102,7 +104,11 @@ class TarsGenerateCommand extends Command
         if (false === $content) {
             throw new RuntimeException('Cannot read composer.json');
         }
-        $composerJson = json_decode($content, true, 512, JSON_THROW_ON_ERROR);
+        try {
+            $composerJson = json_decode($content, true, 512, JSON_THROW_ON_ERROR);
+        } catch (JsonException $e) {
+            throw new RuntimeException("Fail to load $projectPath/composer.json because of " . $e);
+        }
         if (empty($composerJson['autoload']['psr-4'])) {
             throw new RuntimeException('No psr-4 autoload rule in composer.json');
         }
@@ -114,7 +120,7 @@ class TarsGenerateCommand extends Command
         $psr4Path = rtrim((string) array_values($autoload)[0], '/');
         $options = $this->loadConfig($projectPath);
 
-        foreach (['client', 'servant'] as $type) {
+        foreach (['client', 'servant', 'jsonrpc'] as $type) {
             $config = $options[$type] ?? [];
             if (isset($config[0])) {
                 foreach ($config as $oneConfig) {
@@ -180,6 +186,9 @@ class TarsGenerateCommand extends Command
         }
         if (!isset($config['flat'])) {
             $config['flat'] = $servant;
+        }
+        if (!isset($config['protocol'])) {
+            $config['protocol'] = $type === 'jsonrpc' ? 'jsonrpc' : 'tars';
         }
         $generatorStrategy = new FileGenerateStrategy($this->createTwig(), GeneratorConfig::fromArray($config));
         $generatorStrategy->setLogger($this->logger);

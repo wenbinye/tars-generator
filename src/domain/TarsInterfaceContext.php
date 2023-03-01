@@ -75,9 +75,11 @@ class TarsInterfaceContext extends AbstractContext
 
     private function parseServantName(): array
     {
-        $parts = explode('.', $this->servantName);
+        $pos = strrpos($this->servantName, '.');
 
-        return 3 === count($parts) ? [$parts[0].'.'.$parts[1], $parts[2]] : [null, $this->servantName];
+        return -1 === $pos
+            ? [null, $this->servantName]
+            : [substr($this->servantName, 0, $pos), substr($this->servantName, $pos + 1)];
     }
 
     /**

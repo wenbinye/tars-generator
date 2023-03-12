@@ -27,7 +27,7 @@ interface {{ className }}
      * {{ doc | raw }}
 {% endfor %}
 {% for param in operation.parameters %}
-     * @var {{ param.type }} ${{ param.name }}
+     * @param {{ param.type }} ${{ param.name }}
 {% endfor %}
      * @return {{ operation.phpReturnType }}
      */

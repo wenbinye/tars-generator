@@ -29,12 +29,12 @@ final class {{ className }}
 {% if enable_openapi %}
     #[OA\Property({{ member.openapiDeclaration|raw }})]
 {% endif %}
-    public {% if member.hasDeclarationType() %}{{ member.declarationType }} {% endif %}${{ member.name }};
+    public {% if member.hasDeclarationType() %}{{ member.declarationType }} {% endif %}${{ member.name }} = {{ member.getDefaultValue() | raw }};
 
 {% endfor %}
     public function __construct(
 {% for member in struct.fields %}
-        {% if member.hasDeclarationType() %}{{ member.declarationType }} {% endif %}${{ member.name }} = {{ member.getDefaultValue() }}{% if not loop.last %},{% endif %}
+        {% if member.hasDeclarationType() %}{{ member.declarationType }} {% endif %}${{ member.name }} = {{ member.getDefaultValue() | raw }}{% if not loop.last %},{% endif %}
 
 {% endfor %}
     ) {

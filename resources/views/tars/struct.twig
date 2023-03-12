@@ -36,7 +36,7 @@ final class {{ className }}
 {% endfor %}
     public function __construct(
 {% for member in struct.fields %}
-        {% if member.hasDeclarationType() %}{{ member.declarationType }} {% endif %}${{ member.name }} = {{ member.getDefaultValue() }}{% if not loop.last %},{% endif %}
+        {% if member.hasDeclarationType() %}{{ member.declarationType }} {% endif %}${{ member.name }} = {{ member.getDefaultValue() | raw }}{% if not loop.last %},{% endif %}
 
 {% endfor %}
     ) {

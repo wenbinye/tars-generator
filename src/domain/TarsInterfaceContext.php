@@ -65,21 +65,19 @@ class TarsInterfaceContext extends AbstractContext
 
     public function getServerName(): ?string
     {
-        return $this->parseServantName()[0];
+        return $this->parseServantName()[1];
     }
 
     public function getSimpleServantName(): string
     {
-        return $this->parseServantName()[1];
+        return $this->parseServantName()[0];
     }
 
     private function parseServantName(): array
     {
-        $pos = strrpos($this->servantName, '.');
+        $parts = explode('.', $this->servantName, 2);
 
-        return -1 === $pos
-            ? [null, $this->servantName]
-            : [substr($this->servantName, 0, $pos), substr($this->servantName, $pos + 1)];
+        return 2 === count($parts) ? $parts : [$this->servantName, null];
     }
 
     /**

@@ -64,7 +64,7 @@ class TarsVectorType implements TarsType
     public function getDefaultValue(): ?string
     {
         if ('byte' === $this->itemType->getTarsType()) {
-            return null;
+            return "''";
         }
 
         return '[]';

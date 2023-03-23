@@ -76,6 +76,11 @@ class TarsPrimitiveType implements TarsType
         return (string) $this;
     }
 
+    public function getDocBlockType(): ?string
+    {
+        return $this->getDeclarationType();
+    }
+
     public function getOpenapiDeclaration(): string
     {
         return self::OPENAPI_TYPE[$this->name] ?? '';

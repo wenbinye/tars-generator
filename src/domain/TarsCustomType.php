@@ -40,6 +40,11 @@ class TarsCustomType implements TarsType
         return $this->name;
     }
 
+    public function getDocBlockType(): ?string
+    {
+        return $this->name;
+    }
+
     public function getOpenapiDeclaration(): string
     {
         return sprintf('ref: "#/components/schemas/%s"', $this->name);

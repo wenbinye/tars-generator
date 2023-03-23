@@ -52,6 +52,11 @@ class TarsMapType implements TarsType
         return null;
     }
 
+    public function getDocBlockType(): ?string
+    {
+        return 'array';
+    }
+
     public function getOpenapiDeclaration(): string
     {
         return 'type: "object"';

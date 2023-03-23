@@ -28,6 +28,13 @@ interface TarsType
     public function getDeclarationType(): ?string;
 
     /**
+     * 返回 php docblock 类型声明表示.
+     *
+     * @return string|null
+     */
+    public function getDocBlockType(): ?string;
+
+    /**
      * 返回 openapi 类型声明.
      *
      * @return string

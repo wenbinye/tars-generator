@@ -52,6 +52,15 @@ class TarsVectorType implements TarsType
         return 'array';
     }
 
+    public function getDocBlockType(): ?string
+    {
+        if ('byte' === $this->itemType->getTarsType()) {
+            return 'string';
+        }
+
+        return $this->itemType->getDocBlockType().'[]';
+    }
+
     public function getOpenapiDeclaration(): string
     {
         if ('byte' === $this->itemType->getTarsType()) {

@@ -21,17 +21,17 @@ use kuiper\jsonrpc\attribute\JsonRpcClient;
 interface {{ className }}
 {
 {% for operation in interface.operations %}
-{% if operation.docBlock %}
     /**
+{% if operation.docBlock %}
 {% for doc in operation.docBlock %}
      * {{ doc | raw }}
 {% endfor %}
+{% endif %}
 {% for param in operation.parameters %}
      * @param {{ param.type }} ${{ param.name }}
 {% endfor %}
-     * @return {{ operation.phpReturnType }}
+     * @return {{ operation.returnType.docBlockType }}
      */
-{% endif %}
 {% if operation.parameters %}
     public function {{ operation.name }}({% for param in operation.parameters %}{% if param.declarationType %}{{ param.declarationType }} {% endif %}{% if param.out %}&{% endif %}${{ param.name }}{% if not loop.last %}, {% endif %}{% endfor %}){% if operation.hasPhpReturnType() %}: {{ operation.phpReturnType }}{% endif %};
 {% else %}

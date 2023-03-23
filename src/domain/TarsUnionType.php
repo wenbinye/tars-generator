@@ -137,6 +137,11 @@ class TarsUnionType implements TarsType
         return $this->getType()->getDeclarationType();
     }
 
+    public function getDocBlockType(): ?string
+    {
+        return $this->getType()->getDocBlockType();
+    }
+
     public function getOpenapiDeclaration(): string
     {
         return $this->getType()->getOpenapiDeclaration();

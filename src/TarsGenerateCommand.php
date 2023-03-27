@@ -42,6 +42,7 @@ class TarsGenerateCommand extends Command
         $this->addOption('servants', null, InputOption::VALUE_IS_ARRAY | InputOption::VALUE_REQUIRED, 'servant names');
         $this->addOption('client', null, InputOption::VALUE_NONE, 'generate client class');
         $this->addOption('enable-openapi', null, InputOption::VALUE_NONE, 'generate openapi annotation');
+        $this->addOption('strict-type', null, InputOption::VALUE_NONE, 'generate struct with strict type');
         $this->addArgument('tars-path', InputArgument::IS_ARRAY | InputArgument::OPTIONAL, 'tars file path');
     }
 
@@ -79,6 +80,8 @@ class TarsGenerateCommand extends Command
             'psr4_namespace' => $namespace,
             'output' => $outputPath,
             'flat' => $servant,
+            'strict_type' => $input->getOption('strict-type'),
+            'enable_openapi' => $input->getOption('enable-openapi'),
             'protocol' => $input->getOption('protocol'),
         ]));
         $generatorStrategy->setLogger($this->logger);

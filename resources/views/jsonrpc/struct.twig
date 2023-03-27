@@ -21,7 +21,7 @@ use OpenApi\Attributes as OA;
 final class {{ className }}
 {
 {% for member in struct.fields %}
-{% if member.needPhpDocType() %}
+{% if (not strict_type) or member.needPhpDocType() %}
     /**
      * @var {{ member.type }}{{  member.required ? '' : '|null' }}
      */
@@ -29,12 +29,12 @@ final class {{ className }}
 {% if enable_openapi %}
     #[OA\Property({{ member.openapiDeclaration|raw }})]
 {% endif %}
-    public {% if member.hasDeclarationType() %}{{ member.declarationType }} {% endif %}${{ member.name }} = {{ member.getDefaultValue() | raw }};
+    public {% if strict_type and member.hasDeclarationType() %}{{ member.declarationType }} {% endif %}${{ member.name }} = {{ member.getDefaultValue() | raw }};
 
 {% endfor %}
     public function __construct(
 {% for member in struct.fields %}
-        {% if member.hasDeclarationType() %}{{ member.declarationType }} {% endif %}${{ member.name }} = {{ member.getDefaultValue() | raw }}{% if not loop.last %},{% endif %}
+        {% if strict_type and member.hasDeclarationType() %}{{ member.declarationType }} {% endif %}${{ member.name }} = {{ member.getDefaultValue() | raw }}{% if not loop.last %},{% endif %}
 
 {% endfor %}
     ) {

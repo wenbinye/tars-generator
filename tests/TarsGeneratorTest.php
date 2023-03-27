@@ -108,6 +108,19 @@ class TarsGeneratorTest extends TestCase
         );
     }
 
+    public function testStrictType()
+    {
+        $file = __DIR__.'/fixtures/struct.tars';
+        $generator = new TarsGenerator($this->createContext(strictType: false, protocol: 'jsonrpc')->withFile($file));
+        $generator->generate();
+        $codes = $this->generateStrategy->getCodes();
+        $this->assertStringEqualsFile(
+            __DIR__.'/fixtures/generated/struct_no_strict_type.php',
+            $codes['/tmp/src/integration/test/SimpleStruct.php']
+        );
+    }
+
+
     public function testInterface()
     {
         $file = __DIR__.'/fixtures/healthcheck.tars';
@@ -125,7 +138,7 @@ class TarsGeneratorTest extends TestCase
     /**
      * @return TarsGeneratorContext
      */
-    private function createContext(bool $enableOpenapi = false): TarsGeneratorContext
+    private function createContext(bool $enableOpenapi = false, bool $strictType = true, string $protocol = 'tars'): TarsGeneratorContext
     {
         $viewPath = __DIR__.'/../resources/views';
         $loader = new FilesystemLoader($viewPath);
@@ -137,6 +150,8 @@ class TarsGeneratorTest extends TestCase
             'output' => '/tmp/src',
             'flat' => false,
             'enable_openapi' => $enableOpenapi,
+            'protocol' => $protocol,
+            'strict_type' => $strictType
         ]);
         $this->generateStrategy = new InMemoryGenerateStrategy($twig, $config);
 

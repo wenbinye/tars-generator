@@ -14,6 +14,7 @@ class GeneratorConfig
         private readonly bool $enableOpenapi,
         private readonly string $protocol,
         private readonly bool $strictType,
+        private readonly bool $usePhpEnum,
         private readonly ?string $defaultValueStrategy,
     ) {
     }
@@ -28,6 +29,7 @@ class GeneratorConfig
             enableOpenapi: $options['enable_openapi'] ?? false,
             protocol: $options['protocol'] ?? 'tars',
             strictType: $options['strict_type'] ?? true,
+            usePhpEnum: $options['use_php_enum'] ?? true,
             defaultValueStrategy: $options['default_value_strategy'] ?? null,
         );
     }

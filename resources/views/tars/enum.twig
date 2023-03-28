@@ -11,9 +11,25 @@ declare(strict_types=1);
 
 namespace {{ namespace }};
 
+{% if use_php_enum %}
 enum {{ className }}: int
 {
 {% for member in enum.enumerators %}
     case {{ member.name }} = {{ member.value }};
 {% endfor %}
 }
+{% else %}
+use kuiper\helper\Enum;
+
+/**
+{% for member in enum.enumerators %}
+ * @method static {{ className }} {{ member.name }}()
+{% endfor %}
+ */
+final class {{ className }} extends Enum
+{
+{% for member in enum.enumerators %}
+    public const {{ member.name }} = {{ member.value }};
+{% endfor %}
+}
+{% endif %}

@@ -100,6 +100,7 @@ abstract class AbstractGenerateStrategy implements GenerateStrategy, LoggerAware
         }
         $vars['enable_openapi'] = $this->config->isEnableOpenapi();
         $vars['strict_type'] = $this->config->isStrictType();
+        $vars['use_php_enum'] = $this->config->isUsePhpEnum();
         $vars['generator_config'] = $this->config;
 
         return $vars;

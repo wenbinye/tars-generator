@@ -54,7 +54,7 @@ class TarsMapType implements TarsType
 
     public function getDocBlockType(): ?string
     {
-        return 'array';
+        return sprintf('array<%s, %s>', $this->keyType->getDocBlockType(), $this->valueType->getDocBlockType());
     }
 
     public function getOpenapiDeclaration(): string

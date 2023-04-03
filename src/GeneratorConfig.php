@@ -83,6 +83,14 @@ class GeneratorConfig
     }
 
     /**
+     * @return bool
+     */
+    public function isUsePhpEnum(): bool
+    {
+        return $this->usePhpEnum;
+    }
+
+    /**
      * @return string
      */
     public function getProtocol(): string

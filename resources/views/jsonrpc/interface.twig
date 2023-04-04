@@ -28,9 +28,9 @@ interface {{ className }}
 {% endfor %}
 {% endif %}
 {% for param in operation.parameters %}
-     * @param {{ param.type }} ${{ param.name }}
+     * @param {{ param.type.docBlockType | raw }} ${{ param.name }}
 {% endfor %}
-     * @return {{ operation.returnType.docBlockType }}
+     * @return {{ operation.returnType.docBlockType | raw }}
      */
 {% if operation.parameters %}
     public function {{ operation.name }}({% for param in operation.parameters %}{% if param.declarationType %}{{ param.declarationType }} {% endif %}{% if param.out %}&{% endif %}${{ param.name }}{% if not loop.last %}, {% endif %}{% endfor %}){% if operation.hasPhpReturnType() %}: {{ operation.phpReturnType }}{% endif %};

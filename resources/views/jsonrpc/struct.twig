@@ -23,18 +23,18 @@ final class {{ className }}
 {% for member in struct.fields %}
 {% if (not strict_type) or member.needPhpDocType() %}
     /**
-     * @var {{ member.type }}{{  member.required ? '' : '|null' }}
+     * @var {{ member.type.docBlockType | raw }}{{  member.required ? '' : '|null' }}
      */
 {% endif %}
 {% if enable_openapi %}
     #[OA\Property({{ member.openapiDeclaration|raw }})]
 {% endif %}
-    public {% if strict_type and member.hasDeclarationType() %}{{ member.declarationType }} {% endif %}${{ member.name }} = {{ member.getDefaultValue() | raw }};
+    public {% if strict_type and member.hasDeclarationType() %}{{ member.declarationType|raw }} {% endif %}${{ member.name }} = {{ member.getDefaultValue() | raw }};
 
 {% endfor %}
     public function __construct(
 {% for member in struct.fields %}
-        {% if strict_type and member.hasDeclarationType() %}{{ member.declarationType }} {% endif %}${{ member.name }} = {{ member.getDefaultValue() | raw }}{% if not loop.last %},{% endif %}
+        {% if strict_type and member.hasDeclarationType() %}{{ member.declarationType|raw }} {% endif %}${{ member.name }} = {{ member.getDefaultValue() | raw }}{% if not loop.last %},{% endif %}
 
 {% endfor %}
     ) {

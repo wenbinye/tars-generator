@@ -4,7 +4,10 @@ declare(strict_types=1);
 
 namespace tars\domain;
 
+use kuiper\jsonrpc\core\BinaryString;
+use tars\GeneratorConfig;
 use tars\parse\Context\VectorTypeContext;
+use tars\TarsGeneratorContext;
 use Webmozart\Assert\Assert;
 
 class TarsVectorType implements TarsType
@@ -14,14 +17,28 @@ class TarsVectorType implements TarsType
      */
     private TarsUnionType $itemType;
 
-    public static function create(VectorTypeContext $vectorType): self
+    /**
+     * @param TarsUnionType $itemType
+     */
+    public function __construct(TarsUnionType $itemType)
     {
-        $type = new self();
+        $this->itemType = $itemType;
+    }
+
+    public static function create(VectorTypeContext $vectorType): TarsType
+    {
         $typeContext = $vectorType->type();
         Assert::notNull($typeContext);
-        $type->itemType = TarsUnionType::create($typeContext);
+        $itemType = TarsUnionType::create($typeContext);
+        if ('byte' === $itemType->getTarsType()) {
+            if (GeneratorConfig::PROTOCOL_JSONRPC === TarsGeneratorContext::getInstance()->getProtocol()) {
+                return new TarsCustomType('\\'.BinaryString::class);
+            }
 
-        return $type;
+            return new TarsVectorByteType();
+        }
+
+        return new self($itemType);
     }
 
     public function __toString(): string

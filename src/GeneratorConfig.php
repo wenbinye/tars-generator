@@ -4,8 +4,13 @@ declare(strict_types=1);
 
 namespace tars;
 
+use InvalidArgumentException;
+
 class GeneratorConfig
 {
+    public const PROTOCOL_TARS = 'tars';
+    public const PROTOCOL_JSONRPC = 'jsonrpc';
+
     public function __construct(
         private readonly string $psr4Namespace,
         private readonly string $psr4Path,
@@ -21,13 +26,18 @@ class GeneratorConfig
 
     public static function fromArray(array $options): self
     {
+        $protocol = $options['protocol'] ?? self::PROTOCOL_TARS;
+        if (!in_array($protocol, [self::PROTOCOL_TARS, self::PROTOCOL_JSONRPC], true)) {
+            throw new InvalidArgumentException(sprintf('Invalid protocol %s', $protocol));
+        }
+
         return new self(
             psr4Namespace: $options['psr4_namespace'],
             psr4Path: $options['output'],
             flat: $options['flat'] ?? false,
             namespace: $options['namespace'] ?? $options['psr4_namespace'],
             enableOpenapi: $options['enable_openapi'] ?? false,
-            protocol: $options['protocol'] ?? 'tars',
+            protocol: $protocol,
             strictType: $options['strict_type'] ?? true,
             usePhpEnum: $options['use_php_enum'] ?? true,
             defaultValueStrategy: $options['default_value_strategy'] ?? null,

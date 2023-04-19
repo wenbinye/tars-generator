@@ -1,0 +1,12 @@
+module test
+{
+    struct A
+    {
+        0 require vector<byte> a;
+    };
+
+    interface B
+    {
+        vector<byte> foo();
+    };
+};

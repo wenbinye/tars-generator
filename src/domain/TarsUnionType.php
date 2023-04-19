@@ -30,28 +30,32 @@ class TarsUnionType implements TarsType
      */
     private ?TarsVectorType $vectorType = null;
 
+    public function __construct(TarsType $type)
+    {
+        if ($type instanceof TarsPrimitiveType) {
+            $this->primitiveType = $type;
+        } elseif ($type instanceof TarsCustomType) {
+            $this->customType = $type;
+        } elseif ($type instanceof TarsMapType) {
+            $this->mapType = $type;
+        } elseif ($type instanceof TarsVectorType) {
+            $this->vectorType = $type;
+        }
+    }
+
     public static function create(TypeContext $type): self
     {
-        $ret = new self();
         if (null !== $type->primitiveType()) {
-            $ret->primitiveType = TarsPrimitiveType::create($type->primitiveType());
-
-            return $ret;
+            return new self(TarsPrimitiveType::create($type->primitiveType()));
         }
         if (null !== $type->customType()) {
-            $ret->customType = TarsCustomType::create($type->customType());
-
-            return $ret;
+            return new self(TarsCustomType::create($type->customType()));
         }
         if (null !== $type->vectorType()) {
-            $ret->vectorType = TarsVectorType::create($type->vectorType());
-
-            return $ret;
+            return new self(TarsVectorType::create($type->vectorType()));
         }
         if (null !== $type->mapType()) {
-            $ret->mapType = TarsMapType::create($type->mapType());
-
-            return $ret;
+            return new self(TarsMapType::create($type->mapType()));
         }
 
         throw new InvalidArgumentException('Invalid type');

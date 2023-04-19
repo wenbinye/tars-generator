@@ -12,17 +12,20 @@ class TarsCustomType implements TarsType
 {
     private readonly string $name;
 
+    public function __construct(string $name)
+    {
+        $this->name = $name;
+    }
+
     public static function create(CustomTypeContext $customType): self
     {
         if (null !== $customType->moduleName()) {
             throw new InvalidArgumentException('暂时不支持引用其他 module 类型');
         }
-        $type = new self();
         $identifier = $customType->Identifier();
         Assert::notNull($identifier);
-        $type->name = $identifier->getText() ?? '';
 
-        return $type;
+        return new self($identifier->getText());
     }
 
     public function __toString(): string

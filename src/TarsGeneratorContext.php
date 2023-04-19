@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace tars;
 
 use Antlr\Antlr4\Runtime\CommonTokenStream;
+use RuntimeException;
 
 class TarsGeneratorContext
 {
@@ -18,6 +19,8 @@ class TarsGeneratorContext
      */
     private CommonTokenStream $tokenStream;
 
+    private static ?self $INSTANCE = null;
+
     /**
      * @param GenerateStrategy $generateStrategy
      * @param bool             $servant
@@ -28,6 +31,20 @@ class TarsGeneratorContext
         private readonly bool $servant,
         private readonly array $servants = [])
     {
+    }
+
+    public static function getInstance(): self
+    {
+        if (null === self::$INSTANCE) {
+            throw new RuntimeException('GeneratorConfig not initialized');
+        }
+
+        return self::$INSTANCE;
+    }
+
+    public static function setInstance(self $context): void
+    {
+        self::$INSTANCE = $context;
     }
 
     /**
@@ -89,6 +106,11 @@ class TarsGeneratorContext
     public function getGenerateStrategy(): GenerateStrategy
     {
         return $this->generateStrategy;
+    }
+
+    public function getProtocol(): string
+    {
+        return $this->generateStrategy->getConfig()->getProtocol();
     }
 
     public function getServantName(string $moduleName, string $interfaceName): string

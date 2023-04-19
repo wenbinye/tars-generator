@@ -21,6 +21,7 @@ class TarsGenerator
 
     public function generate(): void
     {
+        TarsGeneratorContext::setInstance($this->context);
         $input = InputStream::fromPath($this->context->getFile());
         $lexer = new TarsLexer($input);
         $tokens = new CommonTokenStream($lexer);

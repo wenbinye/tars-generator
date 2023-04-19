@@ -111,7 +111,7 @@ class TarsGeneratorTest extends TestCase
     public function testStrictType()
     {
         $file = __DIR__.'/fixtures/struct.tars';
-        $generator = new TarsGenerator($this->createContext(strictType: false, protocol: 'jsonrpc')->withFile($file));
+        $generator = new TarsGenerator($this->createContext(strictType: false, protocol: GeneratorConfig::PROTOCOL_JSONRPC)->withFile($file));
         $generator->generate();
         $codes = $this->generateStrategy->getCodes();
         $this->assertStringEqualsFile(
@@ -135,10 +135,39 @@ class TarsGeneratorTest extends TestCase
         );
     }
 
+
+
+    public function testVectorByteTars()
+    {
+        $file = __DIR__.'/fixtures/vector_byte.tars';
+        $generator = new TarsGenerator($this->createContext()->withFile($file));
+        $generator->generate();
+
+        $codes = $this->generateStrategy->getCodes();
+         error_log(var_export($codes, true));
+//        $this->assertStringEqualsFile(
+//            __DIR__.'/fixtures/generated/HealthCheck.php',
+//            $codes['/tmp/src/integration/test/HealthCheckServant.php']
+//        );
+    }
+    public function testVectorByteJsonrpc()
+    {
+        $file = __DIR__.'/fixtures/vector_byte.tars';
+        $generator = new TarsGenerator($this->createContext(protocol: GeneratorConfig::PROTOCOL_JSONRPC)->withFile($file));
+        $generator->generate();
+
+        $codes = $this->generateStrategy->getCodes();
+        error_log(var_export($codes, true));
+//        $this->assertStringEqualsFile(
+//            __DIR__.'/fixtures/generated/HealthCheck.php',
+//            $codes['/tmp/src/integration/test/HealthCheckServant.php']
+//        );
+    }
+
     /**
      * @return TarsGeneratorContext
      */
-    private function createContext(bool $enableOpenapi = false, bool $strictType = true, string $protocol = 'tars'): TarsGeneratorContext
+    private function createContext(bool $enableOpenapi = false, bool $strictType = true, string $protocol = GeneratorConfig::PROTOCOL_TARS): TarsGeneratorContext
     {
         $viewPath = __DIR__.'/../resources/views';
         $loader = new FilesystemLoader($viewPath);

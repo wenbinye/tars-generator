@@ -12,11 +12,15 @@ declare(strict_types=1);
 namespace {{ namespace }};
 
 {% if use_php_enum %}
-enum {{ className }}: int
+enum {{ className }}: int implements \JsonSerializable
 {
 {% for member in enum.enumerators %}
     case {{ member.name }} = {{ member.value }};
 {% endfor %}
+    public function jsonSerialize(): string
+    {
+        return $this->name;
+    }
 }
 {% else %}
 use kuiper\helper\Enum;

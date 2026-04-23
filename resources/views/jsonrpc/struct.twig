@@ -18,6 +18,11 @@ use OpenApi\Attributes as OA;
 {% if enable_openapi %}
 #[OA\Schema]
 {% endif %}
+{% if struct.hasDescription %}
+    /**
+     * {{ struct.description | escape }}
+     */
+{% endif %}
 final class {{ className }}
 {
 {% for member in struct.fields %}

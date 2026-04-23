@@ -11,6 +11,8 @@ class TarsStruct
      */
     private array $fields = [];
 
+    private ?string $description = null;
+
     public function __construct(private readonly string $name)
     {
     }
@@ -31,5 +33,20 @@ class TarsStruct
     public function getFields(): array
     {
         return $this->fields;
+    }
+
+    public function setDescription(string $description): void
+    {
+        $this->description = $description;
+    }
+
+    public function getDescription(): ?string
+    {
+        return $this->description;
+    }
+
+    public function hasDescription(): bool
+    {
+        return null !== $this->description;
     }
 }

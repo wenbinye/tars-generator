@@ -113,7 +113,27 @@ class TarsGeneratorListener extends TarsBaseListener
         $this->structContext = new TarsStructContext($this->moduleName, $this->context);
         $structNameContext = $context->structName();
         Assert::notNull($structNameContext);
-        $this->structContext->setStruct(new TarsStruct($structNameContext->getText()));
+        $struct = new TarsStruct($structNameContext->getText());
+
+        // Extract docblock description from HIDDEN channel
+        // getHiddenTokensToLeft returns ALL hidden tokens between the previous default-channel
+        // token and the current token. Use the LAST one (most recent) — earlier tokens may be
+        // unrelated separator comments (// ===...===) between blank lines and the docblock.
+        Assert::notNull($context->getStart());
+        $docs = $this->context->getTokenStream()->getHiddenTokensToLeft($context->getStart()->getTokenIndex(), Token::HIDDEN_CHANNEL);
+        if (isset($docs[0])) {
+            $lastDoc = $docs[array_key_last($docs)];
+            $rawDoc = $lastDoc->getText() ?? '';
+            if (str_starts_with(trim($rawDoc), '/**')) {
+                $docBlock = DocBlock::create($rawDoc);
+                $summary = $docBlock->getSummary();
+                if (null !== $summary && $summary !== '') {
+                    $struct->setDescription($summary);
+                }
+            }
+        }
+
+        $this->structContext->setStruct($struct);
     }
 
     public function exitStruct(Context\StructContext $context): void

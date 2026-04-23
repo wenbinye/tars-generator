@@ -38,6 +38,7 @@ class TarsGenerateCommand extends Command
         $this->setName('tars:generate');
         $this->addOption('protocol', null, InputOption::VALUE_REQUIRED, 'rpc protocol, support tars and jsonrpc', 'tars');
         $this->addOption('namespace', null, InputOption::VALUE_REQUIRED, 'php class namespace');
+        $this->addOption('psr4-namespace', null, InputOption::VALUE_REQUIRED, 'PSR-4 namespace prefix (defaults to namespace)');
         $this->addOption('output-path', 'o', InputOption::VALUE_REQUIRED, 'output path');
         $this->addOption('servants', null, InputOption::VALUE_IS_ARRAY | InputOption::VALUE_REQUIRED, 'servant names');
         $this->addOption('client', null, InputOption::VALUE_NONE, 'generate client class');
@@ -53,7 +54,7 @@ class TarsGenerateCommand extends Command
     protected function execute(InputInterface $input, OutputInterface $output): int
     {
         $this->logger = new ConsoleLogger($output);
-        if (true === $input->getOption('namespace')) {
+        if (null !== $input->getOption('namespace')) {
             $this->generateFromArgv($input, $output);
         } else {
             $this->generateFromProject($input, $output);
@@ -78,7 +79,7 @@ class TarsGenerateCommand extends Command
         }
         $generatorStrategy = new FileGenerateStrategy($this->createTwig(), GeneratorConfig::fromArray([
             'namespace' => $namespace,
-            'psr4_namespace' => $namespace,
+            'psr4_namespace' => $input->getOption('psr4-namespace') ?? $namespace,
             'output' => $outputPath,
             'flat' => $servant,
             'strict_type' => $input->getOption('strict-type'),

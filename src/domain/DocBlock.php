@@ -30,12 +30,41 @@ class DocBlock implements Iterator
     public static function create(string $docBlock): self
     {
         $lines = [];
-        foreach (explode("\n", $docBlock) as $line) {
-            $line = trim($line);
-            if (str_starts_with($line, '/**') || str_starts_with($line, '*/')) {
-                continue;
+        $rawLines = explode("\n", $docBlock);
+        $first = trim($rawLines[0] ?? '');
+        $isSingleLine = str_starts_with($first, '/**') && 1 === count($rawLines);
+
+        if ($isSingleLine) {
+            // Single-line docblock: /** description */
+            if (preg_match('#^/\*\*\s*(.+?)\s*\*/$#s', $docBlock, $m) !== false) {
+                $content = trim($m[1]);
+                if ($content !== '' && !str_starts_with($content, '@')) {
+                    $lines[] = $content;
+                }
             }
-            $lines[] = preg_replace('#@(var|return|param)\s+#', '@tars-\1 ', trim($line, '* '));
+        } else {
+            // Multi-line docblock
+            foreach ($rawLines as $idx => $rawLine) {
+                $line = trim($rawLine);
+                // Skip opening /** marker
+                if ($idx === 0 && str_starts_with($first, '/**')) {
+                    // Extract content after /** on the first line if any (e.g. /** summary line)
+                    if (preg_match('#^/\*\*\s*\*(.+)$#', $rawLine, $m) !== false && isset($m[1])) {
+                        $trimmed = trim($m[1], '* ');
+                        if ($trimmed !== '' && !str_starts_with($trimmed, '@')) {
+                            $lines[] = $trimmed;
+                        }
+                    }
+                    continue;
+                }
+                // Skip closing */ marker
+                if ($line === '*/') {
+                    continue;
+                }
+                // Normalize @var/@return/@param, strip leading *
+                $normalized = preg_replace('#@(var|return|param)\s+#', '@tars-\1 ', trim($line, '* '));
+                $lines[] = $normalized;
+            }
         }
 
         return new self(new ArrayIterator($lines));

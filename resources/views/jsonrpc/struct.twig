@@ -21,8 +21,11 @@ use OpenApi\Attributes as OA;
 final class {{ className }}
 {
 {% for member in struct.fields %}
-{% if (not strict_type) or member.needPhpDocType() %}
+{% if (not strict_type) or member.needPhpDocType() or member.hasDescription %}
     /**
+{% if member.hasDescription %}
+     * {{ member.description | escape }}
+{% endif %}
      * @var {{ member.type.docBlockType | raw }}{{  member.required ? '' : '|null' }}
      */
 {% endif %}

@@ -11,8 +11,24 @@ class TarsStructField
         private readonly int $order,
         private readonly bool $required,
         private readonly TarsUnionType $type,
-        private readonly ?string $defaultValue)
+        private readonly ?string $defaultValue,
+        private ?string $description = null)
     {
+    }
+
+    public function setDescription(string $description): void
+    {
+        $this->description = $description;
+    }
+
+    public function getDescription(): ?string
+    {
+        return $this->description;
+    }
+
+    public function hasDescription(): bool
+    {
+        return null !== $this->description;
     }
 
     /**

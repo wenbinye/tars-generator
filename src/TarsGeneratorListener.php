@@ -121,20 +121,36 @@ class TarsGeneratorListener extends TarsBaseListener
         $this->structContext->generate();
     }
 
-    public function enterStructField(Context\StructFieldContext $context): void
+    public function exitStructField(Context\StructFieldContext $context): void
     {
         Assert::notNull($context->type());
         $type = TarsUnionType::create($context->type());
         Assert::notNull($context->fieldName());
         Assert::notNull($context->fieldOrder());
         Assert::notNull($context->fieldRequire());
-        $this->structContext->getStruct()->addField(new TarsStructField(
+        $field = new TarsStructField(
             $context->fieldName()->getText(),
             (int) $context->fieldOrder()->getText(),
             'require' === $context->fieldRequire()->getText(),
             $type,
             $this->createFieldDefaultValue($context, $type)
-        ));
+        );
+
+        // Extract docblock description from HIDDEN channel tokens
+        Assert::notNull($context->getStart());
+        $docs = $this->context->getTokenStream()->getHiddenTokensToLeft($context->getStart()->getTokenIndex(), Token::HIDDEN_CHANNEL);
+        if (isset($docs[0])) {
+            $rawDoc = $docs[0]->getText() ?? '';
+            if (str_starts_with(trim($rawDoc), '/**')) {
+                $docBlock = DocBlock::create($rawDoc);
+                $summary = $docBlock->getSummary();
+                if (null !== $summary && $summary !== '') {
+                    $field->setDescription($summary);
+                }
+            }
+        }
+
+        $this->structContext->getStruct()->addField($field);
     }
 
     private function createFieldDefaultValue(Context\StructFieldContext $context, TarsUnionType $type): ?string

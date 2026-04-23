@@ -1,0 +1,125 @@
+// OpenRPC 元数据扩展示例
+// 本文件展示如何使用 PHPDoc 风格的 docblock 为 JSON-RPC 接口添加元数据
+// 生成的 PHP 接口将包含完整的 summary、description、@throws、@param 描述
+// 运行时库可据此生成符合 OpenRPC 规范的 JSON 文档
+
+module demo
+{
+    // ============================================================
+    // 数据结构定义
+    // ============================================================
+
+    struct EmployeeDTO
+    {
+        /** 员工在系统中的唯一标识 ID */
+        0 require  long         id;
+        /** 员工真实姓名 */
+        1 require  string       name;
+        /** 所属部门名称 */
+        2 require  string       department;
+        /** 公司工号 */
+        3 require  string       employeeNo;
+        /** 上级部门 ID，未成年人可关联监护人 */
+        4 optional int          parentId;
+    };
+
+    struct DepartmentDTO
+    {
+        /** 部门 ID */
+        0 require  int          id;
+        /** 部门名称 */
+        1 require  string       name;
+        /** 上级部门 ID */
+        2 optional int          parentId;
+    };
+
+    struct PageResult
+    {
+        /** 当前页的员工列表 */
+        0 require  vector<EmployeeDTO> items;
+        /** 当前页码，从 1 开始 */
+        1 require  int              page;
+        /** 每页记录数，默认 20 */
+        2 require  int              pageSize;
+        /** 符合条件的总记录数 */
+        3 require  long             total;
+    };
+
+    // ============================================================
+    // 接口定义
+    // ============================================================
+
+    interface EmployeeService
+    {
+        /**
+         * 按姓名精确查询员工。
+         *
+         * 根据员工姓名精确查询其基本信息，返回员工对象。
+         * 仅支持精确匹配，不支持模糊搜索。
+         *
+         * @throws InvalidArgumentException $40001 "姓名不能为空"
+         * @throws RuntimeException $40401 "User not found"
+         */
+        EmployeeDTO findByName(string name);
+
+        /**
+         * 分页查询员工列表。
+         *
+         * 支持按部门筛选，返回分页后的员工列表。
+         *
+         * @throws InvalidArgumentException $40002 "page 参数必须大于 0"
+         * @throws InvalidArgumentException $40003 "pageSize 超出范围"
+         *
+         * @param int page 页码，从 1 开始
+         * @param int pageSize 每页记录数，取值范围 1-100
+         * @param string department 部门名称筛选，可为空
+         */
+        PageResult list(int page, int pageSize, string department);
+
+        /**
+         * 批量查询员工。
+         *
+         * 根据 ID 列表批量获取员工信息。
+         * 返回顺序与传入 ID 顺序一致，不存在的 ID 对应 null。
+         *
+         * @throws InvalidArgumentException $40004 "ids 不能为空数组"
+         * @throws InvalidArgumentException $40005 "单次最多查询 100 个员工"
+         *
+         * @param vector<long> ids 员工 ID 列表
+         */
+        vector<EmployeeDTO> batchGet(vector<long> ids);
+
+        /**
+         * 获取员工所属部门。
+         *
+         * 根据员工 ID 查询其所属部门列表。
+         *
+         * @throws RuntimeException $40401 "User not found"
+         *
+         * @param int userId 员工 ID
+         */
+        vector<DepartmentDTO> getDepartments(int userId);
+
+        /**
+         * 获取部门信息。
+         *
+         * @throws RuntimeException $40402 "Department not found"
+         *
+         * @param int departmentId 部门 ID
+         */
+        DepartmentDTO getDepartment(int departmentId);
+
+        /**
+         * 获取所有顶级部门。
+         *
+         * 返回没有上级部门的顶级部门列表。
+         */
+        vector<DepartmentDTO> listRootDepartments();
+
+        // 普通注释，不应触发元数据增强
+        void delete(long id);
+
+        // 无 docblock 的操作 — 生成无元数据的方法签名
+        int count();
+    };
+};

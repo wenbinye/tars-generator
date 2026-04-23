@@ -135,6 +135,22 @@ class TarsGeneratorTest extends TestCase
         );
     }
 
+    public function testOpenrpcMetadataGeneration(): void
+    {
+        $file = __DIR__.'/fixtures/openrpc-metadata.tars';
+        $generator = new TarsGenerator(
+            $this->createContext(protocol: GeneratorConfig::PROTOCOL_JSONRPC)->withFile($file)
+        );
+        $generator->generate();
+
+        $codes = $this->generateStrategy->getCodes();
+        $this->assertArrayHasKey('/tmp/src/integration/demo/EmployeeServiceServant.php', $codes);
+        $this->assertStringEqualsFile(
+            __DIR__.'/fixtures/generated/openrpc-interface.php',
+            $codes['/tmp/src/integration/demo/EmployeeServiceServant.php']
+        );
+    }
+
 
 
     public function testVectorByteTars()

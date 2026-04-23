@@ -1,0 +1,25 @@
+module demo
+{
+    interface EmployeeService
+    {
+        /**
+         * 精确查询单个员工。
+         *
+         * 根据员工姓名精确查询，返回员工对象。
+         * @throws InvalidArgumentException $40001 "姓名不能为空"
+         * @throws RuntimeException $40401 "User not found"
+         */
+        EmployeeDTO findByName(string name);
+
+        /**
+         * 分页查询员工列表。
+         * @throws InvalidArgumentException $40002 "page 参数必须大于 0"
+         * @param int page 页码，从 1 开始
+         * @param int pageSize 每页记录数
+         */
+        PageResult list(int page, int pageSize);
+
+        // 普通注释，不应触发元数据增强
+        void delete(long id);
+    };
+};

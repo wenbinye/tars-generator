@@ -71,4 +71,69 @@ class DocBlock implements Iterator
     {
         $this->lines->rewind();
     }
+
+    /**
+     * Returns the summary line: first non-empty, non-tag line.
+     */
+    public function getSummary(): ?string
+    {
+        foreach ($this->lines as $line) {
+            if (null !== $line && '' !== $line && !str_starts_with($line, '@')) {
+                return $line;
+            }
+        }
+        return null;
+    }
+
+    /**
+     * Returns the description: all non-tag lines after the first empty line, joined by newlines.
+     */
+    public function getDescription(): string
+    {
+        $lines = [];
+        $pastFirstEmpty = false;
+        foreach ($this->lines as $line) {
+            if (null === $line) {
+                continue;
+            }
+            if (str_starts_with($line, '@')) {
+                break;
+            }
+            if ('' === $line) {
+                $pastFirstEmpty = true;
+                continue;
+            }
+            if ($pastFirstEmpty) {
+                $lines[] = $line;
+            }
+        }
+        return implode("\n", $lines);
+    }
+
+    /**
+     * Parses @throws annotations from the normalized lines.
+     *
+     * DocBlock::create() does NOT normalize @throws (only @var/@return/@param),
+     * so this method matches '@throws' directly.
+     *
+     * @return array<int, array{class: string, code: string, message: string}>
+     */
+    public function getThrows(): array
+    {
+        $throws = [];
+        foreach ($this->lines as $line) {
+            if (null === $line) {
+                continue;
+            }
+            // Format: @throws ClassName $code "message"
+            if (1 === preg_match('#^@throws\s+([\\\\\w]+)\s+\$(\d+)\s+"(.*)"#', $line, $matches)) {
+                $throws[] = [
+                    'class' => $matches[1],
+                    'code' => $matches[2],
+                    'message' => $matches[3],
+                ];
+            }
+        }
+        return $throws;
+    }
 }

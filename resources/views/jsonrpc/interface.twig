@@ -22,6 +22,34 @@ interface {{ className }}
 {
 {% for operation in interface.operations %}
     /**
+{% if operation.hasMetadata() %}
+{% if operation.summary %}
+     * {{ operation.summary | escape }}
+{% endif %}
+{% if operation.description %}
+{% for line in operation.description|split('\n') %}
+     * {{ line | escape }}
+{% endfor %}
+{% if operation.throws or operation.parameters|length > 0 %}
+     *
+{% endif %}
+{% endif %}
+{% if operation.parameters|length > 0 %}
+{% for param in operation.parameters %}
+{% if param.description %}
+     * @param {{ param.type.docBlockType | raw }} ${{ param.name }} {{ param.description | escape }}
+{% else %}
+     * @param {{ param.type.docBlockType | raw }} ${{ param.name }}
+{% endif %}
+{% endfor %}
+{% endif %}
+     * @return {{ operation.returnType.docBlockType | raw }}
+{% if operation.throws %}
+{% for throws in operation.throws %}
+     * @throws {{ throws.class | escape }} ${{ throws.code | escape }} "{{ throws.message | escape }}"
+{% endfor %}
+{% endif %}
+{% else %}
 {% if operation.docBlock %}
 {% for doc in operation.docBlock %}
      * {{ doc | raw }}
@@ -31,6 +59,7 @@ interface {{ className }}
      * @param {{ param.type.docBlockType | raw }} ${{ param.name }}
 {% endfor %}
      * @return {{ operation.returnType.docBlockType | raw }}
+{% endif %}
      */
 {% if operation.parameters %}
     public function {{ operation.name }}({% for param in operation.parameters %}{% if param.declarationType %}{{ param.declarationType }} {% endif %}{% if param.out %}&{% endif %}${{ param.name }}{% if not loop.last %}, {% endif %}{% endfor %}){% if operation.hasPhpReturnType() %}: {{ operation.phpReturnType }}{% endif %};

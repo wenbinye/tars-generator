@@ -6,6 +6,8 @@ namespace tars\domain;
 
 class TarsParameter
 {
+    private ?string $description = null;
+
     public function __construct(
         private readonly string $name,
         private readonly TarsUnionType $type,
@@ -63,5 +65,15 @@ class TarsParameter
         }
 
         return null;
+    }
+
+    public function setDescription(?string $description): void
+    {
+        $this->description = $description;
+    }
+
+    public function getDescription(): ?string
+    {
+        return $this->description;
     }
 }

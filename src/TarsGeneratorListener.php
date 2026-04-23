@@ -176,9 +176,46 @@ class TarsGeneratorListener extends TarsBaseListener
         $this->interfaceContext->getInterface()->addOperation($operation);
 
         $docs = $this->context->getTokenStream()->getHiddenTokensToLeft($context->getStart()->getTokenIndex(), Token::HIDDEN_CHANNEL);
-        if (isset($docs[0])) {
-            $operation->setDocBlock(DocBlock::create($docs[0]->getText() ?? ''));
+        if (!isset($docs[0])) {
+            return;
         }
+
+        $rawDoc = $docs[0]->getText() ?? '';
+        if (!str_starts_with(trim($rawDoc), '/**')) {
+            return;
+        }
+
+        // Extract @param descriptions from raw text BEFORE DocBlock::create()
+        // (create() rewrites @param prefix to @tars-param, destroying the raw description text)
+        // Note: TARS param syntax uses `name` (no $ prefix), so regex captures (\w+) directly
+        $paramDescriptions = [];
+        if (preg_match_all('/@param\s+\S+\s+(\w+)\s+(.+)/', $rawDoc, $matches, PREG_SET_ORDER) !== false) {
+            foreach ($matches as $m) {
+                $paramDescriptions[$m[1]] = trim($m[2]);
+            }
+        }
+
+        // Set descriptions on TarsParameter objects
+        foreach ($operation->getParameters() as $param) {
+            if (isset($paramDescriptions[$param->getName()])) {
+                $param->setDescription($paramDescriptions[$param->getName()]);
+            }
+        }
+
+        // Create normalized DocBlock and extract structured metadata
+        $docBlock = DocBlock::create($rawDoc);
+        $operation->setDocBlock($docBlock);
+        $operation->setSummary($docBlock->getSummary());
+        $operation->setDescription($docBlock->getDescription());
+
+        $throws = $docBlock->getThrows();
+        foreach ($throws as &$t) {
+            if (!str_starts_with($t['class'], '\\')) {
+                $t['class'] = '\\' . $t['class'];
+            }
+        }
+        $operation->setThrows($throws);
+        $operation->setParamDescriptions($paramDescriptions);
     }
 
     private function extractParams(TarsOperation $operation, ?Context\ParamListContext $paramList): void

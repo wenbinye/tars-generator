@@ -13,7 +13,7 @@ use tars\parse\TarsParser;
 
 class TarsGenerator
 {
-    public const VERSION = '0.6';
+    public const VERSION = '0.7';
 
     public function __construct(private readonly TarsGeneratorContext $context)
     {

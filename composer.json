@@ -34,7 +34,8 @@
         }
     },
     "scripts": {
-        "lint": "./vendor/bin/phpstan analyse --error-format=raw"
+        "lint": "./vendor/bin/phpstan analyse --error-format=raw",
+        "test": "./vendor/bin/phpunit tests"
     },
     "config": {
         "allow-plugins": {

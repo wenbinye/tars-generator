@@ -61,8 +61,19 @@ class DocBlock implements Iterator
                 if ($line === '*/') {
                     continue;
                 }
+                // Strip trailing */ from content lines (can happen when lexer merges tokens)
+                // Check both */ and *\/ (escaped variant) before trimming, since trim('* ') strips the /
+                if (str_ends_with($line, '*/')) {
+                    $line = substr($line, 0, -2);
+                } elseif (str_ends_with($line, '*\/')) {
+                    $line = substr($line, 0, -3) . '/';
+                }
+                $line = trim($line, '* ');
+                if ($line === '*/') {
+                    continue;
+                }
                 // Normalize @var/@return/@param, strip leading *
-                $normalized = preg_replace('#@(var|return|param)\s+#', '@tars-\1 ', trim($line, '* '));
+                $normalized = preg_replace('#@(var|return|param)\s+#', '@tars-\1 ', $line);
                 $lines[] = $normalized;
             }
         }

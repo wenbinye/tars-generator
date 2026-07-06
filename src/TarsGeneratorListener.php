@@ -224,10 +224,19 @@ class TarsGeneratorListener extends TarsBaseListener
         // Extract @param descriptions from raw text BEFORE DocBlock::create()
         // (create() rewrites @param prefix to @tars-param, destroying the raw description text)
         // Note: TARS param syntax uses `name` (no $ prefix), so regex captures (\w+) directly
+        // Use [^\S\n]+ instead of \s+ for word separators to avoid matching newlines
+        // Also strip trailing */ from the description (can appear when lexer merges tokens)
         $paramDescriptions = [];
-        if (preg_match_all('/@param\s+\S+\s+(\w+)\s+(.+)/', $rawDoc, $matches, PREG_SET_ORDER) !== false) {
+        if (preg_match_all('/@param[^\S\n]+\S+[^\S\n]+(\w+)[^\S\n]+([^\n]*)/', $rawDoc, $matches, PREG_SET_ORDER) !== false) {
             foreach ($matches as $m) {
-                $paramDescriptions[$m[1]] = trim($m[2]);
+                $desc = trim($m[2]);
+                // Strip trailing */ or *\/ that may be left on the line
+                if (str_ends_with($desc, '*/')) {
+                    $desc = substr($desc, 0, -2);
+                } elseif (str_ends_with($desc, '*\/')) {
+                    $desc = substr($desc, 0, -3) . '/';
+                }
+                $paramDescriptions[$m[1]] = trim($desc);
             }
         }
 

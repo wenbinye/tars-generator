@@ -184,4 +184,36 @@ DOC);
         $this->assertSame('Description line.', $lines[2]);
         $this->assertSame('@throws Exception $500 "error"', $lines[3]);
     }
+
+    public function testTrailingCommentCloseIsStripped(): void
+    {
+        // When */ appears on the same line as content (e.g. lexer merges tokens),
+        // it must be stripped so the line content is preserved correctly
+        $doc = DocBlock::create(<<<'DOC'
+/**
+ * @param int $id */
+DOC);
+        $lines = [];
+        foreach ($doc as $line) {
+            $lines[] = $line;
+        }
+        // The */ should be stripped from the content line
+        $this->assertSame('@tars-param int $id', $lines[0]);
+    }
+
+    public function testTrailingCommentCloseWithDescription(): void
+    {
+        $doc = DocBlock::create(<<<'DOC'
+/**
+ * 删除数据表同步配置
+ * @param int $id */
+DOC);
+        $this->assertSame('删除数据表同步配置', $doc->getSummary());
+        $lines = [];
+        foreach ($doc as $line) {
+            $lines[] = $line;
+        }
+        $this->assertSame('删除数据表同步配置', $lines[0]);
+        $this->assertSame('@tars-param int $id', $lines[1]);
+    }
 }

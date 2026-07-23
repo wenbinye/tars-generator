@@ -46,7 +46,7 @@ interface {{ className }}
      * @return {{ operation.returnType.docBlockType | raw }}
 {% if operation.throws %}
 {% for throws in operation.throws %}
-     * @throws {{ throws.class | escape }} ${{ throws.code | escape }} "{{ throws.message | escape }}"
+     * @throws {{ throws.class | escape }} {{ throws.code | escape }} "{{ throws.message | escape }}"
 {% endfor %}
 {% endif %}
 {% else %}

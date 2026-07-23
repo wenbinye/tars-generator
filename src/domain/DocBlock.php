@@ -165,8 +165,8 @@ class DocBlock implements Iterator
             if (null === $line) {
                 continue;
             }
-            // Format: @throws ClassName $code "message"
-            if (1 === preg_match('#^@throws\s+([\\\\\w]+)\s+\$(\d+)\s+"(.*)"#', $line, $matches)) {
+            // Format: @throws ClassName code "message"
+            if (1 === preg_match('#^@throws\s+([\\\\\w]+)\s+(\d+)\s+"(.*)"#', $line, $matches)) {
                 $throws[] = [
                     'class' => $matches[1],
                     'code' => $matches[2],

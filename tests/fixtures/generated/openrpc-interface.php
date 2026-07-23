@@ -22,8 +22,8 @@ interface EmployeeServiceServant
      *
      * @param string $name
      * @return EmployeeDTO
-     * @throws \InvalidArgumentException $40001 "姓名不能为空"
-     * @throws \RuntimeException $40401 "User not found"
+     * @throws \InvalidArgumentException 40001 "姓名不能为空"
+     * @throws \RuntimeException 40401 "User not found"
      */
     public function findByName(string $name): EmployeeDTO;
 
@@ -32,7 +32,7 @@ interface EmployeeServiceServant
      * @param int $page 页码，从 1 开始
      * @param int $pageSize 每页记录数
      * @return PageResult
-     * @throws \InvalidArgumentException $40002 "page 参数必须大于 0"
+     * @throws \InvalidArgumentException 40002 "page 参数必须大于 0"
      */
     public function list(int $page, int $pageSize): PageResult;
 

@@ -151,6 +151,37 @@ class TarsGeneratorTest extends TestCase
         );
     }
 
+    public function testOpenrpcMetadataExtension(): void
+    {
+        $file = __DIR__.'/fixtures/openrpc-example.tars';
+        $generator = new TarsGenerator(
+            $this->createContext(protocol: GeneratorConfig::PROTOCOL_JSONRPC)->withFile($file)
+        );
+        $generator->generate();
+
+        $codes = $this->generateStrategy->getCodes();
+        $this->assertArrayHasKey('/tmp/src/integration/demo/EmployeeServiceServant.php', $codes);
+        $this->assertStringEqualsFile(
+            __DIR__.'/fixtures/generated/openrpc-employee-service.php',
+            $codes['/tmp/src/integration/demo/EmployeeServiceServant.php']
+        );
+        $this->assertArrayHasKey('/tmp/src/integration/demo/EmployeeDTO.php', $codes);
+        $this->assertStringEqualsFile(
+            __DIR__.'/fixtures/generated/openrpc-employee-dto.php',
+            $codes['/tmp/src/integration/demo/EmployeeDTO.php']
+        );
+        $this->assertArrayHasKey('/tmp/src/integration/demo/DepartmentDTO.php', $codes);
+        $this->assertStringEqualsFile(
+            __DIR__.'/fixtures/generated/openrpc-department-dto.php',
+            $codes['/tmp/src/integration/demo/DepartmentDTO.php']
+        );
+        $this->assertArrayHasKey('/tmp/src/integration/demo/PageResult.php', $codes);
+        $this->assertStringEqualsFile(
+            __DIR__.'/fixtures/generated/openrpc-page-result.php',
+            $codes['/tmp/src/integration/demo/PageResult.php']
+        );
+    }
+
 
 
     public function testVectorByteTars()

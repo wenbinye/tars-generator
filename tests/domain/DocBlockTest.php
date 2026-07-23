@@ -15,7 +15,7 @@ class DocBlockTest extends TestCase
  * 精确查询单个员工。
  *
  * 根据员工姓名精确查询，返回员工对象。
- * @throws InvalidArgumentException $40001 "姓名不能为空"
+ * @throws InvalidArgumentException 40001 "姓名不能为空"
  */
 DOC);
         $this->assertSame('精确查询单个员工。', $doc->getSummary());
@@ -26,7 +26,7 @@ DOC);
         $doc = DocBlock::create(<<<'DOC'
 /**
  * 精确查询单个员工。
- * @throws InvalidArgumentException $40001 "姓名不能为空"
+ * @throws InvalidArgumentException 40001 "姓名不能为空"
  */
 DOC);
         // No blank line → no description, summary is the first content line
@@ -49,7 +49,7 @@ DOC);
  * 精确查询单个员工。
  *
  * 根据员工姓名精确查询，返回员工对象。
- * @throws InvalidArgumentException $40001 "姓名不能为空"
+ * @throws InvalidArgumentException 40001 "姓名不能为空"
  */
 DOC);
         $this->assertSame("根据员工姓名精确查询，返回员工对象。", $doc->getDescription());
@@ -63,7 +63,7 @@ DOC);
  *
  * 根据员工姓名精确查询，返回员工对象。
  * 支持模糊匹配。
- * @throws InvalidArgumentException $40001 "姓名不能为空"
+ * @throws InvalidArgumentException 40001 "姓名不能为空"
  */
 DOC);
         $this->assertSame(
@@ -77,7 +77,7 @@ DOC);
         $doc = DocBlock::create(<<<'DOC'
 /**
  * 精确查询单个员工。
- * @throws InvalidArgumentException $40001 "姓名不能为空"
+ * @throws InvalidArgumentException 40001 "姓名不能为空"
  */
 DOC);
         // No blank line between summary and @throws → no description
@@ -100,8 +100,8 @@ DOC);
 /**
  * 精确查询单个员工。
  *
- * @throws InvalidArgumentException $40001 "姓名不能为空"
- * @throws RuntimeException $40401 "User not found"
+ * @throws InvalidArgumentException 40001 "姓名不能为空"
+ * @throws RuntimeException 40401 "User not found"
  */
 DOC);
         $throws = $doc->getThrows();
@@ -118,7 +118,7 @@ DOC);
     {
         $doc = DocBlock::create(<<<'DOC'
 /**
- * @throws \InvalidArgumentException $40001 "姓名不能为空"
+ * @throws \InvalidArgumentException 40001 "姓名不能为空"
  */
 DOC);
         $throws = $doc->getThrows();
@@ -142,7 +142,7 @@ DOC);
         // No quotes around message → not matched by regex
         $doc = DocBlock::create(<<<'DOC'
 /**
- * @throws InvalidArgumentException $40001 姓名不能为空
+ * @throws InvalidArgumentException 40001 姓名不能为空
  */
 DOC);
         $this->assertSame([], $doc->getThrows());
@@ -155,8 +155,8 @@ DOC);
  * 精确查询单个员工。
  *
  * 根据员工姓名精确查询，返回员工对象。
- * @throws InvalidArgumentException $40001 "姓名不能为空"
- * @throws RuntimeException $40401 "User not found"
+ * @throws InvalidArgumentException 40001 "姓名不能为空"
+ * @throws RuntimeException 40401 "User not found"
  */
 DOC);
         $this->assertSame('精确查询单个员工。', $doc->getSummary());
